@@ -1,12 +1,8 @@
-it.xvservice.net
-1pw-scim.prd.iat.it.xvservice.net
-gatekeeper.prd.iat.it.xvservice.net
-iat.it.xvservice.net
-prd.iat.it.xvservice.net
-vector.prd.iat.it.xvservice.net
-gh-mail.expressvpn.com
-corp.polymoon.it
-networkguard.com
+api.ovh.com
+www.ovh.com
+help.ovhcloud.com
+agent-chat.ovh.com
+community.ovhcloud.com
 
 
 
