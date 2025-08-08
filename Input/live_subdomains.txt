@@ -1,6 +1,11 @@
-app.datadome.co
-auth.datadome.co
-datadome.co
+www.onsexprime.fr
+www.1000-premiers-jours.fr
+mangerbouger.fr
+questionsexualite.fr
+vaccination-info-service.fr
+professionnels.vaccination-info-service.fr
+www.vivre-avec-la-chaleur.fr
+www.tabac-info-service.fr
 
 
 
