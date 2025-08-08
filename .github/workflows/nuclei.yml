@@ -19,7 +19,7 @@ jobs:
             -severity critical,high,medium,low
             -stats
             -o nuclei.log
-            -H "User-Agent: -BugBounty-kindred-1-31338"
+            -H "User-Agent: Bug-Bounty-Hunter-#cheahengsoon# "
 
       - name: Upload Nuclei Log as Artifact
         uses: actions/upload-artifact@v4
