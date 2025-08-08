@@ -15,7 +15,7 @@ jobs:
         uses: projectdiscovery/nuclei-action@main
         with:
           urls: Input/live_subdomains.txt
-          flags: "-severity critical,high,medium,low -stats -H "User-Agent: DBS_YWH_BBP_PWEB_USERNAME""
+          flags: "-severity critical,high,medium,low -stats -H "User-Agent: DBS_YWH_BBP_PWEB_cheahengsoon""
 
       - name: GitHub Workflow artifacts
         uses: actions/upload-artifact@v4
