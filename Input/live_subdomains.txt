@@ -1,11 +1,6 @@
-synergiejobs.be
-online.synergiejobs.be
-synergie.es
-sandyou.es
-nowclientes.synergie.es
-synergieapi.azurewebsites.net/APIV2/api/v2/01/
-salon.synergie.fr
-my.synergie.es
+cms2-uat.getgo.sg
+getgosg.cloudflareaccess.com
+
 
 
 
