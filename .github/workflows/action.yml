@@ -1,21 +1,26 @@
-name: 💥 httpx - HTTP Web Server probing
+name: httpx - HTTP Web Server probing
 
 on:
-    schedule:
-      - cron: '0 0 * * *'
-    workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
+  workflow_dispatch:     # Allows manual runs
 
 jobs:
   httpx-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
-        with:
-          go-version: 1.17
 
-      - name: 💥 httpx - HTTP Web Server probing
+      - name: Run httpx scan
         uses: projectdiscovery/httpx-action@main
         with:
-          list: Input/live_subdomains.txt
+          args: -l Input/live_subdomains.txt -o Output/httpx_results.txt
+
+      - name: Commit results
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add Output/httpx_results.txt
+          git commit -m "Update httpx scan results"
+          git push
 
