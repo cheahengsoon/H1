@@ -25,7 +25,7 @@ jobs:
           echo "Installing/updating httpx..."
           go install github.com/projectdiscovery/httpx/cmd/httpx@latest
           echo "Installing/updating Nuclei..."
-          go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
+          go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
 
       - name: 🔎 Run Subfinder
         run: |
@@ -54,7 +54,4 @@ jobs:
       - name: 📝 Commit and push results
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add Output/httpx_results.txt Output/nuclei_results.txt
-          git commit -m "Update httpx and Nuclei scan results [skip ci]" || echo "No changes to commit"
-          git push
+          git config --global user.email "github-actions[bot]@users.noreply.github.c
