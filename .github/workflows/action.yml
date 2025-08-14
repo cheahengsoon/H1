@@ -28,7 +28,7 @@ jobs:
       - name: 🔎 Run subfinder
         run: |
           echo "Discovering subdomains..."
-          subfinder -d example.com -o Output/subdomains.txt
+          subfinder -d gov.sg -o Output/subdomains.txt
 
       - name: 💥 Run httpx scan
         run: |
