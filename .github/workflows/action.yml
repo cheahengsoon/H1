@@ -1,4 +1,4 @@
-name: 💥 httpx - HTTP Web Server probing
+name: httpx - HTTP Web Server probing
 
 on:
   schedule:
@@ -22,19 +22,21 @@ jobs:
           fi
           cat Input/live_subdomains.txt
 
-      - name: 💥 Run httpx scan
+      - name: Run httpx scan
         uses: projectdiscovery/httpx-action@main
         with:
           args: -l Input/live_subdomains.txt -o Output/httpx_results.txt
 
-      - name: 📝 Ensure output exists
+      - name: 🖥️ List live URLs in Actions log
         run: |
-          if [ ! -f Output/httpx_results.txt ]; then
-            echo "No results found, creating empty file."
-            touch Output/httpx_results.txt
+          echo "Live URLs found:"
+          if [ -s Output/httpx_results.txt ]; then
+            cat Output/httpx_results.txt
+          else
+            echo "No live URLs found."
           fi
 
-      - name: 📦 Upload results as artifact
+      - name: Upload results as artifact
         uses: actions/upload-artifact@v4
         with:
           name: httpx-results
