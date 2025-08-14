@@ -20,8 +20,8 @@ jobs:
       - name: GitHub Workflow artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: nuclei.log
-          path: nuclei.log
+          name: nuclei.txt
+          path: nuclei.txt
 
       - name: GitHub Security Dashboard Alerts update
         uses: github/codeql-action/upload-sarif@v3
