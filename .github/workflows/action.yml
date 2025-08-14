@@ -23,7 +23,7 @@ jobs:
       - name: 🔎 Run subfinder
         run: |
           echo "Discovering subdomains..."
-          $HOME/go/bin/subfinder -d example.com -o Output/subdomains.txt
+          $HOME/go/bin/subfinder -d gov.sg -o Output/subdomains.txt
 
       - name: 💥 Run httpx scan
         run: |
