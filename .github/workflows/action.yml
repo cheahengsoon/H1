@@ -14,11 +14,11 @@ jobs:
       - name: Run httpx scan
         uses: projectdiscovery/httpx-action@main
         with:
-          args: -l Input/live_subdomains.txt -o httpx_results.txt
+          args: -l Input/live_subdomains.txt -o Output/httpx_results.txt
 
       - name: 📦 Upload results as artifact
         uses: actions/upload-artifact@v4
         with:
           name: httpx-results
-          path: httpx_results.txt
+          path: Output/httpx_results.txt
 
