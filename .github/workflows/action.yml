@@ -25,8 +25,7 @@ jobs:
           echo "Installing/updating httpx..."
           go install github.com/projectdiscovery/httpx/cmd/httpx@latest
           echo "Installing/updating Nuclei..."
-          go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
-
+          go install github.com/projectdiscovery/nuclei-action@main
       - name: 🔎 Run Subfinder
         run: |
           echo "Discovering subdomains for gov.sg..."
