@@ -3,7 +3,7 @@ name: 💥 Subdomain Discovery & HTTP Probing
 on:
   schedule:
     - cron: '0 0 * * *' # Daily at midnight UTC
-  workflow_dispatch:     # Manual trigger
+  workflow_dispatch:
 
 jobs:
   subdomain-httpx-scan:
@@ -14,16 +14,21 @@ jobs:
       - name: 📂 Create Output folder
         run: mkdir -p Output
 
-      - name: 🛠️ Install Go and Subfinder
+      - name: 🛠️ Install Go, Subfinder, and httpx
         run: |
           sudo apt-get update
           sudo apt-get install -y golang-go
+          # Add Go binaries to PATH
+          echo "$HOME/go/bin" >> $GITHUB_PATH
+          # Install Subfinder
           go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+          # Install httpx
+          go install github.com/projectdiscovery/httpx/cmd/httpx@latest
 
       - name: 🔎 Run subfinder
         run: |
           echo "Discovering subdomains..."
-          $HOME/go/bin/subfinder -d gov.sg -o Output/subdomains.txt
+          subfinder -d example.com -o Output/subdomains.txt
 
       - name: 💥 Run httpx scan
         run: |
