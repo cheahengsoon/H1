@@ -19,8 +19,3 @@ jobs:
         with:
           list: Input/live_subdomains.txt
 
-      - name: GitHub Workflow artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: httpx.log
-          path: httpx.log
