@@ -1,9 +1,9 @@
-name: httpx - HTTP Web Server probing
+name: 💥 httpx - HTTP Web Server probing
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs daily at midnight UTC
-  workflow_dispatch:     # Allows manual runs
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   httpx-scan:
@@ -11,13 +11,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Create Output folder
+      - name: 📂 Create Output folder
         run: mkdir -p Output
 
-      - name: Run httpx scan
+      - name: 🔎 Check input file
+        run: |
+          if [ ! -f Input/live_subdomains.txt ]; then
+            echo "Input file missing!"
+            exit 1
+          fi
+          cat Input/live_subdomains.txt
+
+      - name: 💥 Run httpx scan
         uses: projectdiscovery/httpx-action@main
         with:
           args: -l Input/live_subdomains.txt -o Output/httpx_results.txt
+
+      - name: 📝 Ensure output exists
+        run: |
+          if [ ! -f Output/httpx_results.txt ]; then
+            echo "No results found, creating empty file."
+            touch Output/httpx_results.txt
+          fi
 
       - name: 📦 Upload results as artifact
         uses: actions/upload-artifact@v4
