@@ -1,43 +1,26 @@
-name: httpx - HTTP Web Server probing
+name: 💥 httpx - HTTP Web Server probing
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
+    schedule:
+      - cron: '0 0 * * *'
+    workflow_dispatch:
 
 jobs:
   httpx-scan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.17
 
-      - name: 📂 Create Output folder
-        run: mkdir -p Output
-
-      - name: 🔎 Check input file
-        run: |
-          if [ ! -f Input/live_subdomains.txt ]; then
-            echo "Input file missing!"
-            exit 1
-          fi
-          cat Input/live_subdomains.txt
-
-      - name: Run httpx scan
+      - name: 💥 httpx - HTTP Web Server probing
         uses: projectdiscovery/httpx-action@main
         with:
-          args: -l Input/live_subdomains.txt -o Output/httpx_results.txt
+          list: hosts.txt
 
-      - name: 🖥️ List live URLs in Actions log
-        run: |
-          echo "Live URLs found:"
-          if [ -s Output/httpx_results.txt ]; then
-            cat Output/httpx_results.txt
-          else
-            echo "No live URLs found."
-          fi
-
-      - name: Upload results as artifact
-        uses: actions/upload-artifact@v4
+      - name: GitHub Workflow artifacts
+        uses: actions/upload-artifact@v2
         with:
-          name: httpx-results
-          path: Output/httpx_results.txt
+          name: httpx.log
+          path: httpx.log
