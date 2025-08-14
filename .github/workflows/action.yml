@@ -14,17 +14,16 @@ jobs:
       - name: 📂 Create Output folder
         run: mkdir -p Output
 
-      - name: 🛠️ Install subfinder and httpx
+      - name: 🛠️ Install Go and Subfinder
         run: |
           sudo apt-get update
-          sudo apt-get install -y snap
-          sudo snap install subfinder
-          sudo snap install httpx
+          sudo apt-get install -y golang-go
+          go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 
       - name: 🔎 Run subfinder
         run: |
           echo "Discovering subdomains..."
-          subfinder -d gov.sg -o Output/subdomains.txt
+          $HOME/go/bin/subfinder -d example.com -o Output/subdomains.txt
 
       - name: 💥 Run httpx scan
         run: |
