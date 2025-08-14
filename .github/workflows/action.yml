@@ -11,15 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Run httpx scan
+      - name: 💥 Run httpx scan
         uses: projectdiscovery/httpx-action@main
         with:
-          args: -l Input/live_subdomains.txt -o Output/httpx_results.txt
+          args: -l Input/live_subdomains.txt -o httpx_results.txt
 
-      - name: Upload results as artifact
+      - name: 📦 Upload results as artifact
         uses: actions/upload-artifact@v3
         with:
           name: httpx-results
-          path: Output/httpx_results.txt
+          path: httpx_results.txt
 
 
