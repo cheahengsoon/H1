@@ -12,16 +12,19 @@ jobs:
       - name: 📂 Create Output folder
         run: mkdir -p Output
 
-      - name: 🛠️ Install Go, Subfinder, httpx, and Nuclei
+      - name: 🛠️ Install Go
         run: |
           sudo apt-get update
           sudo apt-get install -y golang-go git
           echo "$HOME/go/bin" >> $GITHUB_PATH
-          # Install Subfinder
+
+      - name: 🔄 Install / Update Subfinder, httpx, and Nuclei
+        run: |
+          echo "Installing/updating Subfinder..."
           go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
-          # Install httpx
+          echo "Installing/updating httpx..."
           go install github.com/projectdiscovery/httpx/cmd/httpx@latest
-          # Install Nuclei
+          echo "Installing/updating Nuclei..."
           go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
 
       - name: 🔎 Run Subfinder
