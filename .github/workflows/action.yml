@@ -18,14 +18,40 @@ jobs:
           sudo apt-get install -y golang-go git
           echo "$HOME/go/bin" >> $GITHUB_PATH
 
-      - name: 🔄 Install / Update Subfinder, httpx, and Nuclei
+      - name: 🔄 Check & Update Subfinder, httpx, and Nuclei
         run: |
-          echo "Installing/updating Subfinder..."
-          go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
-          echo "Installing/updating httpx..."
-          go install github.com/projectdiscovery/httpx/cmd/httpx@latest
-          echo "Installing/updating Nuclei..."
-          go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+          echo "Checking Subfinder version..."
+          if ! command -v subfinder &> /dev/null; then
+            echo "Subfinder not found, installing..."
+            go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+          else
+            INSTALLED=$(subfinder -version | awk '{print $NF}')
+            echo "Installed Subfinder version: $INSTALLED"
+            echo "Updating Subfinder to latest..."
+            go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+          fi
+
+          echo "Checking httpx version..."
+          if ! command -v httpx &> /dev/null; then
+            echo "httpx not found, installing..."
+            go install github.com/projectdiscovery/httpx/cmd/httpx@latest
+          else
+            INSTALLED=$(httpx -version | awk '{print $NF}')
+            echo "Installed httpx version: $INSTALLED"
+            echo "Updating httpx to latest..."
+            go install github.com/projectdiscovery/httpx/cmd/httpx@latest
+          fi
+
+          echo "Checking Nuclei version..."
+          if ! command -v nuclei &> /dev/null; then
+            echo "Nuclei not found, installing..."
+            go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+          else
+            INSTALLED=$(nuclei -version | awk '{print $NF}')
+            echo "Installed Nuclei version: $INSTALLED"
+            echo "Updating Nuclei to latest..."
+            go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+          fi
 
       - name: 🔎 Run Subfinder
         run: |
@@ -54,4 +80,7 @@ jobs:
       - name: 📝 Commit and push results
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.c
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add Output/httpx_results.txt Output/nuclei_results.txt
+          git commit -m "Update httpx and Nuclei scan results [skip ci]" || echo "No changes to commit"
+          git push
