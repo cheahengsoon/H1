@@ -1,0 +1,41 @@
+name: Nuclei - Vulnerability Scan (Batched)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  nuclei-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check input file
+        run: |
+          if [ ! -f "Input/live_subdomains.txt" ]; then
+            echo "Error: live_subdomains.txt not found."
+            exit 1
+          fi
+
+      - name: Split into batches
+        run: |
+          mkdir batches
+          split -l 100 Input/live_subdomains.txt batches/batch_
+
+      - name: Run Nuclei on batches
+        run: |
+          mkdir results
+          for file in batches/*; do
+            echo "Scanning batch: $file"
+            nuclei -l "$file" -severity critical,high,medium,low \
+              -stats -o "results/$(basename "$file").txt"
+          done
+
+      - name: Merge batch results
+        run: |
+          cat results/*.txt > nuclei.txt
+
+      - name: Upload scan results as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuclei-results
+          path: nuclei.txt
