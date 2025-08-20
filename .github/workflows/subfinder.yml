@@ -30,10 +30,10 @@ jobs:
       - name: Run Subfinder for each domain
         run: |
           while read domain; do
-            clean_domain=$(echo $domain | tr -d '\r') # remove carriage return if file edited in Windows
+            clean_domain=$(echo $domain | tr -d '\r') # handle Windows newlines
             echo "[*] Enumerating subdomains for $clean_domain"
             subfinder -d $clean_domain -silent -o output/${clean_domain}.txt
-          done < input/domains.txt
+          done < Input/domains.txt
 
       - name: Show results
         run: ls -lh output && head -n 10 output/*.txt
