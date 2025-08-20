@@ -1,7 +1,7 @@
-name: Subfinder + Httpx Workflow
+name: Subfinder + Httpx Workflow with Auto Commit
 
 on:
-  workflow_dispatch: # Manual trigger
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -28,6 +28,12 @@ jobs:
           go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
+      - name: Ensure domains.txt exists
+        run: |
+          if [ ! -f domains.txt ]; then
+            echo "example.com" > domains.txt
+          fi
+
       - name: Run subfinder
         run: |
           subfinder -dL domains.txt -o subdomains.txt
@@ -36,10 +42,12 @@ jobs:
         run: |
           httpx -l subdomains.txt -o alive.txt
 
-      - name: Upload results
-        uses: actions/upload-artifact@v4
-        with:
-          name: recon-results
-          path: |
-            subdomains.txt
-            alive.txt
+      - name: Commit results back to repo
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add subdomains.txt alive.txt
+          git commit -m "Update subdomains.txt and alive.txt [skip ci]" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
