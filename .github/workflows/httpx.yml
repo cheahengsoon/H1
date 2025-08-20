@@ -1,0 +1,44 @@
+name: Httpx - Alive Subdomains Per Domain
+
+on:
+  workflow_dispatch: # Manual trigger
+  push:
+    branches:
+      - main
+
+jobs:
+  httpx:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Httpx
+        run: |
+          curl -s https://api.github.com/repos/projectdiscovery/httpx/releases/latest \
+            | grep "browser_download_url.*linux_amd64.zip" \
+            | cut -d '"' -f 4 \
+            | wget -qi -
+          unzip httpx_*_linux_amd64.zip
+          sudo mv httpx /usr/local/bin/
+          httpx -version
+
+      - name: Run Httpx for each domain's subdomain file
+        run: |
+          for file in output/*.txt; do
+            domain=$(basename "$file" .txt)
+            echo "[*] Running httpx for $domain"
+            httpx -silent -l "$file" -o "output/${domain}_live.txt"
+          done
+
+      - name: Show results
+        run: ls -lh output && head -n 10 output/*_live.txt
+
+      - name: Commit results back to repo
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/*_live.txt
+          git commit -m "Update httpx alive results" || echo "No new alive subdomains found"
+          git push
