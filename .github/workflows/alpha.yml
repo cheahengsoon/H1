@@ -1,0 +1,98 @@
+name: Nuclei Batch Scan (Dynamic Concurrency)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      chunks: ${{ steps.split.outputs.chunks }}
+      bs: ${{ steps.split.outputs.bs }}
+      concurrency: ${{ steps.split.outputs.concurrency }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Ensure Input/live_subdomains.txt exists
+        run: |
+          mkdir -p Input
+          if [ ! -f Input/live_subdomains.txt ]; then
+            echo "https://example.com" > Input/live_subdomains.txt
+          fi
+
+      - name: Add line numbers to live_subdomains.txt
+        run: |
+          awk '{print NR ":" $0}' Input/live_subdomains.txt > Input/live_subdomains_numbered.txt
+
+      - name: Determine batch size and concurrency dynamically
+        id: split
+        run: |
+          TOTAL=$(wc -l < Input/live_subdomains_numbered.txt)
+          echo "Total lines: $TOTAL"
+
+          # Dynamic batch size (-bs)
+          if [ $TOTAL -le 5000 ]; then
+            BS=50
+            CONC=100
+          elif [ $TOTAL -le 20000 ]; then
+            BS=25
+            CONC=50
+          else
+            BS=10
+            CONC=25
+          fi
+
+          # Split file into chunks of 5000 lines each
+          mkdir -p chunks
+          split -l 5000 Input/live_subdomains_numbered.txt chunks/part_
+          files=$(ls chunks/part_* | jq -R -s -c 'split("\n")[:-1]')
+
+          echo "chunks=$files" >> $GITHUB_OUTPUT
+          echo "bs=$BS" >> $GITHUB_OUTPUT
+          echo "concurrency=$CONC" >> $GITHUB_OUTPUT
+
+  nuclei:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        file: ${{ fromJson(needs.prepare.outputs.chunks) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Install nuclei
+        run: |
+          go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
+      - name: Run nuclei on chunk
+        run: |
+          nuclei -l ${{ matrix.file }} \
+            -o results_${{ matrix.file##*/ }}.txt \
+            -sarif-export results_${{ matrix.file##*/ }}.sarif \
+            -bs ${{ needs.prepare.outputs.bs }} \
+            -c ${{ needs.prepare.outputs.concurrency }} \
+            -severity critical,high,medium,low
+
+      - name: Upload results (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuclei-results
+          path: |
+            results_${{ matrix.file##*/ }}.txt
+            results_${{ matrix.file##*/ }}.sarif
+
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results_${{ matrix.file##*/ }}.sarif
