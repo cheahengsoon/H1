@@ -1,7 +1,7 @@
 name: Httpx - Alive Subdomains Per Domain
 
 on:
-  workflow_dispatch: # Manual trigger
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -14,20 +14,28 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Httpx (local)
+      - name: Install Httpx (local, safe)
         run: |
-          curl -s https://api.github.com/repos/projectdiscovery/httpx/releases/latest \
+          set -e
+          # Get latest release download URL
+          url=$(curl -s https://api.github.com/repos/projectdiscovery/httpx/releases/latest \
             | grep "browser_download_url.*linux_amd64.zip" \
-            | cut -d '"' -f 4 \
-            | wget -qi -
+            | cut -d '"' -f 4)
+          echo "Download URL: $url"
+
+          # Clean old files if exist
           rm -rf httpx httpx_*_linux_amd64.zip
-          unzip -o httpx_*_linux_amd64.zip httpx
+
+          # Download and extract
+          wget -q "$url" -O httpx_linux_amd64.zip
+          unzip -o httpx_linux_amd64.zip httpx
           chmod +x httpx
           echo "$PWD" >> $GITHUB_PATH
           httpx -version
 
       - name: Run Httpx for each domain's subdomain file
         run: |
+          mkdir -p live
           for file in output/*.txt; do
             domain=$(basename "$file" .txt)
             echo "[*] Running httpx for $domain"
@@ -39,7 +47,7 @@ jobs:
           done
 
       - name: Show results
-        run: ls -lh output && head -n 10 live/*_live.txt || echo "No live results"
+        run: ls -lh live && head -n 10 live/*_live.txt || echo "No live results"
 
       - name: Commit results back to repo
         run: |
