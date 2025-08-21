@@ -39,6 +39,8 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git pull --rebase origin main
           git add output/*_live.txt
           git commit -m "Update httpx alive results" || echo "No new alive subdomains found"
-          git push
+          git push origin main
