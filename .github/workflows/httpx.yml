@@ -21,8 +21,8 @@ jobs:
             | cut -d '"' -f 4 \
             | wget -qi -
           unzip -o httpx_*_linux_amd64.zip httpx
-          sudo rm -rf /usr/local/bin/httpx   # cleanup old binary or mistaken dir
-          sudo mv httpx /usr/local/bin/
+          sudo rm -rf /usr/local/bin/httpx   # delete old dir or binary
+          sudo install -m 755 httpx /usr/local/bin/httpx
           httpx -version
 
       - name: Run Httpx for each domain's subdomain file
@@ -30,23 +30,16 @@ jobs:
           for file in output/*.txt; do
             domain=$(basename "$file" .txt)
             echo "[*] Running httpx for $domain"
-            # skip empty files
             if [ -s "$file" ]; then
-              httpx -silent -l "$file" -o "httpx/${domain}_live.txt"
+              httpx -silent -l "$file" -o "output/${domain}_live.txt"
             else
-              echo "[-] Skipping $domain (no subdomains found)"
+              echo "[-] Skipping $domain (empty file)"
             fi
           done
 
       - name: Show results
-        run: ls -lh output && head -n 10 httpx/*_live.txt || echo "No live results"
+        run: ls -lh output && head -n 10 output/*_live.txt || echo "No live results"
 
       - name: Commit results back to repo
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git pull --rebase origin main
-          git add httpx/*_live.txt
-          git commit -m "Update httpx alive results" || echo "No new alive subdomains found"
-          git push origin main
+          git config --global u
