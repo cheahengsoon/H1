@@ -1,0 +1,11 @@
+g.mercadopago.cl
+ludospro.mercadopago.cl
+blog.mercadopago.cl
+matt.mercadopago.cl
+optout.mercadopago.cl
+pmstrk.mercadopago.cl
+auth.mercadopago.cl
+www.mercadopago.cl
+multidc.mercadopago.cl
+beta.mercadopago.cl
+analytics.mercadopago.cl

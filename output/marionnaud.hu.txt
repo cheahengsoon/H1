@@ -1,0 +1,10 @@
+api.marionnaud.hu
+www.marionnaud.hu
+ecom-data.marionnaud.hu
+prod-cc.marionnaud.hu
+paygtw.marionnaud.hu
+app.marionnaud.hu
+media.marionnaud.hu
+campaign.marionnaud.hu
+enterpriseenrollment.marionnaud.hu
+mta-sts.marionnaud.hu

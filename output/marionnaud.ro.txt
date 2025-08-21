@@ -1,0 +1,14 @@
+media.marionnaud.ro
+www.marionnaud.ro
+paygtw.marionnaud.ro
+campaign.marionnaud.ro
+prod-cc.marionnaud.ro
+mta-sts.marionnaud.ro
+elidealgallego.marionnaud.ro
+device1042030-7798e002-local.marionnaud.ro
+api.marionnaud.ro
+app.marionnaud.ro
+mail.marionnaud.ro
+enterpriseenrollment.marionnaud.ro
+ecom-data.marionnaud.ro
+dummyc-ebnf.marionnaud.ro
