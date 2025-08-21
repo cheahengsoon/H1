@@ -1,0 +1,7 @@
+staging.magicjackpot.ro
+www.magicjackpot.ro
+ncfoud.magicjackpot.ro
+click.magicjackpot.ro
+mail.magicjackpot.ro
+promo.magicjackpot.ro
+bonus.magicjackpot.ro

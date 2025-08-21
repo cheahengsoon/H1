@@ -1,0 +1,7 @@
+jenkins.reckostaging.com
+jenkins-minsky.reckostaging.com
+env2.reckostaging.com
+env1.reckostaging.com
+vpn.reckostaging.com
+dev.reckostaging.com
+jenkins-old.reckostaging.com

@@ -1,0 +1,2 @@
+jenkins-master.lyst.co
+sentry.lyst.co

@@ -1,0 +1,13 @@
+poker.playwsop.com
+swag-shop.playwsop.com
+powerholders.playwsop.com
+fb-og-v2-prod.playwsop.com
+www.playwsop.com
+stage4.playwsop.com
+stage27.playwsop.com
+stage38.playwsop.com
+preprod.playwsop.com
+stage17.playwsop.com
+email.playwsop.com
+dev.playwsop.com
+l.playwsop.com

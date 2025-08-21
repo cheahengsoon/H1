@@ -1,0 +1,5 @@
+app-content.lightroom.adobe.com
+dl.lightroom.adobe.com
+samples.lightroom.adobe.com
+static.lightroom.adobe.com
+api.lightroom.adobe.com

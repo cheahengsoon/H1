@@ -1,0 +1,14 @@
+help.nflxext.com
+assets-atv.nflxext.com
+webvtt-s.nflxext.com
+cdn3.nflxext.com
+ncds.nflxext.com
+assets.nflxext.com
+codex.nflxext.com
+assets-sha1.nflxext.com
+games.nflxext.com
+cdn1.nflxext.com
+cdn2.nflxext.com
+cdn.nflxext.com
+ncds.test.nflxext.com
+ncds-sha1.nflxext.com

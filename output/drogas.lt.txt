@@ -1,0 +1,17 @@
+appdrglt.drogas.lt
+ecom-data.drogas.lt
+prod-cc.drogas.lt
+mta-sts.drogas.lt
+media.drogas.lt
+app.drogas.lt
+t.news.drogas.lt
+paygtw.drogas.lt
+news.drogas.lt
+post.drogas.lt
+testai.drogas.lt
+api.drogas.lt
+www.drogas.lt
+campaign.drogas.lt
+mta-sts.news.drogas.lt
+res.news.drogas.lt
+m.news.drogas.lt

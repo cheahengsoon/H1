@@ -1,0 +1,13 @@
+logs-ca1.boardkingsgame.com
+client-logs-dashboard-va2.boardkingsgame.com
+logs-va2.boardkingsgame.com
+client-logs-dashboard.dev.boardkingsgame.com
+dev.boardkingsgame.com
+messaging-dsa.boardkingsgame.com
+www.boardkingsgame.com
+api.boardkingsgame.com
+s3repo.boardkingsgame.com
+www.dev.boardkingsgame.com
+bk-prod-websocket.boardkingsgame.com
+socket.boardkingsgame.com
+api-gw-ca1.boardkingsgame.com

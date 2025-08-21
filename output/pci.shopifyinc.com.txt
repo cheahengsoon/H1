@@ -1,0 +1,3 @@
+cs.pci.shopifyinc.com
+checkout.pci.shopifyinc.com
+us-east1.checkout.pci.shopifyinc.com

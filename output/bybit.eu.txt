@@ -1,0 +1,10 @@
+api3.bybit.eu
+announcements.bybit.eu
+www.bybit.eu
+partner.bybit.eu
+bybit-dev-2.bybit.eu
+bybit-test-1.bybit.eu
+sbu-perf-1.bybit.eu
+api2.bybit-test-3.bybit.eu
+zen.bybit.eu
+bybit-test-3.bybit.eu

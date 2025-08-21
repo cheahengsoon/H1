@@ -1,0 +1,13 @@
+staging.simpletax.ca
+aide-staging.simpletax.ca
+help-staging.simpletax.ca
+aid-staging.simpletax.ca
+www.simpletax.ca
+app-staging.simpletax.ca
+www-staging.simpletax.ca
+spgo.simpletax.ca
+link.simpletax.ca
+www.app.simpletax.ca
+aide.simpletax.ca
+app.simpletax.ca
+help.simpletax.ca

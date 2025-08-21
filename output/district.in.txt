@@ -1,0 +1,9 @@
+link.district.in
+queue.district.in
+queue.partners.district.in
+partners.district.in
+movies.district.in
+www.district.in
+cdn.district.in
+mesh.district.in
+events.district.in

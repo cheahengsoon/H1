@@ -1,0 +1,15 @@
+www.drogas.lv
+latvija.drogas.lv
+appdrglv.drogas.lv
+ecom-data.drogas.lv
+paygtw.drogas.lv
+testi.drogas.lv
+app.drogas.lv
+api.drogas.lv
+prod-cc.drogas.lv
+hrb.drogas.lv
+www.hrb.drogas.lv
+mta-sts.drogas.lv
+mail.drogas.lv
+www.mail.drogas.lv
+media.drogas.lv

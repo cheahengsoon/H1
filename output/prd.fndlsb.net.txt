@@ -1,0 +1,8 @@
+rt-int.prd.fndlsb.net
+igt.prd.fndlsb.net
+gss.prd.fndlsb.net
+sre.sportsbook.prd.fndlsb.net
+dora.sre.sportsbook.prd.fndlsb.net
+o11y.sre.sportsbook.prd.fndlsb.net
+argocd.sre.sportsbook.prd.fndlsb.net
+rt-data.prd.fndlsb.net
