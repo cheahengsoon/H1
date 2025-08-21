@@ -1,0 +1,16 @@
+sellercentral.amazon.cl
+affiliate-program.amazon.cl
+unagi.amazon.cl
+transient.amazon.cl
+brandregistry.amazon.cl
+fls-na.amazon.cl
+vendorcentral.amazon.cl
+advertising.amazon.cl
+origin-dl.amazon.cl
+msh.amazon.cl
+carriercentral.amazon.cl
+dl.amazon.cl
+www.amazon.cl
+origin-www.amazon.cl
+vender.amazon.cl
+data.amazon.cl
