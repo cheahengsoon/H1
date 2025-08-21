@@ -1,0 +1,46 @@
+name: Nuclei - Per Domain Scan
+
+on:
+  workflow_dispatch: # Manual trigger
+  push:
+    branches:
+      - main
+
+jobs:
+  nuclei:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Nuclei
+        run: |
+          curl -s https://api.github.com/repos/projectdiscovery/nuclei/releases/latest \
+            | grep "browser_download_url.*linux_amd64.zip" \
+            | cut -d '"' -f 4 \
+            | wget -qi -
+          unzip nuclei_*_linux_amd64.zip
+          sudo mv nuclei /usr/local/bin/
+          nuclei -version
+
+      - name: Run Nuclei for each domain file
+        run: |
+          for file in output/*_live.txt; do
+            domain=$(basename "$file" _live.txt)
+            echo "[*] Running nuclei scan for $domain"
+            nuclei -l "$file" -severity critical,high,medium,low -silent -o "output/${domain}_nuclei.txt"
+          done
+
+      - name: Show results
+        run: ls -lh output && head -n 20 output/*_nuclei.txt || echo "No findings"
+
+      - name: Commit results back to repo
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git pull --rebase origin main
+          git add output/*_nuclei.txt
+          git commit -m "Update nuclei results" || echo "No new findings"
+          git push origin main
