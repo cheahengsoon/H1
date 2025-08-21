@@ -1,0 +1,9 @@
+legacy.cubicmotion.com
+www.cubicmotion.com
+vpn.cubicmotion.com
+staging.cubicmotion.com
+docs.cubicmotion.com
+www.vpn.cubicmotion.com
+email.cubicmotion.com
+downloads.cubicmotion.com
+calendar.cubicmotion.com

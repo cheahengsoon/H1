@@ -1,0 +1,16 @@
+t-dev.booztlet.com
+cloud.booztlet.com
+email.booztlet.com
+t.booztlet.com
+view.email.booztlet.com
+image.email.booztlet.com
+www.booztlet.com
+click.booztlet.com
+mta2.email.booztlet.com
+click.email.booztlet.com
+localhost.email.booztlet.com
+gcp.booztlet.com
+fpt.booztlet.com
+analytics.booztlet.com
+mta.email.booztlet.com
+sp.booztlet.com

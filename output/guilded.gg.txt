@@ -1,0 +1,10 @@
+api-staging.guilded.gg
+media.guilded.gg
+api.guilded.gg
+www.guilded.gg
+sourcemaps.local.guilded.gg
+video-edge-1.guilded.gg
+dl.guilded.gg
+api-preprod.guilded.gg
+support.guilded.gg
+www.video-edge-1.guilded.gg
