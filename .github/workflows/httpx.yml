@@ -14,15 +14,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Httpx
+      - name: Install Httpx (local)
         run: |
           curl -s https://api.github.com/repos/projectdiscovery/httpx/releases/latest \
             | grep "browser_download_url.*linux_amd64.zip" \
             | cut -d '"' -f 4 \
             | wget -qi -
           unzip -o httpx_*_linux_amd64.zip httpx
-          sudo rm -rf /usr/local/bin/httpx   # delete old dir or binary
-          sudo install -m 755 httpx /usr/local/bin/httpx
+          chmod +x httpx
+          echo "$PWD" >> $GITHUB_PATH
           httpx -version
 
       - name: Run Httpx for each domain's subdomain file
@@ -31,15 +31,21 @@ jobs:
             domain=$(basename "$file" .txt)
             echo "[*] Running httpx for $domain"
             if [ -s "$file" ]; then
-              httpx -silent -l "$file" -o "output/${domain}_live.txt"
+              httpx -silent -l "$file" -o "httpx/${domain}_live.txt"
             else
               echo "[-] Skipping $domain (empty file)"
             fi
           done
 
       - name: Show results
-        run: ls -lh output && head -n 10 output/*_live.txt || echo "No live results"
+        run: ls -lh output && head -n 10 httpx/*_live.txt || echo "No live results"
 
       - name: Commit results back to repo
         run: |
-          git config --global u
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git pull --rebase origin main
+          git add httpx/*_live.txt
+          git commit -m "Update httpx alive results" || echo "No new alive subdomains found"
+          git push origin main
