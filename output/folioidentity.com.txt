@@ -1,0 +1,10 @@
+devidentityservice.folioidentity.com
+devverificationservice.folioidentity.com
+www.folioidentity.com
+dapverification.folioidentity.com
+dapidentityservice.folioidentity.com
+dapverificationservice.folioidentity.com
+devverification.folioidentity.com
+dap.folioidentity.com
+verification.folioidentity.com
+dev.folioidentity.com
