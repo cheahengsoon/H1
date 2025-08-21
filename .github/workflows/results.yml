@@ -26,7 +26,7 @@ jobs:
 
       - name: Run Nuclei for each domain file
         run: |
-          for file in output/*_live.txt; do
+          for file in live/*_live.txt; do
             domain=$(basename "$file" _live.txt)
             echo "[*] Running nuclei scan for $domain"
             nuclei -l "$file" -severity critical,high,medium,low -silent -o "output/${domain}_nuclei.txt"
