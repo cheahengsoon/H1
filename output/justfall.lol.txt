@@ -1,5 +1,0 @@
-rc.justfall.lol
-test.justfall.lol
-dev.justfall.lol
-mx.justfall.lol
-www.justfall.lol

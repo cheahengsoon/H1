@@ -1,6 +1,0 @@
-overrules.vennhypotheken.nl
-scripts.vennhypotheken.nl
-communicatie.vennhypotheken.nl
-www.scripts.vennhypotheken.nl
-www.vennhypotheken.nl
-dev.vennhypotheken.nl

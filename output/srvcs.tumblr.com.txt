@@ -1,6 +1,0 @@
-px.srvcs.tumblr.com
-ls.srvcs.tumblr.com
-telegraph.srvcs.tumblr.com
-saber.srvcs.tumblr.com
-atlas.srvcs.tumblr.com
-cspreports.srvcs.tumblr.com

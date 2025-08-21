@@ -1,7 +1,0 @@
-harden-apps.sprint.dynatracelabs.com
-apps.sprint.dynatracelabs.com
-carpe-apps.sprint.dynatracelabs.com
-gzl42324.sprint.dynatracelabs.com
-wrj71506.sprint.dynatracelabs.com
-js-cdn-dok.sprint.dynatracelabs.com
-cloudautomation.sprint.dynatracelabs.com

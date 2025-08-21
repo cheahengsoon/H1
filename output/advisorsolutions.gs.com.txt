@@ -1,2 +1,0 @@
-uat.advisorsolutions.gs.com
-qa.advisorsolutions.gs.com

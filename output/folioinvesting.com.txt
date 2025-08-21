@@ -1,8 +1,0 @@
-identity.folioinvesting.com
-blog.folioinvesting.com
-info.folioinvesting.com
-www.folioinvesting.com
-dap.folioinvesting.com
-dev.folioinvesting.com
-coremetrics.folioinvesting.com
-verification.folioinvesting.com
