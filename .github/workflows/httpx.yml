@@ -24,14 +24,18 @@ jobs:
           echo "Download URL: $url"
 
           # Clean old files if exist
-          rm -rf httpx httpx_*_linux_amd64.zip
+          rm -rf httpx httpx_linux_amd64.zip
 
           # Download and extract
           wget -q "$url" -O httpx_linux_amd64.zip
           unzip -o httpx_linux_amd64.zip httpx
           chmod +x httpx
+
+          # Add current directory to PATH for all subsequent steps
           echo "$PWD" >> $GITHUB_PATH
-          httpx -version
+
+      - name: Verify Httpx
+        run: httpx -version
 
       - name: Run Httpx for each domain's subdomain file
         run: |
