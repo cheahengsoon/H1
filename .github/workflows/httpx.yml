@@ -20,6 +20,7 @@ jobs:
             | grep "browser_download_url.*linux_amd64.zip" \
             | cut -d '"' -f 4 \
             | wget -qi -
+          rm -rf httpx httpx_*_linux_amd64.zip
           unzip -o httpx_*_linux_amd64.zip httpx
           chmod +x httpx
           echo "$PWD" >> $GITHUB_PATH
@@ -31,14 +32,14 @@ jobs:
             domain=$(basename "$file" .txt)
             echo "[*] Running httpx for $domain"
             if [ -s "$file" ]; then
-              httpx -silent -l "$file" -o "httpx/${domain}_live.txt"
+              httpx -silent -l "$file" -o "live/${domain}_live.txt"
             else
               echo "[-] Skipping $domain (empty file)"
             fi
           done
 
       - name: Show results
-        run: ls -lh output && head -n 10 httpx/*_live.txt || echo "No live results"
+        run: ls -lh output && head -n 10 live/*_live.txt || echo "No live results"
 
       - name: Commit results back to repo
         run: |
@@ -46,6 +47,6 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git pull --rebase origin main
-          git add httpx/*_live.txt
+          git add live/*_live.txt
           git commit -m "Update httpx alive results" || echo "No new alive subdomains found"
           git push origin main
