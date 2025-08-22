@@ -12,35 +12,42 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install Nuclei
+      - name: Install Nuclei (Pinned version)
         run: |
-          curl -s https://api.github.com/repos/projectdiscovery/nuclei/releases/latest \
-            | grep "browser_download_url.*linux_amd64.zip" \
-            | cut -d '"' -f 4 \
-            | wget -qi -
-          unzip nuclei_*_linux_amd64.zip
+          VERSION="v3.4.8"
+          wget https://github.com/projectdiscovery/nuclei/releases/download/${VERSION}/nuclei_${VERSION}_linux_amd64.zip
+          unzip -j nuclei_${VERSION}_linux_amd64.zip nuclei
           sudo mv nuclei /usr/local/bin/
           nuclei -version
 
       - name: Run Nuclei for each domain file
         run: |
+          mkdir -p result
           for file in live/*_live.txt; do
             domain=$(basename "$file" _live.txt)
             echo "[*] Running nuclei scan for $domain"
-            nuclei -l "$file" -severity critical,high,medium,low -silent -o "result/${domain}_nuclei.txt"
+            nuclei -l "$file" -severity critical,high,medium,low -stats -rl 150 -c 25 -o "result/${domain}_nuclei.txt"
           done
 
       - name: Show results
-        run: ls -lh output && head -n 20 result/*_nuclei.txt || echo "No findings"
+        run: ls -lh result && head -n 20 result/*_nuclei.txt || echo "No findings"
 
+      - name: Save results as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuclei-results-${{ github.sha }}
+          path: result/
+
+      # Optional: commit results back to repo (less recommended than artifacts)
       - name: Commit results back to repo
+        if: github.ref == 'refs/heads/main'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin main
-          git pull --rebase origin main
+          git pull --rebase origin main || true
           git add result/*_nuclei.txt
-          git commit -m "Update nuclei results" || echo "No new findings"
-          git push origin main
+          git commit -m "Update nuclei results for ${{ github.sha }}" || echo "No new findings"
+          git push origin main || echo "Push skipped"
