@@ -14,7 +14,7 @@ jobs:
         id: nuclei_scan
         uses: projectdiscovery/nuclei-action@main
         with:
-          urls: Input/live_subdomains.txt
+          urls: Input/domains.txt
           flags: "-severity critical,high,medium,low -stats"
 
       - name: GitHub Workflow artifacts
