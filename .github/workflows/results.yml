@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout repo
+      # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -46,9 +46,9 @@ jobs:
       - name: Update Nuclei templates
         run: |
           mkdir -p $HOME/nuclei-templates
-          $HOME/go/bin/nuclei -update-templates -update-directory $HOME/nuclei-templates
+          $HOME/go/bin/nuclei -update-templates
 
-      # Run Nuclei per domain with corrected exclusions
+      # Run Nuclei per domain with exclusions
       - name: Run Nuclei Scans
         run: |
           mkdir -p result
