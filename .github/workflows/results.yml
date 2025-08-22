@@ -19,11 +19,16 @@ jobs:
         with:
           go-version: '1.21'
 
-      - name: Install Nuclei via Go
+      - name: Install Nuclei (latest) via Go
         run: |
-          echo "[*] Installing Nuclei using Go..."
+          echo "[*] Installing Nuclei latest version..."
           go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
           echo "export PATH=$PATH:$HOME/go/bin" >> $GITHUB_ENV
+
+      - name: Update Nuclei templates
+        run: |
+          echo "[*] Updating Nuclei templates..."
+          $HOME/go/bin/nuclei -update-templates
 
       - name: Run Nuclei for each domain file
         run: |
@@ -36,6 +41,12 @@ jobs:
 
       - name: Show results
         run: ls -lh result && head -n 20 result/*_nuclei.txt || echo "No findings"
+
+      - name: Save results as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuclei-results-${{ github.sha }}
+          path: result/
 
       - name: Commit results back to GitHub
         run: |
