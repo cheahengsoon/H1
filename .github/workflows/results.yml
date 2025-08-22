@@ -33,7 +33,7 @@ jobs:
           done
 
       - name: Show results
-        run: ls -lh output && head -n 20 output/*_nuclei.txt || echo "No findings"
+        run: ls -lh output && head -n 20 result/*_nuclei.txt || echo "No findings"
 
       - name: Commit results back to repo
         run: |
