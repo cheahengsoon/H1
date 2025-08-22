@@ -14,13 +14,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Nuclei (Pinned version)
+      - name: Install Nuclei with fallback
         run: |
-          VERSION="v3.4.8"
-          wget https://github.com/projectdiscovery/nuclei/releases/download/${VERSION}/nuclei_${VERSION}_linux_amd64.zip
-          unzip -j nuclei_${VERSION}_linux_amd64.zip nuclei
-          sudo mv nuclei /usr/local/bin/
-          nuclei -version
+          set -e
+          try_versions=("v3.4.8" "v3.4.7")
+          success=false
+          for VERSION in "${try_versions[@]}"; do
+            echo "[*] Attempting to install Nuclei $VERSION"
+            wget "https://github.com/projectdiscovery/nuclei/releases/download/${VERSION}/nuclei_${VERSION}_linux_amd64.zip" -O nuclei.zip || continue
+            unzip -j nuclei.zip nuclei
+            sudo mv nuclei /usr/local/bin/
+            nuclei -version
+            success=true
+            break
+          done
+          if [ "$success" = false ]; then
+            echo "ERROR: Could not download a working Nuclei version."
+            exit 1
+          fi
 
       - name: Run Nuclei for each domain file
         run: |
@@ -40,7 +51,7 @@ jobs:
           name: nuclei-results-${{ github.sha }}
           path: result/
 
-      # Optional: commit results back to repo (less recommended than artifacts)
+      # Optional: commit results back to repo
       - name: Commit results back to repo
         if: github.ref == 'refs/heads/main'
         run: |
