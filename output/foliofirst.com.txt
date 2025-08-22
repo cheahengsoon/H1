@@ -1,6 +1,0 @@
-verification.foliofirst.com
-identity.foliofirst.com
-www.foliofirst.com
-info.foliofirst.com
-blog.foliofirst.com
-prodaws.foliofirst.com

@@ -1,3 +1,0 @@
-piwik.usyoast.cleo.wpallimport.bbpress-i18n.comblog.ripstech.compastebin.comfortiguard.labcomjetpack.comwiki.comwww.elegantthemes.xen1comhackpuntes.compremium.wpmudev.orgwww.gravityforms.comwww.wptxdev.intelligentexploit.complugins.svn.git.wordpress.org
-develop.git.wordpress.org
-meta.git.wordpress.org

@@ -1,9 +1,0 @@
-apefestsurvey.boredapeyachtclub.com
-eth.boredapeyachtclub.com
-assets.boredapeyachtclub.com
-og.boredapeyachtclub.com
-www.boredapeyachtclub.com
-auth.boredapeyachtclub.com
-openhouse.boredapeyachtclub.com
-store.boredapeyachtclub.com
-shop.boredapeyachtclub.com

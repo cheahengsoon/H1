@@ -1,0 +1,13 @@
+www.spinaway.com
+images.spinaway.com
+link.info.spinaway.com
+wordpress-staging.spinaway.com
+campaign.spinaway.com
+promo.spinaway.com
+22.spinaway.com
+ftp.spinaway.com
+static.spinaway.com
+link.mail.spinaway.com
+wordpress.spinaway.com
+click.spinaway.com
+staging.spinaway.com

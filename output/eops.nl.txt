@@ -1,9 +1,0 @@
-ldap.json.users.eops.nl
-test-vpn.eops.nl
-ece.json.users.eops.nl
-json.users.eops.nl
-beta.eops.nl
-casesearch.eops.nl
-monitoring.eops.nl
-supportlab-test.eops.nl
-supportlab.eops.nl

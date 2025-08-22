@@ -1,5 +1,0 @@
-so.bykea.net
-sp.bykea.net
-sandbox.bykea.net
-jaalitalos.bykea.net
-googleplaces.bykea.net

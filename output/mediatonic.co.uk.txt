@@ -1,5 +1,0 @@
-svn.mediatonic.co.uk
-projects.mediatonic.co.uk
-jira.mediatonic.co.uk
-www.mediatonic.co.uk
-www.svn.mediatonic.co.uk

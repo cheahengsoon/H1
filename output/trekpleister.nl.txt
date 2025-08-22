@@ -1,0 +1,17 @@
+mta-sts.mail.trekpleister.nl
+mta-sts.trekpleister.nl
+service.trekpleister.nl
+klantenservice.trekpleister.nl
+m.mail.trekpleister.nl
+ecom-data.trekpleister.nl
+mta-sts.klantenservice.trekpleister.nl
+mail.trekpleister.nl
+cartridge.trekpleister.nl
+res.mail.trekpleister.nl
+t.mail.trekpleister.nl
+prod-cc.trekpleister.nl
+www.folder.trekpleister.nl
+fb.trekpleister.nl
+www.cartridge.trekpleister.nl
+www.trekpleister.nl
+folder.trekpleister.nl

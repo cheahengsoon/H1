@@ -1,0 +1,4 @@
+openapi.trip.biz
+sg.trip.biz
+www.trip.biz
+hk.trip.biz

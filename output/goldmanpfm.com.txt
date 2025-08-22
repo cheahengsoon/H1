@@ -1,5 +1,0 @@
-go.goldmanpfm.com
-uat.origin.goldmanpfm.com
-uat.goldmanpfm.com
-www.goldmanpfm.com
-origin.goldmanpfm.com

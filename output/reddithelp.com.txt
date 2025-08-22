@@ -1,0 +1,12 @@
+dev.reddithelp.com
+mods.reddithelp.com
+modeducation.reddithelp.com
+modlearning.reddithelp.com
+www.reddithelp.com
+prod.reddithelp.com
+staging.reddithelp.com
+advertising.reddithelp.com
+support.reddithelp.com
+legalrequests.reddithelp.com
+vendor.reddithelp.com
+business.reddithelp.com

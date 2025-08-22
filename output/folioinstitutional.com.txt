@@ -1,4 +1,0 @@
-dap.folioinstitutional.com
-info.folioinstitutional.com
-www.folioinstitutional.com
-dev.folioinstitutional.com
