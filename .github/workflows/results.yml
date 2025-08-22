@@ -28,44 +28,39 @@ jobs:
           restore-keys: |
             nuclei-templates-
 
-      # Run Nuclei per domain with exclusions and SARIF
-      - name: Run Nuclei Scans
-        id: nuclei_scan
-        uses: projectdiscovery/nuclei-action@main
-        with:
-          urls: output/domain.txt
-          flags: "-severity critical,high,medium,low -stats -o result/nuclei.txt"
-          sarif: true
-          exclude-templates: "http/default-logins,code,code/cves,http/cnvd"
-
-      # Commit and push results if changes exist
-      - name: Commit and Push Scan Results
+      # Install Nuclei CLI
+      - name: Install Nuclei
         run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add result/nuclei.txt result/nuclei.sarif
-          if ! git diff --cached --quiet; then
-            git commit -m "Update Nuclei scan results in result folder"
-            git pull --rebase
-            git push
-          else
-            echo "No changes detected. Skipping commit."
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          curl -sSfL https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei_${{ runner.os }}_amd64.zip -o nuclei.zip
+          unzip nuclei.zip
+          sudo mv nuclei /usr/local/bin/
+          nuclei -version
 
-      # Upload Nuclei text artifact
-      - name: Upload Nuclei Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: nuclei-results
-          path: result/nuclei.txt
+      # Run Nuclei per domain with exclusions
+      - name: Run Nuclei Scans
+        run: |
+          EXCLUDE_TEMPLATES="http/default-logins,code,code/cves,http/cnvd"
+          for file in live/*_live.txt; do
+            domain=$(basename "$file" _live.txt)
+            echo "[*] Running Nuclei scan for $domain"
+            nuclei \
+              -l "$file" \
+              -severity critical,high,medium,low \
+              -stats \
+              -templates ~/.nuclei-templates \
+              -exclude-templates $EXCLUDE_TEMPLATES \
+              -o "result/${domain}_nuclei.txt"
+          done
 
-      # Upload SARIF to GitHub Security Dashboard
-      - name: Upload SARIF to GitHub Security Dashboard
-        if: steps.nuclei_scan.outputs.sarif_exists == 'true'
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: result/nuclei.sarif
+      # Commit and push results back to GitHub
+      - name: Commit Results to GitHub
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git pull --rebase origin main || true
+          git add result/*.txt
+          git commit -m "Update Nuclei per-domain scan results [${{ github.sha }}]" || echo "No new changes to commit"
+          git push origin main || echo "Push skipped"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
