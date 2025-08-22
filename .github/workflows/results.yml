@@ -29,7 +29,7 @@ jobs:
           for file in live/*_live.txt; do
             domain=$(basename "$file" _live.txt)
             echo "[*] Running nuclei scan for $domain"
-            nuclei -l "$file" -severity critical,high,medium,low -silent -o "output/${domain}_nuclei.txt"
+            nuclei -l "$file" -severity critical,high,medium,low -silent -o "result/${domain}_nuclei.txt"
           done
 
       - name: Show results
@@ -41,6 +41,6 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git pull --rebase origin main
-          git add output/*_nuclei.txt
+          git add result/*_nuclei.txt
           git commit -m "Update nuclei results" || echo "No new findings"
           git push origin main
