@@ -14,23 +14,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Nuclei with fallback
+      - name: Install Nuclei using Homebrew (Linuxbrew)
         run: |
-          set -e
-          try_versions=("v3.4.8" "v3.4.7")
-          success=false
-          for VERSION in "${try_versions[@]}"; do
-            echo "[*] Attempting to install Nuclei $VERSION"
-            wget "https://github.com/projectdiscovery/nuclei/releases/download/${VERSION}/nuclei_${VERSION}_linux_amd64.zip" -O nuclei.zip || continue
-            unzip -j nuclei.zip nuclei
-            sudo mv nuclei /usr/local/bin/
-            nuclei -version
-            success=true
-            break
-          done
-          if [ "$success" = false ]; then
-            echo "ERROR: Could not download a working Nuclei version."
-            exit 1
+          if ! command -v nuclei &> /dev/null; then
+            echo "[*] Installing Nuclei using Homebrew..."
+            brew install projectdiscovery/tap/nuclei
+          else
+            echo "[*] Nuclei is already installed."
+          fi
+
+      - name: Install Nuclei using Go (Golang)
+        run: |
+          if ! command -v nuclei &> /dev/null; then
+            echo "[*] Installing Nuclei using Go..."
+            go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
+          else
+            echo "[*] Nuclei is already installed."
+          fi
+
+      - name: Install Nuclei using Docker
+        run: |
+          if ! docker run --rm projectdiscovery/nuclei -version &> /dev/null; then
+            echo "[*] Installing Nuclei using Docker..."
+            docker pull projectdiscovery/nuclei
+          else
+            echo "[*] Nuclei Docker image is already available."
           fi
 
       - name: Run Nuclei for each domain file
@@ -38,7 +46,7 @@ jobs:
           mkdir -p result
           for file in live/*_live.txt; do
             domain=$(basename "$file" _live.txt)
-            echo "[*] Running nuclei scan for $domain"
+            echo "[*] Running Nuclei scan for $domain"
             nuclei -l "$file" -severity critical,high,medium,low -stats -rl 150 -c 25 -o "result/${domain}_nuclei.txt"
           done
 
@@ -51,7 +59,7 @@ jobs:
           name: nuclei-results-${{ github.sha }}
           path: result/
 
-      # Optional: commit results back to repo
+      # Optional: Commit results back to repo
       - name: Commit results back to repo
         if: github.ref == 'refs/heads/main'
         run: |
@@ -60,5 +68,5 @@ jobs:
           git fetch origin main
           git pull --rebase origin main || true
           git add result/*_nuclei.txt
-          git commit -m "Update nuclei results for ${{ github.sha }}" || echo "No new findings"
+          git commit -m "Update Nuclei results for ${{ github.sha }}" || echo "No new findings"
           git push origin main || echo "Push skipped"
