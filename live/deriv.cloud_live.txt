@@ -1,0 +1,14 @@
+https://data.deriv.cloud
+http://crowdstrike.autoconfig.dev.deriv.cloud
+https://dev-mt5-real-p03-ts01.deriv.cloud
+https://win-mgmt-octopus.deriv.cloud
+http://crowdstrike.app.dev.deriv.cloud
+https://data-modeler.deriv.cloud
+https://dev-mt5-demo-p01-ts03.deriv.cloud
+https://prod-mt5-demo-p01-ts03.deriv.cloud
+https://dev-mt5-real-p01-ts01.deriv.cloud
+https://dev-mt5-real-p02-ts01.deriv.cloud
+https://staging-smartcharts.deriv.cloud
+https://prod-mt5-real-p03-ts01.deriv.cloud
+http://smartcharts-champion.deriv.cloud
+http://dev-mt5-demo-p01-ts01.deriv.cloud

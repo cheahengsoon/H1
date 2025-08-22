@@ -1,0 +1,13 @@
+https://apigw01.grabpay.com
+https://bitbucket-mirror-ext01.corp.grabpay.com
+http://api.grabpay.com
+https://bitbucketmirror01.corp.grabpay.com
+https://cdn-gp01.grabpay.com
+https://dockerhub.corp.grabpay.com
+http://crif.grabpay.com
+https://grafana.grabpay.com
+https://merchantcentral.grabpay.com
+https://opac-vn.grabpay.com
+https://opac.grabpay.com
+https://verification.grabpay.com
+https://xtramile.grabpay.com

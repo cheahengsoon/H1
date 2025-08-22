@@ -1,0 +1,3 @@
+https://ecom-data.marionnaud.ro
+http://prod-cc.marionnaud.ro
+https://mta-sts.marionnaud.ro

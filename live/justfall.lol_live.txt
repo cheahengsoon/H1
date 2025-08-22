@@ -1,0 +1,5 @@
+http://rc.justfall.lol
+http://dev.justfall.lol
+http://test.justfall.lol
+http://www.justfall.lol
+http://mx.justfall.lol

@@ -1,0 +1,6 @@
+https://developers.mercadoshops.com
+https://ayuda.mercadoshops.com
+https://analytics.mercadoshops.com
+https://static.mercadoshops.com
+https://www.analytics.mercadoshops.com
+http://subdomains.mercadoshops.com

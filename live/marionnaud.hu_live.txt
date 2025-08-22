@@ -1,0 +1,3 @@
+https://ecom-data.marionnaud.hu
+http://prod-cc.marionnaud.hu
+https://mta-sts.marionnaud.hu

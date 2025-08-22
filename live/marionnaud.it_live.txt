@@ -1,0 +1,4 @@
+http://prod-cc.marionnaud.it
+https://ecom-data.marionnaud.it
+https://mta-sts.crm.marionnaud.it
+https://mta-sts.marionnaud.it

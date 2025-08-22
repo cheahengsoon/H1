@@ -1,0 +1,13 @@
+https://api.web.qa.betler.napoleonsports.be
+https://qa.incubator.napoleonsports.be
+https://apps.stage.napoleonsports.be
+https://api.web.stage.betler.napoleonsports.be
+https://lp.napoleonsports.be
+https://stage.incubator.napoleonsports.be
+https://cashier.napoleonsports.be
+https://dev.incubator.napoleonsports.be
+https://prod.incubator.napoleonsports.be
+https://apps.napoleonsports.be
+https://betting.prod.incubator.napoleonsports.be
+http://social.napoleonsports.be
+https://www.napoleonsports.be

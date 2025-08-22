@@ -1,0 +1,9 @@
+https://pod.hyperpure.com
+https://dd.hyperpure.com
+https://dev.hyperpure.com
+https://devnet.hyperpure.com
+https://seller.hyperpure.com
+https://assets.hyperpure.com
+https://www.hyperpure.com
+http://devhpadmin.hyperpure.com
+https://api.hyperpure.com

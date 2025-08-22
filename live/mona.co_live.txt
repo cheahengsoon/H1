@@ -1,0 +1,11 @@
+https://api-coinsai-sunshine.mona.co
+https://st.mona.co
+https://prod-ava-web.mona.co
+https://app-user-cache-internal.mona.co
+https://datadog-mobile-sdk-sampling.mona.co
+https://datadog-mobile-sdk-data-relay.mona.co
+https://dev.mona.co
+https://get.mona.co
+https://app.mona.co
+https://data.mona.co
+https://download.mona.co

@@ -1,0 +1,17 @@
+https://oauth.appointments.ayco.com
+http://protect.ayco.com
+https://image.e.ayco.com
+https://beta.ayco.com
+https://login.ayco.com
+http://login-qa.ayco.com
+https://click.e.ayco.com
+https://engage.ayco.com
+http://pilot.ayco.com
+https://billpay.ayco.com
+https://qa-engage.ayco.com
+http://oauth-stag.appointments.ayco.com
+http://origin.ayco.com
+https://v.ayco.com
+https://ui-stag.appointments.ayco.com
+https://ui.appointments.ayco.com
+http://view.e.ayco.com

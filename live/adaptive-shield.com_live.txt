@@ -1,0 +1,8 @@
+https://staging-api.adaptive-shield.com
+https://www.adaptive-shield.com
+https://eu.dashboard.adaptive-shield.com
+https://eu.api.adaptive-shield.com
+https://staging-dashboard.adaptive-shield.com
+https://api.adaptive-shield.com
+http://dashboard.adaptive-shield.com
+http://status.adaptive-shield.com

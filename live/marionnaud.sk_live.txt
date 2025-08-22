@@ -1,0 +1,3 @@
+https://ecom-data.marionnaud.sk
+http://prod-cc.marionnaud.sk
+https://mta-sts.marionnaud.sk

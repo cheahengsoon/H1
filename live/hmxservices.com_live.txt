@@ -1,0 +1,3 @@
+https://aws-legacy.hmxservices.com
+https://cdn.hmxservices.com
+http://aws-misc.hmxservices.com

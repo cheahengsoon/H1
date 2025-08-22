@@ -1,0 +1,17 @@
+https://a0.muscache.com
+https://a2.muscache.com
+https://eim1.muscache.com
+https://geo-all.muscache.com
+https://redirect.media.akamai-dev.muscache.com
+https://a1.muscache.com
+https://z0.muscache.com
+https://a0.akamai-ci.muscache.com
+https://cfcdn.media.muscache.com
+https://stream.media.muscache.com
+https://fastly.media.muscache.com
+https://media.muscache.com
+https://z1.muscache.com
+https://z2.muscache.com
+https://a0.akamai-dev.muscache.com
+https://redirect.media.akamai-ci.muscache.com
+https://cdx.muscache.com

@@ -1,0 +1,5 @@
+https://apigw-int.prodaws.foliofn.com
+https://apigw-ext.uataws.foliofn.com
+https://apivendor.uat.foliofn.com
+https://www.foliofn.com
+https://apigw-int.uataws.foliofn.com

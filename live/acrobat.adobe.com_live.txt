@@ -1,0 +1,5 @@
+https://dev.wopi.acrobat.adobe.com
+https://stage.acrobat.adobe.com
+http://rdc.acrobat.adobe.com
+https://stage.wopi.acrobat.adobe.com
+http://prod.wopi.acrobat.adobe.com

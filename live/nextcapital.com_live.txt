@@ -1,0 +1,11 @@
+https://email.nextcapital.com
+https://npm.nextcapital.com
+https://transamerica-nextgen.nextcapital.com
+https://sit-auth.nextcapital.com
+https://john-hancock-nextgen.nextcapital.com
+https://prod-fed.nextcapital.com
+https://john-hancock-fed.nextcapital.com
+http://deb.nextcapital.com
+http://rubygems.nextcapital.com
+http://repo.nextcapital.com
+http://www.nextcapital.com

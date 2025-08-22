@@ -1,0 +1,17 @@
+https://matt.mercadopago.com.mx
+https://optout-test.mercadopago.com.mx
+https://ayuda-dev.mercadopago.com.mx
+https://reg-test.mercadopago.com.mx
+https://liveness.mercadopago.com.mx
+https://optout.mercadopago.com.mx
+https://analytics.mercadopago.com.mx
+https://auth.mercadopago.com.mx
+https://dev-cxwidget.mercadopago.com.mx
+https://pmstrk.mercadopago.com.mx
+https://melichat.mercadopago.com.mx
+https://beta.mercadopago.com.mx
+https://melichat-stage.mercadopago.com.mx
+https://melichat-dev.mercadopago.com.mx
+https://promociones.mercadopago.com.mx
+http://link.mercadopago.com.mx
+http://www.mercadopago.com.mx

@@ -1,0 +1,10 @@
+https://statuspage.cp.dyson.com
+https://auth.cp.dyson.com
+https://appapi.cp.dyson.com
+https://partnerapi.cp.dyson.com
+https://interapi.cp.dyson.com
+https://gwr.cp.dyson.com
+https://nfc.cp.dyson.com
+https://console.cp.dyson.com
+http://qr.cp.dyson.com
+http://api.cp.dyson.com

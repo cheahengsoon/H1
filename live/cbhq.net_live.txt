@@ -1,0 +1,4 @@
+https://dev-proxy.cbhq.net
+https://coinbase-staging.cbhq.net
+https://customers.cbhq.net
+https://coinbase-dev.cbhq.net

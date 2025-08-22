@@ -1,0 +1,15 @@
+https://api.bridge.xyz
+https://cards-pci.bridge.xyz
+https://www.token-metadata.bridge.xyz
+https://3ds.sandbox.bridge.xyz
+https://token-metadata.bridge.xyz
+https://docs.bridge.xyz
+https://www.bridge.xyz
+https://dashboard.bridge.xyz
+https://cards.api.bridge.xyz
+https://api.sandbox.bridge.xyz
+https://cards-pci.sandbox.bridge.xyz
+https://apidocs.bridge.xyz
+https://cards.api.sandbox.bridge.xyz
+https://support.bridge.xyz
+http://login.bridge.xyz

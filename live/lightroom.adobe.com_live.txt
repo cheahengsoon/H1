@@ -1,0 +1,4 @@
+https://dl.lightroom.adobe.com
+https://static.lightroom.adobe.com
+https://api.lightroom.adobe.com
+https://app-content.lightroom.adobe.com

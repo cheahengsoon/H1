@@ -1,0 +1,15 @@
+https://ob-connectivity-internal.gocardless-banking.io
+https://alertmanager.gocardless-banking.io
+https://nexus-que.gocardless-banking.io
+https://payops-dashboard.gocardless-banking.io
+https://ob.gocardless-banking.io
+https://form3-webhooks.gocardless-banking.io
+https://deployments-event-listener.gocardless-banking.io
+https://deploys.gocardless-banking.io
+https://ob-connectivity.gocardless-banking.io
+https://bankaccountdata-internal.gocardless-banking.io
+https://bankaccountdata.gocardless-banking.io
+https://bank-store-que-sandbox.gocardless-banking.io
+https://cdn-logos.gocardless-banking.io
+https://prometheus.gocardless-banking.io
+https://bank-store-que-live.gocardless-banking.io

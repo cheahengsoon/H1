@@ -1,0 +1,7 @@
+https://stats-api.getmeetio.com
+https://www.getmeetio.com
+https://admin.preprod.getmeetio.com
+https://api.getmeetio.com
+https://api.preprod.getmeetio.com
+https://admin.getmeetio.com
+https://hs.getmeetio.com

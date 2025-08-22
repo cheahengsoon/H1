@@ -1,0 +1,11 @@
+https://hubble.mb-cosmos.com
+https://blitz.mb-cosmos.com
+https://staging-hubble.mb-cosmos.com
+https://mb-prod-hubble.mb-cosmos.com
+https://mb-prod-meps.mb-cosmos.com
+https://static-blitz.mb-cosmos.com
+https://www.hubble.mb-cosmos.com
+https://mb-prod-ui.mb-cosmos.com
+https://static-hubble.mb-cosmos.com
+https://mb-prod-mother.mb-cosmos.com
+https://mb-stage-hubble.mb-cosmos.com
