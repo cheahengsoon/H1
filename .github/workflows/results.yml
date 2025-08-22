@@ -11,26 +11,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Setup Go
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.21'
 
-      - name: Install Nuclei (latest) via Go
+      # Install latest Nuclei v3.x via Go
+      - name: Install Latest Nuclei
         run: |
-          echo "[*] Installing Nuclei latest version..."
-          go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
+          # Remove any old nuclei binaries
+          rm -f /usr/local/bin/nuclei
+          rm -f $HOME/go/bin/nuclei
+          
+          # Install latest nuclei v3.x
+          go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
           echo "export PATH=$PATH:$HOME/go/bin" >> $GITHUB_ENV
 
+      # Confirm installed version
+      - name: Confirm Nuclei version
+        run: |
+          $HOME/go/bin/nuclei -version
+
+      # Update templates
       - name: Update Nuclei templates
         run: |
-          echo "[*] Updating Nuclei templates..."
           $HOME/go/bin/nuclei -update-templates
 
-      - name: Run Nuclei for each domain file
+      # Run Nuclei per domain
+      - name: Run Nuclei Scans
         run: |
           mkdir -p result
           for file in live/*_live.txt; do
@@ -39,16 +52,19 @@ jobs:
             $HOME/go/bin/nuclei -l "$file" -severity critical,high,medium,low -stats -rl 150 -c 25 -o "result/${domain}_nuclei.txt"
           done
 
-      - name: Show results
+      # Show sample results
+      - name: Show Results
         run: ls -lh result && head -n 20 result/*_nuclei.txt || echo "No findings"
 
-      - name: Save results as artifact
+      # Save results as artifact
+      - name: Save Results as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: nuclei-results-${{ github.sha }}
           path: result/
 
-      - name: Commit results back to GitHub
+      # Commit results back to GitHub
+      - name: Commit Results to GitHub
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
