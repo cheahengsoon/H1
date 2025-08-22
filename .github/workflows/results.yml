@@ -33,20 +33,26 @@ jobs:
       - name: Confirm Nuclei version
         run: $HOME/go/bin/nuclei -version
 
-      # Update templates
-      - name: Update Nuclei templates
-        run: $HOME/go/bin/nuclei -update-templates
+      # Cache Nuclei templates
+      - name: Cache Nuclei Templates
+        uses: actions/cache@v3
+        with:
+          path: $HOME/nuclei-templates
+          key: nuclei-templates-${{ runner.os }}-${{ hashFiles('**/nuclei-templates/**') }}
+          restore-keys: |
+            nuclei-templates-
 
-      # Run Nuclei per domain with exclusions
+      # Update Nuclei templates
+      - name: Update Nuclei templates
+        run: |
+          mkdir -p $HOME/nuclei-templates
+          $HOME/go/bin/nuclei -update-templates -update-directory $HOME/nuclei-templates
+
+      # Run Nuclei per domain with corrected exclusions
       - name: Run Nuclei Scans
         run: |
           mkdir -p result
-          EXCLUDE_TEMPLATES="\
-            nuclei-templates/http/default-logins/ \
-            nuclei-templates/code/ \
-            nuclei-templates/code/cves/ \
-            nuclei-templates/http/cnvd/ \
-          "
+          EXCLUDE_TEMPLATES="http/default-logins,code,code/cves,http/cnvd"
           for file in live/*_live.txt; do
             domain=$(basename "$file" _live.txt)
             echo "[*] Running Nuclei scan for $domain"
@@ -56,6 +62,7 @@ jobs:
               -stats \
               -rl 150 \
               -c 25 \
+              -templates $HOME/nuclei-templates \
               -exclude-templates $EXCLUDE_TEMPLATES \
               -o "result/${domain}_nuclei.txt" \
               -sarif "result/${domain}_nuclei.sarif"
