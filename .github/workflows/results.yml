@@ -15,92 +15,57 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Setup Go
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.21'
-
-      # Install latest Nuclei v3.x via Go
-      - name: Install Latest Nuclei
-        run: |
-          rm -f /usr/local/bin/nuclei
-          rm -f $HOME/go/bin/nuclei
-          go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
-          echo "export PATH=$PATH:$HOME/go/bin" >> $GITHUB_ENV
-
-      # Confirm installed version
-      - name: Confirm Nuclei version
-        run: $HOME/go/bin/nuclei -version
+      # Ensure result folder exists
+      - name: Create result folder
+        run: mkdir -p result
 
       # Cache Nuclei templates
       - name: Cache Nuclei Templates
         uses: actions/cache@v3
         with:
-          path: $HOME/nuclei-templates
+          path: ~/.nuclei-templates
           key: nuclei-templates-${{ runner.os }}-${{ hashFiles('**/nuclei-templates/**') }}
           restore-keys: |
             nuclei-templates-
 
-      # Update Nuclei templates
-      - name: Update Nuclei templates
-        run: |
-          mkdir -p $HOME/nuclei-templates
-          $HOME/go/bin/nuclei -update-templates
-
-      # Run Nuclei per domain with exclusions
+      # Run Nuclei per domain with exclusions and SARIF
       - name: Run Nuclei Scans
+        id: nuclei_scan
+        uses: projectdiscovery/nuclei-action@main
+        with:
+          urls: output/domain.txt
+          flags: "-severity critical,high,medium,low -stats -o result/nuclei.txt"
+          sarif: true
+          exclude-templates: "http/default-logins,code,code/cves,http/cnvd"
+
+      # Commit and push results if changes exist
+      - name: Commit and Push Scan Results
         run: |
-          mkdir -p result
-          EXCLUDE_TEMPLATES="http/default-logins,code,code/cves,http/cnvd"
-          for file in live/*_live.txt; do
-            domain=$(basename "$file" _live.txt)
-            echo "[*] Running Nuclei scan for $domain"
-            $HOME/go/bin/nuclei \
-              -l "$file" \
-              -severity critical,high,medium,low \
-              -stats \
-              -rl 150 \
-              -c 25 \
-              -templates $HOME/nuclei-templates \
-              -exclude-templates $EXCLUDE_TEMPLATES \
-              -o "result/${domain}_nuclei.txt" \
-              -sarif "result/${domain}_nuclei.sarif"
-          done
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git add result/nuclei.txt result/nuclei.sarif
+          if ! git diff --cached --quiet; then
+            git commit -m "Update Nuclei scan results in result folder"
+            git pull --rebase
+            git push
+          else
+            echo "No changes detected. Skipping commit."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Show sample results
-      - name: Show Results
-        run: ls -lh result && head -n 20 result/*_nuclei.txt || echo "No findings"
-
-      # Save results as artifact
-      - name: Save Results as Artifact
+      # Upload Nuclei text artifact
+      - name: Upload Nuclei Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nuclei-results-${{ github.sha }}
-          path: result/
-
-      # Commit results back to GitHub
-      - name: Commit Results to GitHub
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin main
-          git pull --rebase origin main || true
-          git add result/*_nuclei.txt result/*_nuclei.sarif
-          git commit -m "Update Nuclei scan results for ${{ github.sha }}" || echo "No new changes to commit"
-          git push origin main || echo "Push skipped"
+          name: nuclei-results
+          path: result/nuclei.txt
 
       # Upload SARIF to GitHub Security Dashboard
       - name: Upload SARIF to GitHub Security Dashboard
-        run: |
-          for sarif_file in result/*_nuclei.sarif; do
-            gh api -X POST \
-              -H "Accept: application/vnd.github+json" \
-              /repos/${{ github.repository }}/code-scanning/sarifs \
-              -F sarif=@$sarif_file \
-              -F commit_sha=${{ github.sha }} \
-              -F ref=refs/heads/main \
-              -F tool_name="Nuclei"
-          done
+        if: steps.nuclei_scan.outputs.sarif_exists == 'true'
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: result/nuclei.sarif
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
