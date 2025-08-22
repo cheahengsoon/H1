@@ -24,32 +24,41 @@ jobs:
       # Install latest Nuclei v3.x via Go
       - name: Install Latest Nuclei
         run: |
-          # Remove any old nuclei binaries
           rm -f /usr/local/bin/nuclei
           rm -f $HOME/go/bin/nuclei
-          
-          # Install latest nuclei v3.x
           go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
           echo "export PATH=$PATH:$HOME/go/bin" >> $GITHUB_ENV
 
       # Confirm installed version
       - name: Confirm Nuclei version
-        run: |
-          $HOME/go/bin/nuclei -version
+        run: $HOME/go/bin/nuclei -version
 
       # Update templates
       - name: Update Nuclei templates
-        run: |
-          $HOME/go/bin/nuclei -update-templates
+        run: $HOME/go/bin/nuclei -update-templates
 
-      # Run Nuclei per domain
+      # Run Nuclei per domain with exclusions
       - name: Run Nuclei Scans
         run: |
           mkdir -p result
+          EXCLUDE_TEMPLATES="\
+            nuclei-templates/http/default-logins/ \
+            nuclei-templates/code/ \
+            nuclei-templates/code/cves/ \
+            nuclei-templates/http/cnvd/ \
+          "
           for file in live/*_live.txt; do
             domain=$(basename "$file" _live.txt)
             echo "[*] Running Nuclei scan for $domain"
-            $HOME/go/bin/nuclei -l "$file" -severity critical,high,medium,low -stats -rl 150 -c 25 -o "result/${domain}_nuclei.txt"
+            $HOME/go/bin/nuclei \
+              -l "$file" \
+              -severity critical,high,medium,low \
+              -stats \
+              -rl 150 \
+              -c 25 \
+              -exclude-templates $EXCLUDE_TEMPLATES \
+              -o "result/${domain}_nuclei.txt" \
+              -sarif "result/${domain}_nuclei.sarif"
           done
 
       # Show sample results
@@ -70,6 +79,21 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git pull --rebase origin main || true
-          git add result/*_nuclei.txt
+          git add result/*_nuclei.txt result/*_nuclei.sarif
           git commit -m "Update Nuclei scan results for ${{ github.sha }}" || echo "No new changes to commit"
           git push origin main || echo "Push skipped"
+
+      # Upload SARIF to GitHub Security Dashboard
+      - name: Upload SARIF to GitHub Security Dashboard
+        run: |
+          for sarif_file in result/*_nuclei.sarif; do
+            gh api -X POST \
+              -H "Accept: application/vnd.github+json" \
+              /repos/${{ github.repository }}/code-scanning/sarifs \
+              -F sarif=@$sarif_file \
+              -F commit_sha=${{ github.sha }} \
+              -F ref=refs/heads/main \
+              -F tool_name="Nuclei"
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
