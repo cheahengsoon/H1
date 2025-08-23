@@ -75,7 +75,7 @@ jobs:
 
       - name: Run Httpx on split files
         timeout-minutes: 90
-        continue-on-error: true   # <--- ensures workflow continues even if httpx fails or times out
+        continue-on-error: true
         run: |
           mkdir -p live
           shopt -s nullglob
@@ -113,7 +113,7 @@ jobs:
         run: ls -lh merged && head -n 20 merged/*_live.txt || echo "No live results"
 
       - name: Upload results as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: httpx-live-results
           path: merged/
@@ -125,5 +125,5 @@ jobs:
           git fetch origin main
           git pull --rebase origin main
           git add merged/*_live.txt
-          git commit -m "Update httpx alive results" || true
+          git commit -m "Update httpx alive results" || echo "No new results to commit"
           git push origin main
