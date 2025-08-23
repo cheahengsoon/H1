@@ -2,6 +2,23 @@ name: Nuclei - Per Domain Scan
 
 on:
   workflow_dispatch:
+    inputs:
+      severity:
+        description: "Global severity levels (default: critical,high,medium,low)"
+        required: false
+        default: "critical,high,medium,low"
+      exclude_templates:
+        description: "Global templates to exclude (default: http/default-logins,code,code/cves,http/cnvd)"
+        required: false
+        default: "http/default-logins,code,code/cves,http/cnvd"
+      threads:
+        description: "Number of concurrent threads (default: 10)"
+        required: false
+        default: "10"
+      output_folder:
+        description: "Folder to save results (default: result)"
+        required: false
+        default: "result"
   push:
     branches:
       - main
@@ -11,28 +28,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Setup Go
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.21'
 
-      # Install Nuclei via Go
       - name: Install Nuclei
         run: |
           go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
           echo "$HOME/go/bin" >> $GITHUB_PATH
           nuclei -version
 
-      # Ensure result folder exists
-      - name: Create result folder
-        run: mkdir -p result
+      - name: Ensure output folder exists
+        run: mkdir -p "${{ github.event.inputs.output_folder || 'result' }}"
 
-      # Cache Nuclei templates
       - name: Cache Nuclei Templates
         uses: actions/cache@v3
         with:
@@ -41,42 +53,55 @@ jobs:
           restore-keys: |
             nuclei-templates-
 
-      # Update templates
       - name: Update Nuclei templates
         run: nuclei -update-templates
 
-      # Run Nuclei scan for each live/*.txt file
-      - name: Run Nuclei Per Domain
+      - name: Run Nuclei Per Domain with Overrides
+        continue-on-error: true
         run: |
+          OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
+          DEFAULT_SEVERITY=${{ github.event.inputs.severity || 'critical,high,medium,low' }}
+          DEFAULT_EXCLUDE=${{ github.event.inputs.exclude_templates || 'http/default-logins,code,code/cves,http/cnvd' }}
+          THREADS=${{ github.event.inputs.threads || 10 }}
+
+          # Load per-domain overrides if CSV exists
+          declare -A DOMAIN_EXCLUDE
+          declare -A DOMAIN_SEVERITY
+          if [[ -f nuclei-domain-overrides.csv ]]; then
+            while IFS=, read -r domain exclude severity; do
+              DOMAIN_EXCLUDE["$domain"]="$exclude"
+              DOMAIN_SEVERITY["$domain"]="$severity"
+            done < nuclei-domain-overrides.csv
+          fi
+
           for file in live/*_live.txt; do
             domain=$(basename "$file" _live.txt)
             echo "[*] Scanning $domain..."
+            EXCLUDE="${DOMAIN_EXCLUDE[$domain]:-$DEFAULT_EXCLUDE}"
+            SEVERITY="${DOMAIN_SEVERITY[$domain]:-$DEFAULT_SEVERITY}"
             nuclei -l "$file" \
-              -severity critical,high,medium,low \
+              -severity "$SEVERITY" \
               -stats \
-              -exclude-templates http/default-logins,code,code/cves,http/cnvd \
-              -o "result/${domain}_nuclei.txt" || true
+              -exclude-templates "$EXCLUDE" \
+              -t "$THREADS" \
+              -o "${OUTPUT_FOLDER}/${domain}_nuclei.txt" \
+              || echo "[-] Scan failed or timed out for $domain, continuing..."
           done
 
-      # Commit and push results
       - name: Commit and Push Scan Results
         run: |
+          OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add result/*.txt
-          if ! git diff --cached --quiet; then
-            git commit -m "Update Nuclei scan results"
-            git pull --rebase
-            git push
-          else
-            echo "No changes detected. Skipping commit."
-          fi
+          git add "${OUTPUT_FOLDER}"/*.txt
+          git commit -m "Update Nuclei scan results" || echo "No new results to commit"
+          git pull --rebase
+          git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Upload all results as artifact
       - name: Upload Nuclei Results Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nuclei-results-${{ github.sha }}
-          path: result/
+          name: nuclei-results-${{ github.sha }}-${{ github.ref_name }}
+          path: "${{ github.event.inputs.output_folder || 'result' }}/"
