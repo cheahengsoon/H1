@@ -60,27 +60,7 @@ jobs:
       - name: Update Nuclei templates
         run: nuclei -update-templates || true
 
-      - name: Load Domain Overrides
-        id: domain_overrides
-        run: |
-          declare -A DOMAIN_EXCLUDE
-          declare -A DOMAIN_SEVERITY
-          if [[ -f nuclei-domain-overrides.csv ]]; then
-            while IFS=, read -r domain exclude severity; do
-              [[ "$domain" == "domain" ]] && continue  # skip header if present
-              DOMAIN_EXCLUDE["$domain"]="$exclude"
-              DOMAIN_SEVERITY["$domain"]="$severity"
-            done < nuclei-domain-overrides.csv
-          fi
-          # Export associative arrays as strings
-          for key in "${!DOMAIN_EXCLUDE[@]}"; do
-            echo "DOMAIN_EXCLUDE_$key=${DOMAIN_EXCLUDE[$key]}" >> $GITHUB_ENV
-          done
-          for key in "${!DOMAIN_SEVERITY[@]}"; do
-            echo "DOMAIN_SEVERITY_$key=${DOMAIN_SEVERITY[$key]}" >> $GITHUB_ENV
-          done
-
-      - name: Run Nuclei Per Domain in Parallel
+      - name: Run Nuclei Scans in Parallel
         continue-on-error: true
         run: |
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
@@ -89,11 +69,28 @@ jobs:
           THREADS=${{ github.event.inputs.threads || 50 }}
           PARALLEL=${{ github.event.inputs.parallel_domains || 5 }}
 
+          # Temporary file for overrides
+          OVERRIDES_FILE=$(mktemp)
+          if [[ -f nuclei-domain-overrides.csv ]]; then
+            tail -n +2 nuclei-domain-overrides.csv >> "$OVERRIDES_FILE"
+          fi
+
           run_scan() {
             file="$1"
             domain=$(basename "$file" _live.txt)
-            EXCLUDE="${!DOMAIN_EXCLUDE_$domain:-$DEFAULT_EXCLUDE}"
-            SEVERITY="${!DOMAIN_SEVERITY_$domain:-$DEFAULT_SEVERITY}"
+
+            EXCLUDE="$DEFAULT_EXCLUDE"
+            SEVERITY="$DEFAULT_SEVERITY"
+
+            if [[ -f "$OVERRIDES_FILE" ]]; then
+              line=$(grep -E "^$domain," "$OVERRIDES_FILE" || true)
+              if [[ -n "$line" ]]; then
+                IFS=, read -r _ exclude severity <<< "$line"
+                [[ -n "$exclude" ]] && EXCLUDE="$exclude"
+                [[ -n "$severity" ]] && SEVERITY="$severity"
+              fi
+            fi
+
             echo "[*] Scanning $domain with threads=$THREADS..."
             timeout 5m nuclei -l "$file" \
               -severity "$SEVERITY" \
@@ -104,7 +101,9 @@ jobs:
           }
 
           export -f run_scan
-          find live -name '*_live.txt' | xargs -n 1 -P "$PARALLEL" -I {} bash -c 'run_scan "$@"' _ {}
+          export OUTPUT_FOLDER DEFAULT_SEVERITY DEFAULT_EXCLUDE THREADS OVERRIDES_FILE
+
+          find live -name '*_live.txt' | xargs -P "$PARALLEL" -I {} bash -c 'run_scan "$@"' _ {}
 
       - name: Commit and Push Scan Results
         run: |
