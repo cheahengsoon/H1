@@ -1,0 +1,2 @@
+[weak-cipher-suites:tls-1.2] [ssl] [low] verification.foliofirst.com:443 ["[tls12 TLS_RSA_WITH_AES_256_CBC_SHA]"]
+[weak-cipher-suites:tls-1.2] [ssl] [low] identity.foliofirst.com:443 ["[tls12 TLS_RSA_WITH_AES_256_CBC_SHA]"]
