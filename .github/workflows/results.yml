@@ -94,7 +94,6 @@ jobs:
               -severity "$SEVERITY" \
               -c "$THREADS" \
               -o "${OUTPUT_FOLDER}/${domain}_nuclei.txt" \
-              -reporter sarif \
               -o "${OUTPUT_FOLDER}/${domain}_nuclei.sarif" \
               || echo "[-] Scan failed or timed out for $domain, continuing..."
           }
