@@ -1,0 +1,2 @@
+https://checkout.pci.shopifyinc.com
+https://us-east1.checkout.pci.shopifyinc.com

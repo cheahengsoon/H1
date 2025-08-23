@@ -1,0 +1,6 @@
+https://auth-stg.ovofinansial.com
+https://auth.ovofinansial.com
+https://dev-website.ovofinansial.com
+https://funding.ovofinansial.com
+https://panel.ovofinansial.com
+https://www.ovofinansial.com
