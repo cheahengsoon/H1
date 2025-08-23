@@ -64,14 +64,14 @@ jobs:
           DEFAULT_EXCLUDE=${{ github.event.inputs.exclude_templates || 'http/default-logins,code,code/cves,http/cnvd' }}
           THREADS=${{ github.event.inputs.threads || 10 }}
 
-          # Load per-domain overrides if CSV exists
+          # Load per-domain overrides if CSV exists (skip header if present)
           declare -A DOMAIN_EXCLUDE
           declare -A DOMAIN_SEVERITY
           if [[ -f nuclei-domain-overrides.csv ]]; then
-            while IFS=, read -r domain exclude severity; do
+            tail -n +2 nuclei-domain-overrides.csv | while IFS=, read -r domain exclude severity; do
               DOMAIN_EXCLUDE["$domain"]="$exclude"
               DOMAIN_SEVERITY["$domain"]="$severity"
-            done < nuclei-domain-overrides.csv
+            done
           fi
 
           for file in live/*_live.txt; do
@@ -81,9 +81,8 @@ jobs:
             SEVERITY="${DOMAIN_SEVERITY[$domain]:-$DEFAULT_SEVERITY}"
             nuclei -l "$file" \
               -severity "$SEVERITY" \
-              -stats \
               -exclude-templates "$EXCLUDE" \
-              -t "$THREADS" \
+              -c "$THREADS" \
               -o "${OUTPUT_FOLDER}/${domain}_nuclei.txt" \
               || echo "[-] Scan failed or timed out for $domain, continuing..."
           done
@@ -94,8 +93,9 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git add "${OUTPUT_FOLDER}"/*.txt
-          git commit -m "Update Nuclei scan results" || echo "No new results to commit"
-          git pull --rebase
+          git diff --cached --quiet || git commit -m "Update Nuclei scan results"
+          git fetch origin main
+          git rebase origin/main
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
