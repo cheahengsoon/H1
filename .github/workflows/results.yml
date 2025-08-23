@@ -1,16 +1,16 @@
-name: Nuclei - Per Domain Scan
+name: Nuclei - Alphabetical Parallel Scan
 
 on:
   workflow_dispatch:
     inputs:
-      severity:
-        description: "Global severity levels (default: critical,high,medium,low)"
-        required: false
-        default: "critical,high,medium,low"
       threads:
-        description: "Number of concurrent threads per domain (default: 20)"
+        description: "Concurrent threads per domain (default: 20)"
         required: false
         default: "20"
+      parallel_domains:
+        description: "Number of domains to scan in parallel (default: 5)"
+        required: false
+        default: "5"
       rate_limit:
         description: "Rate limit requests per second (default: 50)"
         required: false
@@ -57,132 +57,83 @@ jobs:
           restore-keys: |
             nuclei-templates-
 
-      - name: Update Nuclei templates
+      - name: Update Nuclei Templates
         run: nuclei -update-templates
 
-      - name: Run Nuclei Scans Sequentially (Alphabetical, with Retry & Skip)
+      - name: Scan Live Domains Alphabetically in Parallel
         continue-on-error: true
         run: |
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
-          DEFAULT_SEVERITY=${{ github.event.inputs.severity || 'critical,high,medium,low' }}
           THREADS=${{ github.event.inputs.threads || 20 }}
+          PARALLEL=${{ github.event.inputs.parallel_domains || 5 }}
           RATE_LIMIT=${{ github.event.inputs.rate_limit || 50 }}
           TIMEOUT=${{ github.event.inputs.timeout || 10 }}
           MAX_RETRIES=2
 
-          OVERRIDES_FILE=$(mktemp)
-          if [[ -f nuclei-domain-overrides.csv ]]; then
-            tail -n +2 nuclei-domain-overrides.csv >> "$OVERRIDES_FILE"
-          fi
-
-          SCANNED_LIST="$OUTPUT_FOLDER/scanned.txt"
           mkdir -p "$OUTPUT_FOLDER"
-          : > "$SCANNED_LIST"
+          : > "$OUTPUT_FOLDER/scanned.txt"
           : > "$OUTPUT_FOLDER/unscanned.txt"
 
-          # Initialize fresh global severity files
-          for sev in critical high medium low; do
-            : > "${OUTPUT_FOLDER}/all_${sev}.txt"
-          done
-
-          run_scan() {
+          scan_domain() {
             file="$1"
             domain=$(basename "$file" _live.txt)
-            SEVERITY="$DEFAULT_SEVERITY"
-
-            if [[ -f "$OVERRIDES_FILE" ]]; then
-              line=$(grep -E "^$domain," "$OVERRIDES_FILE" || true)
-              if [[ -n "$line" ]]; then
-                IFS=, read -r _ _ severity <<< "$line"
-                [[ -n "$severity" ]] && SEVERITY="$severity"
-              fi
-            fi
-
             attempt=0
             success=0
+
             while [[ $attempt -le $MAX_RETRIES ]]; do
               echo "[*] Scanning $domain (attempt $((attempt+1))/$((MAX_RETRIES+1)))..."
               if timeout "${TIMEOUT}m" nuclei -l "$file" \
-                  -severity "$SEVERITY" \
-                  -c "$THREADS" \
-                  -rl "$RATE_LIMIT" \
-                  -o "${OUTPUT_FOLDER}/${domain}_nuclei_all.txt"; then
-
-                URL_COUNT=$(grep -c "http" "${OUTPUT_FOLDER}/${domain}_nuclei_all.txt" || true)
-                if [[ $URL_COUNT -gt 0 ]]; then
-                  # Split results into per-severity files
-                  for sev in critical high medium low; do
-                    grep -i "\[$sev\]" "${OUTPUT_FOLDER}/${domain}_nuclei_all.txt" \
-                      | sed "s|^|[$domain] |" > "${OUTPUT_FOLDER}/${domain}_nuclei_${sev}.txt" || true
-
-                    grep -i "\[$sev\]" "${OUTPUT_FOLDER}/${domain}_nuclei_all.txt" \
-                      | sed "s|^|[$domain] |" >> "${OUTPUT_FOLDER}/all_${sev}.txt" || true
-
-                    [[ ! -s "${OUTPUT_FOLDER}/${domain}_nuclei_${sev}.txt" ]] && rm -f "${OUTPUT_FOLDER}/${domain}_nuclei_${sev}.txt"
-                  done
-
-                  [[ ! -s "${OUTPUT_FOLDER}/${domain}_nuclei_all.txt" ]] && rm -f "${OUTPUT_FOLDER}/${domain}_nuclei_all.txt"
-                  echo "$file" >> "$SCANNED_LIST"
-                  success=1
-                  break
-                else
-                  echo "[-] No URLs found for $domain"
-                fi
+                 -severity critical,high,medium,low \
+                 -c "$THREADS" \
+                 -rl "$RATE_LIMIT" \
+                 -o "${OUTPUT_FOLDER}/${domain}_nuclei.txt"; then
+                 
+                 if [[ -s "${OUTPUT_FOLDER}/${domain}_nuclei.txt" ]]; then
+                   echo "$file" >> "$OUTPUT_FOLDER/scanned.txt"
+                   success=1
+                   break
+                 else
+                   echo "[-] No results for $domain"
+                 fi
               else
-                echo "[-] Scan failed or timed out for $domain"
+                 echo "[-] Scan timed out for $domain"
               fi
               attempt=$((attempt+1))
-              sleep 10
+              sleep 5
             done
 
             if [[ $success -eq 0 ]]; then
-              echo "[-] Domain $domain failed all attempts, skipping but logged"
-              echo "$file" >> "${OUTPUT_FOLDER}/unscanned.txt"
+              echo "$file" >> "$OUTPUT_FOLDER/unscanned.txt"
             fi
           }
 
-          export -f run_scan
-          export OUTPUT_FOLDER DEFAULT_SEVERITY THREADS RATE_LIMIT OVERRIDES_FILE TIMEOUT SCANNED_LIST MAX_RETRIES
+          export -f scan_domain
+          export OUTPUT_FOLDER THREADS RATE_LIMIT TIMEOUT MAX_RETRIES
 
-          # Sequential alphabetical scan
-          find live -name '*_live.txt' | sort | while read -r file; do
-              run_scan "$file"
-          done
+          # Find live domains alphabetically and scan in parallel
+          find live -name '*_live.txt' | sort | xargs -n 1 -P "$PARALLEL" -I {} bash -c 'scan_domain "$@"' _ {}
 
-      - name: List Unscanned Live Files
+      - name: List Unscanned Domains
         run: |
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
           if [[ -s "$OUTPUT_FOLDER/unscanned.txt" ]]; then
-            echo "=== ⚠ Some domains could not be scanned after retries ==="
+            echo "=== ⚠ Some domains could not be scanned ==="
             cat "$OUTPUT_FOLDER/unscanned.txt"
           else
             echo "=== ✅ All domains scanned successfully ==="
           fi
 
-      - name: Upload Nuclei Results Artifact
+      - name: Commit Non-Empty Results
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: nuclei-results-${{ github.sha }}-${{ github.ref_name }}
-          path: "${{ github.event.inputs.output_folder || 'result' }}/"
-
-      - name: Upload Unscanned List Artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: nuclei-unscanned-${{ github.sha }}-${{ github.ref_name }}
-          path: "${{ github.event.inputs.output_folder || 'result' }}/unscanned.txt"
-
-      - name: Commit and Push Scan Results
         run: |
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Stage only non-empty .txt results
+          # Stage only non-empty .txt files
           find "$OUTPUT_FOLDER" -type f -name "*.txt" -size +0c -exec git add {} \;
 
-          # Commit if there are changes
+          # Commit changes only if there are results
           git diff --cached --quiet || git commit -m "Update Nuclei scan results"
 
           git fetch origin main
@@ -190,3 +141,10 @@ jobs:
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Results Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuclei-results-${{ github.sha }}-${{ github.ref_name }}
+          path: "${{ github.event.inputs.output_folder || 'result' }}/"
