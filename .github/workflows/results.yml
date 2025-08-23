@@ -1,4 +1,4 @@
-name: Nuclei - Per Domain Scan with Safe PoC
+name: Nuclei - Per Domain Scan
 
 on:
   workflow_dispatch:
@@ -8,19 +8,15 @@ on:
         required: false
         default: "critical,high,medium,low"
       threads:
-        description: "Concurrent threads per domain (default: 20)"
+        description: "Number of concurrent threads per domain (default: 20)"
         required: false
         default: "20"
-      parallel_domains:
-        description: "Number of domains scanned in parallel (default: 2)"
-        required: false
-        default: "2"
       rate_limit:
-        description: "Max requests per second per domain (optional, default: 50)"
+        description: "Rate limit requests per second (default: 50)"
         required: false
         default: "50"
       timeout:
-        description: "Timeout per domain in minutes (default: 10)"
+        description: "Timeout per domain scan in minutes (default: 10)"
         required: false
         default: "10"
       output_folder:
@@ -62,15 +58,14 @@ jobs:
             nuclei-templates-
 
       - name: Update Nuclei templates
-        run: nuclei -update-templates || true
+        run: nuclei -update-templates
 
-      - name: Run Nuclei Scans in Parallel
+      - name: Run Nuclei Scans Sequentially (Alphabetical)
         continue-on-error: true
         run: |
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
           DEFAULT_SEVERITY=${{ github.event.inputs.severity || 'critical,high,medium,low' }}
           THREADS=${{ github.event.inputs.threads || 20 }}
-          PARALLEL=${{ github.event.inputs.parallel_domains || 2 }}
           RATE_LIMIT=${{ github.event.inputs.rate_limit || 50 }}
           TIMEOUT=${{ github.event.inputs.timeout || 10 }}
 
@@ -78,6 +73,15 @@ jobs:
           if [[ -f nuclei-domain-overrides.csv ]]; then
             tail -n +2 nuclei-domain-overrides.csv >> "$OVERRIDES_FILE"
           fi
+
+          SCANNED_LIST="$OUTPUT_FOLDER/scanned.txt"
+          mkdir -p "$OUTPUT_FOLDER"
+          : > "$SCANNED_LIST"
+
+          # Initialize fresh global severity files
+          for sev in critical high medium low; do
+            : > "${OUTPUT_FOLDER}/all_${sev}.txt"
+          done
 
           run_scan() {
             file="$1"
@@ -92,63 +96,90 @@ jobs:
               fi
             fi
 
-            echo "[*] Scanning $domain with threads=$THREADS, rate-limit=$RATE_LIMIT/sec, timeout=${TIMEOUT}m..."
-            timeout "${TIMEOUT}m" nuclei -l "$file" \
+            echo "[*] Scanning $domain..."
+            if timeout "${TIMEOUT}m" nuclei -l "$file" \
               -severity "$SEVERITY" \
               -c "$THREADS" \
               -rl "$RATE_LIMIT" \
-              -o "${OUTPUT_FOLDER}/${domain}_nuclei.txt" \
-              -o "${OUTPUT_FOLDER}/${domain}_nuclei.json" \
-              || echo "[-] Scan failed or timed out for $domain, continuing..."
+              -o "${OUTPUT_FOLDER}/${domain}_nuclei_all.txt"; then
+
+              # Split results into per-severity files
+              for sev in critical high medium low; do
+                grep -i "\[$sev\]" "${OUTPUT_FOLDER}/${domain}_nuclei_all.txt" \
+                  | sed "s|^|[$domain] |" > "${OUTPUT_FOLDER}/${domain}_nuclei_${sev}.txt" || true
+
+                # Append to fresh global severity files
+                grep -i "\[$sev\]" "${OUTPUT_FOLDER}/${domain}_nuclei_all.txt" \
+                  | sed "s|^|[$domain] |" >> "${OUTPUT_FOLDER}/all_${sev}.txt" || true
+
+                # Remove empty per-severity files
+                [[ ! -s "${OUTPUT_FOLDER}/${domain}_nuclei_${sev}.txt" ]] && rm -f "${OUTPUT_FOLDER}/${domain}_nuclei_${sev}.txt"
+              done
+
+              # Remove all.txt if no results
+              [[ ! -s "${OUTPUT_FOLDER}/${domain}_nuclei_all.txt" ]] && rm -f "${OUTPUT_FOLDER}/${domain}_nuclei_all.txt"
+
+              echo "$file" >> "$SCANNED_LIST"
+            else
+              echo "[-] Scan failed or timed out for $domain"
+            fi
           }
 
           export -f run_scan
-          export OUTPUT_FOLDER DEFAULT_SEVERITY THREADS PARALLEL RATE_LIMIT OVERRIDES_FILE TIMEOUT
+          export OUTPUT_FOLDER DEFAULT_SEVERITY THREADS RATE_LIMIT OVERRIDES_FILE TIMEOUT SCANNED_LIST
 
-          find live -name '*_live.txt' | xargs -P "$PARALLEL" -I {} bash -c 'run_scan "$@"' _ {}
-
-      - name: Generate Safe/Dry-Run PoC Scripts
-        run: |
-          OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
-          POC_DIR="${OUTPUT_FOLDER}/poCs"
-          mkdir -p "$POC_DIR"
-
-          for file in $OUTPUT_FOLDER/*_nuclei.json; do
-            jq -c '.[] | select(.info.severity=="critical" or .info.severity=="high")' "$file" | while read -r finding; do
-              url=$(echo "$finding" | jq -r '.host')
-              method=$(echo "$finding" | jq -r '.matched[0].request.method // "GET"')
-              path=$(echo "$finding" | jq -r '.matched[0].request.path // "/"')
-              data=$(echo "$finding" | jq -r '.matched[0].request.body // ""')
-              headers=$(echo "$finding" | jq -r '.matched[0].request.headers | to_entries[] | "-H \""+"\(.key): \(.value)"\""' 2>/dev/null)
-
-              template=$(echo "$finding" | jq -r '.template_id')
-              domain=$(basename "$file" _nuclei.json)
-
-              poc_file="$POC_DIR/${domain}_${template}.sh"
-              echo "#!/bin/bash" > "$poc_file"
-              echo "# Safe dry-run PoC: command is echoed but not executed" >> "$poc_file"
-              echo "echo 'curl -X $method $headers \"$url$path\" -d \"$data\"'" >> "$poc_file"
-              chmod +x "$poc_file"
-            done
+          # Scan sequentially in alphabetical order
+          find live -name '*_live.txt' | sort | while read -r file; do
+              run_scan "$file"
           done
 
-      - name: Commit and Push Results & PoCs
+      - name: List Unscanned Live Files
+        run: |
+          OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
+          ALL_LIST="$OUTPUT_FOLDER/all_live.txt"
+          SCANNED_LIST="$OUTPUT_FOLDER/scanned.txt"
+          UNSCANNED_LIST="$OUTPUT_FOLDER/unscanned.txt"
+
+          find live -name '*_live.txt' | sort > "$ALL_LIST"
+          sort "$SCANNED_LIST" > "$SCANNED_LIST.sorted"
+          comm -23 "$ALL_LIST" "$SCANNED_LIST.sorted" > "$UNSCANNED_LIST"
+
+          if [[ -s "$UNSCANNED_LIST" ]]; then
+            echo "=== ❌ Some live files were NOT scanned ==="
+            cat "$UNSCANNED_LIST"
+            exit 1
+          else
+            echo "=== ✅ All live files were scanned successfully ==="
+          fi
+
+      - name: Upload Nuclei Results Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuclei-results-${{ github.sha }}-${{ github.ref_name }}
+          path: "${{ github.event.inputs.output_folder || 'result' }}/"
+
+      - name: Upload Unscanned List Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuclei-unscanned-${{ github.sha }}-${{ github.ref_name }}
+          path: "${{ github.event.inputs.output_folder || 'result' }}/unscanned.txt"
+
+      - name: Commit and Push Scan Results
         run: |
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
 
-          find "${OUTPUT_FOLDER}" -type f \( -name "*.txt" -o -name "*.json" -o -name "*.sarif" -o -name "*.sh" \) -exec git add {} +
+          # Stage only non-empty .txt results
+          find "$OUTPUT_FOLDER" -type f -name "*.txt" -size +0c -exec git add {} \;
 
-          git diff --cached --quiet || git commit -m "Update Nuclei scan results and safe PoCs"
+          # Commit if there are changes
+          git diff --cached --quiet || git commit -m "Update Nuclei scan results"
+
           git fetch origin main
           git rebase origin/main
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Nuclei Results and Safe PoCs Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: nuclei-results-and-safe-pocs-${{ github.sha }}-${{ github.ref_name }}
-          path: "${{ github.event.inputs.output_folder || 'result' }}/"
