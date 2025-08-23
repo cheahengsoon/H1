@@ -12,9 +12,13 @@ on:
         required: false
         default: "http/default-logins,code,code/cves,http/cnvd"
       threads:
-        description: "Number of concurrent threads (default: 10)"
+        description: "Number of concurrent threads per domain (default: 50)"
         required: false
-        default: "10"
+        default: "50"
+      parallel_domains:
+        description: "Number of domains to scan in parallel (default: 5)"
+        required: false
+        default: "5"
       output_folder:
         description: "Folder to save results (default: result)"
         required: false
@@ -54,38 +58,53 @@ jobs:
             nuclei-templates-
 
       - name: Update Nuclei templates
-        run: nuclei -update-templates
+        run: nuclei -update-templates || true
 
-      - name: Run Nuclei Per Domain with Overrides
+      - name: Load Domain Overrides
+        id: domain_overrides
+        run: |
+          declare -A DOMAIN_EXCLUDE
+          declare -A DOMAIN_SEVERITY
+          if [[ -f nuclei-domain-overrides.csv ]]; then
+            while IFS=, read -r domain exclude severity; do
+              [[ "$domain" == "domain" ]] && continue  # skip header if present
+              DOMAIN_EXCLUDE["$domain"]="$exclude"
+              DOMAIN_SEVERITY["$domain"]="$severity"
+            done < nuclei-domain-overrides.csv
+          fi
+          # Export associative arrays as strings
+          for key in "${!DOMAIN_EXCLUDE[@]}"; do
+            echo "DOMAIN_EXCLUDE_$key=${DOMAIN_EXCLUDE[$key]}" >> $GITHUB_ENV
+          done
+          for key in "${!DOMAIN_SEVERITY[@]}"; do
+            echo "DOMAIN_SEVERITY_$key=${DOMAIN_SEVERITY[$key]}" >> $GITHUB_ENV
+          done
+
+      - name: Run Nuclei Per Domain in Parallel
         continue-on-error: true
         run: |
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
           DEFAULT_SEVERITY=${{ github.event.inputs.severity || 'critical,high,medium,low' }}
           DEFAULT_EXCLUDE=${{ github.event.inputs.exclude_templates || 'http/default-logins,code,code/cves,http/cnvd' }}
-          THREADS=${{ github.event.inputs.threads || 10 }}
+          THREADS=${{ github.event.inputs.threads || 50 }}
+          PARALLEL=${{ github.event.inputs.parallel_domains || 5 }}
 
-          # Load per-domain overrides if CSV exists (skip header if present)
-          declare -A DOMAIN_EXCLUDE
-          declare -A DOMAIN_SEVERITY
-          if [[ -f nuclei-domain-overrides.csv ]]; then
-            tail -n +2 nuclei-domain-overrides.csv | while IFS=, read -r domain exclude severity; do
-              DOMAIN_EXCLUDE["$domain"]="$exclude"
-              DOMAIN_SEVERITY["$domain"]="$severity"
-            done
-          fi
-
-          for file in live/*_live.txt; do
+          run_scan() {
+            file="$1"
             domain=$(basename "$file" _live.txt)
-            echo "[*] Scanning $domain..."
-            EXCLUDE="${DOMAIN_EXCLUDE[$domain]:-$DEFAULT_EXCLUDE}"
-            SEVERITY="${DOMAIN_SEVERITY[$domain]:-$DEFAULT_SEVERITY}"
-            nuclei -l "$file" \
+            EXCLUDE="${!DOMAIN_EXCLUDE_$domain:-$DEFAULT_EXCLUDE}"
+            SEVERITY="${!DOMAIN_SEVERITY_$domain:-$DEFAULT_SEVERITY}"
+            echo "[*] Scanning $domain with threads=$THREADS..."
+            timeout 5m nuclei -l "$file" \
               -severity "$SEVERITY" \
               -exclude-templates "$EXCLUDE" \
               -c "$THREADS" \
               -o "${OUTPUT_FOLDER}/${domain}_nuclei.txt" \
               || echo "[-] Scan failed or timed out for $domain, continuing..."
-          done
+          }
+
+          export -f run_scan
+          find live -name '*_live.txt' | xargs -n 1 -P "$PARALLEL" -I {} bash -c 'run_scan "$@"' _ {}
 
       - name: Commit and Push Scan Results
         run: |
