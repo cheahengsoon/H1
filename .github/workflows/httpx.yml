@@ -2,9 +2,34 @@ name: Httpx - Alive Subdomains Per Domain
 
 on:
   workflow_dispatch:
+    inputs:
+      chunk_size:
+        description: "Number of lines per split file (default 5000)"
+        required: false
+        default: "5000"
+      rate_limit:
+        description: "Httpx requests per second (default 100)"
+        required: false
+        default: "100"
+      timeout:
+        description: "Httpx timeout in seconds (default 5)"
+        required: false
+        default: "5"
+      threads:
+        description: "Number of concurrent threads (default 50)"
+        required: false
+        default: "50"
+      retries:
+        description: "Number of retries for failed requests (default 2)"
+        required: false
+        default: "2"
   push:
     branches:
       - main
+
+concurrency:
+  group: httpx
+  cancel-in-progress: false
 
 jobs:
   httpx:
@@ -14,44 +39,84 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Httpx (local, safe)
+      - name: Ensure unzip is installed
+        run: sudo apt-get update && sudo apt-get install -y unzip
+
+      - name: Install Httpx (latest release)
         run: |
           set -e
-          # Get latest release download URL
           url=$(curl -s https://api.github.com/repos/projectdiscovery/httpx/releases/latest \
             | grep "browser_download_url.*linux_amd64.zip" \
             | cut -d '"' -f 4)
           echo "Download URL: $url"
 
-          # Clean old files if exist
           rm -rf httpx httpx_linux_amd64.zip
-
-          # Download and extract
           wget -q "$url" -O httpx_linux_amd64.zip
-          unzip -o httpx_linux_amd64.zip httpx
+          unzip -o httpx_linux_amd64.zip
           chmod +x httpx
-
-          # Add current directory to PATH for all subsequent steps
           echo "$PWD" >> $GITHUB_PATH
 
       - name: Verify Httpx
-        run: httpx -version
+        run: ./httpx -version
 
-      - name: Run Httpx for each domain's subdomain file
+      - name: Split large domain files
+        run: |
+          mkdir -p split_output
+          shopt -s nullglob
+          CHUNK_SIZE=${{ github.event.inputs.chunk_size || 5000 }}
+          echo "[*] Using chunk size: $CHUNK_SIZE"
+          for file in output/*.txt; do
+            if [ -s "$file" ]; then
+              domain=$(basename "$file" .txt)
+              echo "[*] Splitting $domain subdomains into chunks of $CHUNK_SIZE"
+              split -l "$CHUNK_SIZE" -d --additional-suffix=.txt "$file" "split_output/${domain}_part_"
+            fi
+          done
+
+      - name: Run Httpx on split files
+        timeout-minutes: 90
+        continue-on-error: true   # <--- ensures workflow continues even if httpx fails or times out
         run: |
           mkdir -p live
-          for file in output/*.txt; do
+          shopt -s nullglob
+          RATE_LIMIT=${{ github.event.inputs.rate_limit || 100 }}
+          TIMEOUT=${{ github.event.inputs.timeout || 5 }}
+          THREADS=${{ github.event.inputs.threads || 50 }}
+          RETRIES=${{ github.event.inputs.retries || 2 }}
+          echo "[*] Using httpx rate limit: $RATE_LIMIT, timeout: $TIMEOUT, threads: $THREADS, retries: $RETRIES"
+          for file in split_output/*.txt; do
             domain=$(basename "$file" .txt)
             echo "[*] Running httpx for $domain"
             if [ -s "$file" ]; then
-              httpx -silent -l "$file" -o "live/${domain}_live.txt"
+              ./httpx -silent -l "$file" \
+                -o "live/${domain}_live.txt" \
+                -rl "$RATE_LIMIT" \
+                -timeout "$TIMEOUT" \
+                -retries "$RETRIES" \
+                -threads "$THREADS" \
+                -no-color || echo "[-] httpx failed or timed out for $domain, continuing..."
             else
               echo "[-] Skipping $domain (empty file)"
             fi
           done
 
-      - name: Show results
-        run: ls -lh live && head -n 10 live/*_live.txt || echo "No live results"
+      - name: Merge results per domain
+        run: |
+          mkdir -p merged
+          shopt -s nullglob
+          for domain in $(ls split_output | cut -d'_' -f1 | sort -u); do
+            echo "[*] Merging results for $domain"
+            cat live/${domain}_part_*_live.txt 2>/dev/null | sort -u > merged/${domain}_live.txt || true
+          done
+
+      - name: Show sample results
+        run: ls -lh merged && head -n 20 merged/*_live.txt || echo "No live results"
+
+      - name: Upload results as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: httpx-live-results
+          path: merged/
 
       - name: Commit results back to repo
         run: |
@@ -59,6 +124,6 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin main
           git pull --rebase origin main
-          git add live/*_live.txt
-          git commit -m "Update httpx alive results" || echo "No new alive subdomains found"
+          git add merged/*_live.txt
+          git commit -m "Update httpx alive results" || true
           git push origin main
