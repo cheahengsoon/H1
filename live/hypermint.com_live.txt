@@ -1,6 +1,0 @@
-https://metadata.hypermint.com
-https://app.hypermint.com
-https://www.hypermint.com
-http://api.hypermint.com
-http://www.app.hypermint.com
-http://docs.hypermint.com

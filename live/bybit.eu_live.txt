@@ -1,4 +1,0 @@
-https://api3.bybit.eu
-https://partner.bybit.eu
-https://www.bybit.eu
-http://announcements.bybit.eu

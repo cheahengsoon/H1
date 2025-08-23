@@ -1,4 +1,0 @@
-https://static.grab-sure.com
-https://uat-static.grab-sure.com
-https://gateway01.cp1.grab-sure.com
-http://gateway.grab-sure.com

@@ -1,7 +1,0 @@
-https://api.consumer.worldcoin.org
-https://api.staging.consumer.worldcoin.org
-https://posthog.api.staging.consumer.worldcoin.org
-https://assets.api.staging.consumer.worldcoin.org
-https://assets.consumer.worldcoin.org
-https://posthog.consumer.worldcoin.org
-https://config.consumer.worldcoin.org

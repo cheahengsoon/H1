@@ -1,6 +1,0 @@
-http://apis.dev2.grindr.io
-https://redirect.dev2.grindr.io
-https://www-assets.dev2.grindr.io
-http://legal-agreements.dev2.grindr.io
-http://legal-agreements.prod2.grindr.io
-https://www-assets.prod2.grindr.io

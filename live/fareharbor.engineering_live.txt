@@ -1,8 +1,0 @@
-https://vault.demo.fareharbor.engineering
-https://teleport.fareharbor.engineering
-https://vault.production.fareharbor.engineering
-https://desk-demo-api.fareharbor.engineering
-https://desk-staging-api.fareharbor.engineering
-https://desk-demo.fareharbor.engineering
-https://desk-staging.fareharbor.engineering
-https://vault.staging.fareharbor.engineering

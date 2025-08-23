@@ -1,4 +1,0 @@
-https://cloud8.devrel.8x8cloud.net
-https://gate-bell-beta-acc-services-env-a-accbeta1iad-us-ashburn-1.analytics-staging.oci.infra8.8x8cloud.net
-https://wavefront-prometheus-ec2-dev.platformdevops.8x8cloud.net
-https://wiki.platformdevops.8x8cloud.net

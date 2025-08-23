@@ -1,7 +1,0 @@
-https://testbed.cb.dev
-https://a627760cgi.web.cb.dev
-https://bastiboxn-payment.web.cb.dev
-https://www.testbed.cb.dev
-https://devportal.cb.dev
-https://ns2.cb.dev
-https://ns1.cb.dev

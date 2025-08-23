@@ -1,7 +1,0 @@
-https://app.hey.com
-https://world.hey.com
-https://gopher.hey.com
-https://help.hey.com
-https://storage.hey.com
-https://www.hey.com
-https://public.hey.com

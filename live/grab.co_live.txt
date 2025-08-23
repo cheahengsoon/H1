@@ -1,4 +1,0 @@
-https://manage.grab.co
-http://food-cms.grab.co
-http://engineering.grab.co
-http://gamma.grab.co
