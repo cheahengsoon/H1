@@ -1,4 +1,4 @@
-name: Nuclei - Per Domain Scan
+name: Nuclei - Per Domain Scan with Safe PoC
 
 on:
   workflow_dispatch:
@@ -8,13 +8,17 @@ on:
         required: false
         default: "critical,high,medium,low"
       threads:
-        description: "Concurrent threads per domain (default: 50)"
+        description: "Concurrent threads per domain (default: 20)"
+        required: false
+        default: "20"
+      parallel_domains:
+        description: "Number of domains scanned in parallel (default: 2)"
+        required: false
+        default: "2"
+      rate_limit:
+        description: "Max requests per second per domain (optional, default: 50)"
         required: false
         default: "50"
-      parallel_domains:
-        description: "Number of domains scanned in parallel (default: 5)"
-        required: false
-        default: "5"
       timeout:
         description: "Timeout per domain in minutes (default: 10)"
         required: false
@@ -60,16 +64,16 @@ jobs:
       - name: Update Nuclei templates
         run: nuclei -update-templates || true
 
-      - name: Run Nuclei Scans in Parallel with SARIF
+      - name: Run Nuclei Scans in Parallel
         continue-on-error: true
         run: |
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
           DEFAULT_SEVERITY=${{ github.event.inputs.severity || 'critical,high,medium,low' }}
-          THREADS=${{ github.event.inputs.threads || 50 }}
-          PARALLEL=${{ github.event.inputs.parallel_domains || 5 }}
+          THREADS=${{ github.event.inputs.threads || 20 }}
+          PARALLEL=${{ github.event.inputs.parallel_domains || 2 }}
+          RATE_LIMIT=${{ github.event.inputs.rate_limit || 50 }}
           TIMEOUT=${{ github.event.inputs.timeout || 10 }}
 
-          # Temporary file for per-domain severity overrides
           OVERRIDES_FILE=$(mktemp)
           if [[ -f nuclei-domain-overrides.csv ]]; then
             tail -n +2 nuclei-domain-overrides.csv >> "$OVERRIDES_FILE"
@@ -80,7 +84,6 @@ jobs:
             domain=$(basename "$file" _live.txt)
             SEVERITY="$DEFAULT_SEVERITY"
 
-            # Apply per-domain severity override if present
             if [[ -f "$OVERRIDES_FILE" ]]; then
               line=$(grep -E "^$domain," "$OVERRIDES_FILE" || true)
               if [[ -n "$line" ]]; then
@@ -89,39 +92,63 @@ jobs:
               fi
             fi
 
-            echo "[*] Scanning $domain with threads=$THREADS, timeout=${TIMEOUT}m..."
+            echo "[*] Scanning $domain with threads=$THREADS, rate-limit=$RATE_LIMIT/sec, timeout=${TIMEOUT}m..."
             timeout "${TIMEOUT}m" nuclei -l "$file" \
               -severity "$SEVERITY" \
               -c "$THREADS" \
+              -rl "$RATE_LIMIT" \
               -o "${OUTPUT_FOLDER}/${domain}_nuclei.txt" \
-              -o "${OUTPUT_FOLDER}/${domain}_nuclei.sarif" \
+              -o "${OUTPUT_FOLDER}/${domain}_nuclei.json" \
               || echo "[-] Scan failed or timed out for $domain, continuing..."
           }
 
           export -f run_scan
-          export OUTPUT_FOLDER DEFAULT_SEVERITY THREADS OVERRIDES_FILE TIMEOUT
+          export OUTPUT_FOLDER DEFAULT_SEVERITY THREADS PARALLEL RATE_LIMIT OVERRIDES_FILE TIMEOUT
 
-          # Run all domain scans in parallel
           find live -name '*_live.txt' | xargs -P "$PARALLEL" -I {} bash -c 'run_scan "$@"' _ {}
 
-      - name: Commit and Push Scan Results Safely
+      - name: Generate Safe/Dry-Run PoC Scripts
+        run: |
+          OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
+          POC_DIR="${OUTPUT_FOLDER}/poCs"
+          mkdir -p "$POC_DIR"
+
+          for file in $OUTPUT_FOLDER/*_nuclei.json; do
+            jq -c '.[] | select(.info.severity=="critical" or .info.severity=="high")' "$file" | while read -r finding; do
+              url=$(echo "$finding" | jq -r '.host')
+              method=$(echo "$finding" | jq -r '.matched[0].request.method // "GET"')
+              path=$(echo "$finding" | jq -r '.matched[0].request.path // "/"')
+              data=$(echo "$finding" | jq -r '.matched[0].request.body // ""')
+              headers=$(echo "$finding" | jq -r '.matched[0].request.headers | to_entries[] | "-H \""+"\(.key): \(.value)"\""' 2>/dev/null)
+
+              template=$(echo "$finding" | jq -r '.template_id')
+              domain=$(basename "$file" _nuclei.json)
+
+              poc_file="$POC_DIR/${domain}_${template}.sh"
+              echo "#!/bin/bash" > "$poc_file"
+              echo "# Safe dry-run PoC: command is echoed but not executed" >> "$poc_file"
+              echo "echo 'curl -X $method $headers \"$url$path\" -d \"$data\"'" >> "$poc_file"
+              chmod +x "$poc_file"
+            done
+          done
+
+      - name: Commit and Push Results & PoCs
         run: |
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Add only existing txt or sarif files
-          find "${OUTPUT_FOLDER}" -type f \( -name "*.txt" -o -name "*.sarif" \) -exec git add {} +
+          find "${OUTPUT_FOLDER}" -type f \( -name "*.txt" -o -name "*.json" -o -name "*.sarif" -o -name "*.sh" \) -exec git add {} +
 
-          git diff --cached --quiet || git commit -m "Update Nuclei scan results"
+          git diff --cached --quiet || git commit -m "Update Nuclei scan results and safe PoCs"
           git fetch origin main
           git rebase origin/main
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload Nuclei Results Artifact
+      - name: Upload Nuclei Results and Safe PoCs Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nuclei-results-${{ github.sha }}-${{ github.ref_name }}
+          name: nuclei-results-and-safe-pocs-${{ github.sha }}-${{ github.ref_name }}
           path: "${{ github.event.inputs.output_folder || 'result' }}/"
