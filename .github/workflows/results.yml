@@ -1,4 +1,4 @@
-name: Nuclei - Alphabetical Parallel Scan
+name: Nuclei - Alphabetical Parallel Scan (Single Attempt)
 
 on:
   workflow_dispatch:
@@ -60,7 +60,7 @@ jobs:
       - name: Update Nuclei Templates
         run: nuclei -update-templates
 
-      - name: Scan Live Domains Alphabetically in Parallel
+      - name: Scan Live Domains Alphabetically in Parallel (Single Attempt)
         continue-on-error: true
         run: |
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
@@ -68,7 +68,6 @@ jobs:
           PARALLEL=${{ github.event.inputs.parallel_domains || 5 }}
           RATE_LIMIT=${{ github.event.inputs.rate_limit || 50 }}
           TIMEOUT=${{ github.event.inputs.timeout || 10 }}
-          MAX_RETRIES=2
 
           mkdir -p "$OUTPUT_FOLDER"
           : > "$OUTPUT_FOLDER/scanned.txt"
@@ -77,38 +76,28 @@ jobs:
           scan_domain() {
             file="$1"
             domain=$(basename "$file" _live.txt)
-            attempt=0
-            success=0
 
-            while [[ $attempt -le $MAX_RETRIES ]]; do
-              echo "[*] Scanning $domain (attempt $((attempt+1))/$((MAX_RETRIES+1)))..."
-              if timeout "${TIMEOUT}m" nuclei -l "$file" \
-                 -severity critical,high,medium,low \
-                 -c "$THREADS" \
-                 -rl "$RATE_LIMIT" \
-                 -o "${OUTPUT_FOLDER}/${domain}_nuclei.txt"; then
-                 
-                 if [[ -s "${OUTPUT_FOLDER}/${domain}_nuclei.txt" ]]; then
-                   echo "$file" >> "$OUTPUT_FOLDER/scanned.txt"
-                   success=1
-                   break
-                 else
-                   echo "[-] No results for $domain"
-                 fi
-              else
-                 echo "[-] Scan timed out for $domain"
-              fi
-              attempt=$((attempt+1))
-              sleep 5
-            done
+            echo "[*] Scanning $domain..."
+            if timeout "${TIMEOUT}m" nuclei -l "$file" \
+               -severity critical,high,medium,low \
+               -c "$THREADS" \
+               -rl "$RATE_LIMIT" \
+               -o "${OUTPUT_FOLDER}/${domain}_nuclei.txt"; then
 
-            if [[ $success -eq 0 ]]; then
-              echo "$file" >> "$OUTPUT_FOLDER/unscanned.txt"
+               if [[ -s "${OUTPUT_FOLDER}/${domain}_nuclei.txt" ]]; then
+                 echo "$file" >> "$OUTPUT_FOLDER/scanned.txt"
+               else
+                 echo "[-] No results for $domain"
+                 echo "$file" >> "$OUTPUT_FOLDER/unscanned.txt"
+               fi
+            else
+               echo "[-] Scan timed out for $domain"
+               echo "$file" >> "$OUTPUT_FOLDER/unscanned.txt"
             fi
           }
 
           export -f scan_domain
-          export OUTPUT_FOLDER THREADS RATE_LIMIT TIMEOUT MAX_RETRIES
+          export OUTPUT_FOLDER THREADS RATE_LIMIT TIMEOUT
 
           # Find live domains alphabetically and scan in parallel
           find live -name '*_live.txt' | sort | xargs -n 1 -P "$PARALLEL" -I {} bash -c 'scan_domain "$@"' _ {}
