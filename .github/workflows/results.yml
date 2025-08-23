@@ -102,14 +102,18 @@ jobs:
           export -f run_scan
           export OUTPUT_FOLDER DEFAULT_SEVERITY THREADS OVERRIDES_FILE TIMEOUT
 
+          # Run all domain scans in parallel
           find live -name '*_live.txt' | xargs -P "$PARALLEL" -I {} bash -c 'run_scan "$@"' _ {}
 
-      - name: Commit and Push Scan Results
+      - name: Commit and Push Scan Results Safely
         run: |
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add "${OUTPUT_FOLDER}"/*.txt "${OUTPUT_FOLDER}"/*.sarif
+
+          # Add only existing txt or sarif files
+          find "${OUTPUT_FOLDER}" -type f \( -name "*.txt" -o -name "*.sarif" \) -exec git add {} +
+
           git diff --cached --quiet || git commit -m "Update Nuclei scan results"
           git fetch origin main
           git rebase origin/main
