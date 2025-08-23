@@ -8,13 +8,17 @@ on:
         required: false
         default: "critical,high,medium,low"
       threads:
-        description: "Number of concurrent threads per domain (default: 50)"
+        description: "Concurrent threads per domain (default: 50)"
         required: false
         default: "50"
       parallel_domains:
-        description: "Number of domains to scan in parallel (default: 5)"
+        description: "Number of domains scanned in parallel (default: 5)"
         required: false
         default: "5"
+      timeout:
+        description: "Timeout per domain in minutes (default: 10)"
+        required: false
+        default: "10"
       output_folder:
         description: "Folder to save results (default: result)"
         required: false
@@ -56,13 +60,14 @@ jobs:
       - name: Update Nuclei templates
         run: nuclei -update-templates || true
 
-      - name: Run Nuclei Scans in Parallel (No Exclusions)
+      - name: Run Nuclei Scans in Parallel with SARIF
         continue-on-error: true
         run: |
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
           DEFAULT_SEVERITY=${{ github.event.inputs.severity || 'critical,high,medium,low' }}
           THREADS=${{ github.event.inputs.threads || 50 }}
           PARALLEL=${{ github.event.inputs.parallel_domains || 5 }}
+          TIMEOUT=${{ github.event.inputs.timeout || 10 }}
 
           # Temporary file for per-domain severity overrides
           OVERRIDES_FILE=$(mktemp)
@@ -73,7 +78,6 @@ jobs:
           run_scan() {
             file="$1"
             domain=$(basename "$file" _live.txt)
-
             SEVERITY="$DEFAULT_SEVERITY"
 
             # Apply per-domain severity override if present
@@ -85,18 +89,19 @@ jobs:
               fi
             fi
 
-            echo "[*] Scanning $domain with threads=$THREADS..."
-            timeout 5m nuclei -l "$file" \
+            echo "[*] Scanning $domain with threads=$THREADS, timeout=${TIMEOUT}m..."
+            timeout "${TIMEOUT}m" nuclei -l "$file" \
               -severity "$SEVERITY" \
               -c "$THREADS" \
               -o "${OUTPUT_FOLDER}/${domain}_nuclei.txt" \
+              -reporter sarif \
+              -o "${OUTPUT_FOLDER}/${domain}_nuclei.sarif" \
               || echo "[-] Scan failed or timed out for $domain, continuing..."
           }
 
           export -f run_scan
-          export OUTPUT_FOLDER DEFAULT_SEVERITY THREADS OVERRIDES_FILE
+          export OUTPUT_FOLDER DEFAULT_SEVERITY THREADS OVERRIDES_FILE TIMEOUT
 
-          # Run all domain scans in parallel
           find live -name '*_live.txt' | xargs -P "$PARALLEL" -I {} bash -c 'run_scan "$@"' _ {}
 
       - name: Commit and Push Scan Results
@@ -104,7 +109,7 @@ jobs:
           OUTPUT_FOLDER=${{ github.event.inputs.output_folder || 'result' }}
           git config --local user.name "github-actions[bot]"
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git add "${OUTPUT_FOLDER}"/*.txt
+          git add "${OUTPUT_FOLDER}"/*.txt "${OUTPUT_FOLDER}"/*.sarif
           git diff --cached --quiet || git commit -m "Update Nuclei scan results"
           git fetch origin main
           git rebase origin/main
