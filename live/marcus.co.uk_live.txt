@@ -1,6 +1,0 @@
-https://www.marcus.co.uk
-https://login.marcus.co.uk
-https://api.marcus.co.uk
-https://v.marcus.co.uk
-https://vendor.marcus.co.uk
-https://clicks.e.marcus.co.uk

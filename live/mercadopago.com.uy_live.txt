@@ -1,9 +1,0 @@
-https://labs.mercadopago.com.uy
-https://melidata.mercadopago.com.uy
-https://dev-cxwidget.mercadopago.com.uy
-https://melichat.mercadopago.com.uy
-https://registration-be.mercadopago.com.uy
-https://reg-test.mercadopago.com.uy
-http://www.mercadopago.com.uy
-http://delta.mercadopago.com.uy
-http://auth.mercadopago.com.uy

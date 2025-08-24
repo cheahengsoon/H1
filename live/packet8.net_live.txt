@@ -1,7 +1,0 @@
-http://ntr.packet8.net
-https://activate.packet8.net
-https://cognigen.packet8.net
-https://dataserve.packet8.net
-https://m.packet8.net
-https://tmone.packet8.net
-https://www.packet8.net

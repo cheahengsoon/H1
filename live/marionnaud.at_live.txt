@@ -1,5 +1,0 @@
-https://ecom-data.marionnaud.at
-https://journal.marionnaud.at
-http://autodiscover.marionnaud.at
-http://mta-sts.marionnaud.at
-http://prod-cc.marionnaud.at

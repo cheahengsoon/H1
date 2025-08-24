@@ -1,7 +1,0 @@
-https://shepherd-api.infra-prod.nsvcs.net
-https://consul-api.infra-prod.nsvcs.net
-https://devlake-grafana.infra-prod.nsvcs.net
-https://devlake.infra-prod.nsvcs.net
-https://vault-releng.infra-prod.nsvcs.net
-https://awx-callback.infra-prod.nsvcs.net
-https://argocd.infra-prod.nsvcs.net

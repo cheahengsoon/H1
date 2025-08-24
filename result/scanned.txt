@@ -1,3 +1,0 @@
-live/marionnaud.fr_live.txt
-live/mbamupdates.com_live.txt
-live/ops.netlify.com_live.txt

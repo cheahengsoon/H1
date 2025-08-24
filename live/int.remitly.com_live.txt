@@ -1,8 +1,0 @@
-https://vpn-bk.int.remitly.com
-https://echo-cloudfront.int.remitly.com
-https://sso-auth.int.remitly.com
-https://test-cdn.infra.int.remitly.com
-https://crm.int.remitly.com
-https://build.int.remitly.com
-http://vpn-pa.int.remitly.com
-http://vpn-pa-bk.int.remitly.com

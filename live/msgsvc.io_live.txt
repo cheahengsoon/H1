@@ -1,2 +1,0 @@
-https://live.msgsvc.io
-https://test.msgsvc.io

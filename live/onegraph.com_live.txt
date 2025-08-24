@@ -1,4 +1,0 @@
-http://deps-test-2.onegraph.com
-https://deps-test.onegraph.com
-https://serve.onegraph.com
-https://www.onegraph.com

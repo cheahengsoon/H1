@@ -1,6 +1,0 @@
-https://pmstrk.mercadopago.cl
-https://www.mercadopago.cl
-https://optout.mercadopago.cl
-https://auth.mercadopago.cl
-https://analytics.mercadopago.cl
-http://g.mercadopago.cl

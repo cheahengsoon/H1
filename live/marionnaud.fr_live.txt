@@ -1,5 +1,0 @@
-http://prod-cc.marionnaud.fr
-http://app-cc.marionnaud.fr
-https://ecom-data.marionnaud.fr
-https://mobadm.marionnaud.fr
-https://fs.marionnaud.fr

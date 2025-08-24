@@ -1,5 +1,0 @@
-http://autodiscover.marionnaud.ch
-http://prod-cc.marionnaud.ch
-https://extranet.marionnaud.ch
-https://ecom-data.marionnaud.ch
-https://mta-sts.marionnaud.ch

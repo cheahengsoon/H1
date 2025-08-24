@@ -1,1 +1,0 @@
-[weak-cipher-suites:tls-1.1] [ssl] [low] res.ac.lastminute.co.nz:443 ["[tls11 TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA]"]

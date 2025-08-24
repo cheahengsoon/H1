@@ -1,2 +1,0 @@
-https://spinnaker-api.ops.netlify.com
-https://spinnaker.ops.netlify.com

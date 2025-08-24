@@ -1,8 +1,0 @@
-http://autodiscover.news.napoleongames.be
-https://api.web.stage.betler.napoleongames.be
-https://cashier.napoleongames.be
-https://affiliate.napoleongames.be
-https://help.napoleongames.be
-http://api.web.production.betler.napoleongames.be
-http://api.web.qa.betler.napoleongames.be
-https://www.napoleongames.be
