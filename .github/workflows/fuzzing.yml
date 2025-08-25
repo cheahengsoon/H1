@@ -9,14 +9,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Updated to latest stable
 
       - name: Install dependencies
         run: |
           sudo apt-get update -y
           sudo apt-get install -y golang-go python3 python3-pip git build-essential
 
-      # Clone and build tools
+      # Clone and install tools
       - name: Clone and install tools
         run: |
           # Nuclei
@@ -67,13 +67,13 @@ jobs:
 
       - name: Run Recon Pipeline
         run: |
-          # Make sure domains.txt exists
+          # Ensure domains.txt exists
           if [ ! -f domains.txt ]; then
             echo "domains.txt not found. Please add it to the repository root."
             exit 1
           fi
 
-          # Normalize input file
+          # Deduplicate domains
           sort -u domains.txt > targets.txt
 
           # Collect URLs from multiple tools
@@ -82,17 +82,22 @@ jobs:
           cat targets.txt | hakrawler > hakrawler.txt
           katana -list targets.txt -silent -o katana.txt
 
-          # Merge & deduplicate
-          cat gauplus.txt waybackurls.txt hakrawler.txt katana.txt | uro | sort -u > urls.txt
+          # Optional ParamSpider run (slower, can comment out if not needed)
+          while read domain; do
+            python3 ParamSpider/paramspider.py -d "$domain" -o "paramspider_$domain.txt"
+          done < targets.txt
+
+          # Merge & deduplicate URLs
+          cat gauplus.txt waybackurls.txt hakrawler.txt katana.txt paramspider_*.txt 2>/dev/null | uro | sort -u > urls.txt
 
           # Probe live hosts
           cat targets.txt | httpx -silent -o live_hosts.txt
 
-          # Run nuclei scan on collected URLs
+          # Run nuclei scan
           nuclei -l urls.txt -t nuclei-templates -o nuclei_results.txt
 
       - name: Upload results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Updated to latest stable
         with:
           name: recon-results
           path: |
@@ -100,3 +105,4 @@ jobs:
             live_hosts.txt
             urls.txt
             nuclei_results.txt
+            paramspider_*.txt
