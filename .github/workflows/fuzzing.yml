@@ -9,14 +9,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # Updated to latest stable
+        uses: actions/checkout@v4  # latest stable
 
       - name: Install dependencies
         run: |
           sudo apt-get update -y
           sudo apt-get install -y golang-go python3 python3-pip git build-essential
 
-      # Clone and install tools
+      - name: Set Go bin in PATH
+        run: echo "$HOME/go/bin" >> $GITHUB_PATH
+
       - name: Clone and install tools
         run: |
           # Nuclei
@@ -82,7 +84,7 @@ jobs:
           cat targets.txt | hakrawler > hakrawler.txt
           katana -list targets.txt -silent -o katana.txt
 
-          # Optional ParamSpider run (slower, can comment out if not needed)
+          # Optional ParamSpider run
           while read domain; do
             python3 ParamSpider/paramspider.py -d "$domain" -o "paramspider_$domain.txt"
           done < targets.txt
@@ -97,7 +99,7 @@ jobs:
           nuclei -l urls.txt -t nuclei-templates -o nuclei_results.txt
 
       - name: Upload results
-        uses: actions/upload-artifact@v4  # Updated to latest stable
+        uses: actions/upload-artifact@v4  # latest stable
         with:
           name: recon-results
           path: |
