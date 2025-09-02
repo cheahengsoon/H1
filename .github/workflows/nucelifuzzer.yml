@@ -14,9 +14,15 @@ jobs:
       TOOLS_DIR: $HOME/tools
       PATH: $HOME/tools/bin:$PATH
     steps:
+      # Install essential tools before checkout
+      - name: Install essential tools
+        run: sudo apt-get update && sudo apt-get install -y tar gzip coreutils git curl wget python3 python3-pip build-essential
+
+      # Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Set up Go
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -42,22 +48,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y git curl wget python3 python3-pip build-essential
-
+      # Create tools directory
       - name: Create tools directory
         run: mkdir -p $HOME/tools/bin
 
+      # Install Go-based tools
       - name: Install Nuclei
         run: GO111MODULE=on go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
-
-      - name: Install ParamSpider
-        run: |
-          git clone https://github.com/0xKayala/ParamSpider.git
-          pip3 install -r ParamSpider/requirements.txt
-          ln -s $PWD/ParamSpider/paramspider.py $HOME/tools/bin/paramspider
 
       - name: Install waybackurls
         run: go install github.com/tomnomnom/waybackurls@latest
@@ -74,33 +71,51 @@ jobs:
       - name: Install httpx
         run: go install github.com/projectdiscovery/httpx/cmd/httpx@latest
 
+      # Install ParamSpider (Python)
+      - name: Install ParamSpider
+        run: |
+          git clone https://github.com/0xKayala/ParamSpider.git
+          pip3 install -r ParamSpider/requirements.txt
+          ln -s $PWD/ParamSpider/paramspider.py $HOME/tools/bin/paramspider
+
+      # Install uro (Python)
       - name: Install uro
         run: pip3 install uro
 
+      # Ensure scripts are executable
       - name: Ensure scripts are executable
         run: chmod +x install.sh NucleiFuzzer.sh
 
+      # Run installer
       - name: Run installer
         run: ./install.sh
 
+      # Run help command
       - name: Run help command
         run: ./NucleiFuzzer.sh -h
 
-      - name: Run scan using Input/domains.txt
+      # Update Nuclei templates
+      - name: Update Nuclei templates
+        run: nuclei -update-templates
+
+      # Run scan using Input/domains.txt and save results with timestamp
+      - name: Run scan
         run: |
-          mkdir -p Output
           if [ ! -f Input/domains.txt ]; then
             echo "Input/domains.txt not found!"
             exit 1
           fi
-          ./NucleiFuzzer.sh -f Input/domains.txt > Output/scan_result.txt
+          mkdir -p Output
+          TIMESTAMP=$(date +%Y%m%d_%H%M)
+          ./NucleiFuzzer.sh -f Input/domains.txt > Output/scan_$TIMESTAMP.txt
 
-      - name: Commit and push scan results
+      # Commit and push scan results
+      - name: Commit and push results
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add Output/scan_result.txt
-          git commit -m "Update scan results [skip ci]" || echo "No changes to commit"
+          git add Output/scan_*.txt
+          git commit -m "Update scan results $TIMESTAMP [skip ci]" || echo "No changes to commit"
           git push origin HEAD:main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
