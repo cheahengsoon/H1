@@ -1,0 +1,4 @@
+dev.infomaniak.events
+preprod.dev.infomaniak.events
+storage.infomaniak.events
+www.infomaniak.events

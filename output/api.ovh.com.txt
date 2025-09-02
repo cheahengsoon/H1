@@ -1,0 +1,5 @@
+www.api.ovh.com
+eu.api.ovh.com
+www.eu.api.ovh.com
+www.ca.api.ovh.com
+ca.api.ovh.com

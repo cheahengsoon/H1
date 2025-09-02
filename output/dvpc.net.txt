@@ -1,0 +1,12 @@
+api.ndponline.dvpc.net
+www.dvpc.net
+ndponline-api.dvpc.net
+ndpbo-api.dvpc.net
+ndponline.dvpc.net
+ndpsweb.dvpc.net
+ekweb.dvpc.net
+ekweb-api.dvpc.net
+ndpsweb-api.dvpc.net
+ndpbo.dvpc.net
+ndpb2b-api.dvpc.net
+ndpb2b.dvpc.net

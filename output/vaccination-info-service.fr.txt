@@ -1,0 +1,12 @@
+professionnels.vaccination-info-service.fr
+pp.vaccination-info-service.fr
+ppd.vaccination-info-service.fr
+www.vaccination-info-service.fr
+prerecette.vaccination-info-service.fr
+prerecette-admin.vaccination-info-service.fr
+prerecette-professionnels.vaccination-info-service.fr
+ppd-pro.vaccination-info-service.fr
+admin.vaccination-info-service.fr
+pro-pp.vaccination-info-service.fr
+admin-pp.vaccination-info-service.fr
+ppd-adm.vaccination-info-service.fr

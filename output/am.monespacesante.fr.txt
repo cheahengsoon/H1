@@ -1,0 +1,3 @@
+preprod.am.monespacesante.fr
+preprod.editeur.am.monespacesante.fr
+editeur.am.monespacesante.fr

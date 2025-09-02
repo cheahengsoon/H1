@@ -1,0 +1,7 @@
+amp-api-edge.apps.apple.com
+api-edge.apps.apple.com
+amp-api-search-edge.apps.apple.com
+auth.apps.apple.com
+buylite.apps.apple.com
+amp-api-search.apps.apple.com
+api.apps.apple.com

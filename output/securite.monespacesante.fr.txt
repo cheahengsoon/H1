@@ -1,0 +1,10 @@
+fhir.securite.monespacesante.fr
+www.securite.monespacesante.fr
+am.securite.monespacesante.fr
+editeurs.securite.monespacesante.fr
+auth.securite.monespacesante.fr
+support.securite.monespacesante.fr
+admincms.securite.monespacesante.fr
+cms.securite.monespacesante.fr
+api.securite.monespacesante.fr
+adminstore.securite.monespacesante.fr

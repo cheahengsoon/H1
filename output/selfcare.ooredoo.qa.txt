@@ -1,0 +1,3 @@
+www.selfcare.ooredoo.qa
+uat.selfcare.ooredoo.qa
+www.uat.selfcare.ooredoo.qa

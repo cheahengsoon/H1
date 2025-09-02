@@ -1,0 +1,8 @@
+xv-domain-manager-com-laude.gatekeeper.prd.iat.it.xvservice.net
+xv-audit-log-collector-carbon-black-platform.gatekeeper.prd.iat.it.xvservice.net
+vector.prd.iat.it.xvservice.net
+recauto.prd.iat.it.xvservice.net
+1pw-scim.prd.iat.it.xvservice.net
+gatekeeper.prd.iat.it.xvservice.net
+salary-bands.prd.iat.it.xvservice.net
+xv-iat-google-groups-maintenance-okta-admin.gatekeeper.prd.iat.it.xvservice.net
