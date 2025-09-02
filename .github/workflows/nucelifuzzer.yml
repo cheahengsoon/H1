@@ -5,7 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch:  # allows manual trigger
+  workflow_dispatch:
 
 jobs:
   setup-and-scan:
@@ -13,8 +13,9 @@ jobs:
     env:
       TOOLS_DIR: $HOME/tools
       PATH: $HOME/tools/bin:$PATH
+
     steps:
-      # Checkout repository with full git clone (avoids tar)
+      # Checkout repository using full git clone (avoids tar)
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -111,9 +112,4 @@ jobs:
       - name: Commit and push results
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add Output/scan_*.txt
-          git commit -m "Update scan results $TIMESTAMP [skip ci]" || echo "No changes to commit"
-          git push origin HEAD:main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git config --global user.email "github-actions
