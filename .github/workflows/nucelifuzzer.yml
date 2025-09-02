@@ -9,20 +9,13 @@ on:
 
 jobs:
   setup-and-scan:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     env:
       TOOLS_DIR: $HOME/tools
       PATH: $HOME/tools/bin:$PATH
 
     steps:
-      # Ensure essential tools are installed
-      - name: Install essential tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y tar git curl wget python3 python3-pip build-essential
-          git --version  # ensure Git ≥ 2.18
-
-      # Checkout repository using full git clone
+      # Checkout repository using full git clone (avoids tar)
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
