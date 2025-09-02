@@ -9,13 +9,20 @@ on:
 
 jobs:
   setup-and-scan:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       TOOLS_DIR: $HOME/tools
       PATH: $HOME/tools/bin:$PATH
 
     steps:
-      # Checkout repository using full git clone (avoids tar)
+      # Ensure essential tools are installed
+      - name: Install essential tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tar git curl wget python3 python3-pip build-essential
+          git --version  # ensure Git ≥ 2.18
+
+      # Checkout repository using full git clone
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -112,4 +119,9 @@ jobs:
       - name: Commit and push results
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add Output/scan_*.txt
+          git commit -m "Update scan results $TIMESTAMP [skip ci]" || echo "No changes to commit"
+          git push origin HEAD:main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
