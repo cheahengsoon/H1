@@ -26,26 +26,15 @@ jobs:
           sudo apt update -y
           sudo apt install -y python3 python3-pip git wget curl
 
-          # Install ParamSpider
-          git clone https://github.com/devanshbatham/ParamSpider.git
-          cd ParamSpider && pip3 install -r requirements.txt && cd ..
+          # Install ParamSpider via pip
+          pip3 install paramspider
 
-          # Install waybackurls
+          # Install Go tools
           go install github.com/tomnomnom/waybackurls@latest
-
-          # Install gauplus
           go install github.com/bp0lr/gauplus@latest
-
-          # Install hakrawler
           go install github.com/hakluke/hakrawler@latest
-
-          # Install katana
           go install github.com/projectdiscovery/katana/cmd/katana@latest
-
-          # Install httpx
           go install github.com/projectdiscovery/httpx/cmd/httpx@latest
-
-          # Install nuclei
           go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
 
           echo "$HOME/go/bin" >> $GITHUB_PATH
@@ -56,8 +45,8 @@ jobs:
           while read domain; do
             echo "[*] Processing $domain"
 
-            # ParamSpider (fixed path)
-            python3 ParamSpider/paramspider/paramspider.py -d $domain --quiet --level high -o Output/${domain}_paramspider.txt
+            # ParamSpider
+            paramspider -d $domain --quiet --level high -o Output/${domain}_paramspider.txt
 
             # waybackurls
             echo $domain | waybackurls > Output/${domain}_wayback.txt
@@ -72,7 +61,7 @@ jobs:
             katana -u $domain -d 3 -silent > Output/${domain}_katana.txt
           done < Input/domains.txt
 
-          # Merge results & filter live with httpx
+          # Merge all results & filter live URLs with httpx
           cat Output/* | sort -u | httpx -silent -status-code -title -follow-redirects -no-color -o Output/live_urls.txt
 
       - name: Run Nuclei (Critical/High/Medium/Low only)
