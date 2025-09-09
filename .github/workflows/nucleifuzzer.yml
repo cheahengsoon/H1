@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: CheckOutput repo
-        uses: actions/checkOutput@v4
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
