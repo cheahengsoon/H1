@@ -1,0 +1,89 @@
+name: NucleiFuzzer
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "Input/domains.txt"
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: CheckOutput repo
+        uses: actions/checkOutput@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Install Tools
+        run: |
+          sudo apt update -y
+          sudo apt install -y python3 python3-pip git wget curl
+
+          # Install ParamSpider
+          git clone https://github.com/devanshbatham/ParamSpider.git
+          cd ParamSpider && pip3 install -r requirements.txt && cd ..
+
+          # Install waybackurls
+          go install github.com/tomnomnom/waybackurls@latest
+
+          # Install gauplus
+          go install github.com/bp0lr/gauplus@latest
+
+          # Install hakrawler
+          go install github.com/hakluke/hakrawler@latest
+
+          # Install katana
+          go install github.com/projectdiscovery/katana/cmd/katana@latest
+
+          # Install nuclei
+          go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+
+          echo "$HOME/go/bin" >> $GITHUB_PATH
+
+      - name: Run Recon Tools
+        run: |
+          mkdir -p Output
+          while read domain; do
+            echo "[*] Processing $domain"
+
+            # ParamSpider
+            python3 ParamSpider/paramspider.py -d $domain --quiet --level high -o Output/${domain}_paramspider.txt
+
+            # waybackurls
+            echo $domain | waybackurls > Output/${domain}_wayback.txt
+
+            # gauplus
+            echo $domain | gauplus -t 5 > Output/${domain}_gauplus.txt
+
+            # hakrawler
+            echo $domain | hakrawler -depth 3 -scope subs > Output/${domain}_hakrawler.txt
+
+            # katana
+            katana -u $domain -d 3 -silent > Output/${domain}_katana.txt
+          done < Input/domains.txt
+
+          # Merge all results
+          cat Output/* | sort -u > Output/urls_all.txt
+
+      - name: Run Nuclei (Critical/High/Medium/Low only)
+        run: |
+          mkdir -p nuclei-results
+          nuclei -l Output/urls_all.txt \
+            -t nuclei-templates/ \
+            -severity critical,high,medium,low \
+            -o nuclei-results/nuclei_report.txt
+
+      - name: Commit results back to repo
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add Output/ nuclei-results/
+          git commit -m "Automated scan results [skip ci]" || echo "No changes to commit"
+          git push
