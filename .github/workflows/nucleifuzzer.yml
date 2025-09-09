@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: CheckOutput repo
+      - name: Checkout repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -42,6 +42,9 @@ jobs:
           # Install katana
           go install github.com/projectdiscovery/katana/cmd/katana@latest
 
+          # Install httpx
+          go install github.com/projectdiscovery/httpx/cmd/httpx@latest
+
           # Install nuclei
           go install github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
 
@@ -53,8 +56,8 @@ jobs:
           while read domain; do
             echo "[*] Processing $domain"
 
-            # ParamSpider
-            python3 ParamSpider/paramspider.py -d $domain --quiet --level high -o Output/${domain}_paramspider.txt
+            # ParamSpider (fixed path)
+            python3 ParamSpider/paramspider/paramspider.py -d $domain --quiet --level high -o Output/${domain}_paramspider.txt
 
             # waybackurls
             echo $domain | waybackurls > Output/${domain}_wayback.txt
@@ -69,21 +72,21 @@ jobs:
             katana -u $domain -d 3 -silent > Output/${domain}_katana.txt
           done < Input/domains.txt
 
-          # Merge all results
-          cat Output/* | sort -u > Output/urls_all.txt
+          # Merge results & filter live with httpx
+          cat Output/* | sort -u | httpx -silent -status-code -title -follow-redirects -no-color -o Output/live_urls.txt
 
       - name: Run Nuclei (Critical/High/Medium/Low only)
         run: |
-          mkdir -p nuclei-results
-          nuclei -l Output/urls_all.txt \
+          mkdir -p Output/nuclei-results
+          nuclei -l Output/live_urls.txt \
             -t nuclei-templates/ \
             -severity critical,high,medium,low \
-            -o nuclei-results/nuclei_report.txt
+            -o Output/nuclei-results/nuclei_report.txt
 
       - name: Commit results back to repo
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          git add Output/ nuclei-results/
+          git add Output/
           git commit -m "Automated scan results [skip ci]" || echo "No changes to commit"
           git push
