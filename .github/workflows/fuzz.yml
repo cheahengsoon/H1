@@ -14,25 +14,38 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Set up dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y python3 python3-pip git
+          sudo apt-get install -y git python3 python3-pip golang curl unzip
 
-      - name: Install Python dependencies
+          # Install Nuclei
+          curl -sSfL https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei-linux-amd64.tar.gz | tar -xz -C /usr/local/bin
+
+          # Install httpx
+          curl -sSfL https://github.com/projectdiscovery/httpx/releases/latest/download/httpx-linux-amd64.tar.gz | tar -xz -C /usr/local/bin
+
+          # Install ParamSpider
+          git clone https://github.com/devanshbatham/ParamSpider.git
+          cd ParamSpider && pip3 install -r requirements.txt
+          cd ..
+
+      - name: Clone NucleiFuzzer
         run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install requests
+          git clone https://github.com/0xKayala/NucleiFuzzer.git
+          chmod +x NucleiFuzzer/install.sh
+          chmod +x NucleiFuzzer/NucleiFuzzer.sh
+          ./NucleiFuzzer/install.sh
 
-      - name: Ensure output directories exist
+      - name: Create output directories
         run: mkdir -p output/domains output/errors
 
       - name: Run NucleiFuzzer
         run: |
-          python3 NucleiFuzzer/nuclei_fuzzer.py \
-          -i Input/domains.txt \
-          -o output/domains \
-          -e output/errors
+          cat Input/domains.txt | xargs -P 5 -I {} bash -c '
+            safe_name=$(echo "{}" | sed "s/[^a-zA-Z0-9_-]/_/g")
+            ./NucleiFuzzer/NucleiFuzzer.sh -d "{}" -o "output/domains/${safe_name}.txt" || echo "Error scanning {}" >> output/errors/errors.log
+          '
 
       - name: Commit results
         run: |
