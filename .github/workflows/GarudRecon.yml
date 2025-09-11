@@ -26,8 +26,11 @@ jobs:
           # Fetch the latest Nuclei release tag
           latest_release=$(curl -s https://api.github.com/repos/projectdiscovery/nuclei/releases/latest | jq -r .tag_name)
           
+          # Remove the leading 'v' from the version number
+          version="${latest_release#v}"
+          
           # Construct the download URL for the linux_amd64 binary
-          download_url="https://github.com/projectdiscovery/nuclei/releases/download/${latest_release}/nuclei_${latest_release#v}_linux_amd64.zip"
+          download_url="https://github.com/projectdiscovery/nuclei/releases/download/${latest_release}/nuclei_${version}_linux_amd64.zip"
           
           # Download and unzip the binary
           curl -sSfL "$download_url" -o nuclei.zip
