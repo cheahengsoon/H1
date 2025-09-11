@@ -1,7 +1,0 @@
-staging-yole-i-micronews-com.osu.eu-west-2.outscale.com
-static.osu.eu-west-2.outscale.com
-seqens-seqens-com.osu.eu-west-2.outscale.com
-yole-i-micronews-com.osu.eu-west-2.outscale.com
-primx-primx-eu.osu.eu-west-2.outscale.com
-afg-gazdaujourdhui-fr.osu.eu-west-2.outscale.com
-mcphy-mcphy-com.osu.eu-west-2.outscale.com

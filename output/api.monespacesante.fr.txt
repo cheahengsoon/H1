@@ -1,3 +1,0 @@
-preprod.editeur.api.monespacesante.fr
-preprod.api.monespacesante.fr
-editeur.api.monespacesante.fr

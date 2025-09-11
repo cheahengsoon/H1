@@ -1,5 +1,0 @@
-email.fi.unibet.com
-service.fi.unibet.com
-sc-betandwin.fi.unibet.com
-sc-betandwin-s1.fi.unibet.com
-ishockey.fi.unibet.com

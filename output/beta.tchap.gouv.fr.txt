@@ -1,3 +1,0 @@
-www.beta.tchap.gouv.fr
-app.beta.tchap.gouv.fr
-app-sir.beta.tchap.gouv.fr

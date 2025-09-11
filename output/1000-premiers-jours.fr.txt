@@ -1,6 +1,0 @@
-ppd.1000-premiers-jours.fr
-admin.1000-premiers-jours.fr
-www.1000-premiers-jours.fr
-prerecette-admin.1000-premiers-jours.fr
-precette.1000-premiers-jours.fr
-admin-ppd.1000-premiers-jours.fr

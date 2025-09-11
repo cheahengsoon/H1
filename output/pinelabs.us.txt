@@ -1,3 +1,0 @@
-uat.pinelabs.us
-test.pinelabs.us
-www.pinelabs.us

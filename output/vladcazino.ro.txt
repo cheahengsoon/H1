@@ -1,8 +1,0 @@
-email.vladcazino.ro
-service.vladcazino.ro
-support-qa1.vladcazino.ro
-support-si1.vladcazino.ro
-support.vladcazino.ro
-welcome.vladcazino.ro
-evolivecasino.vladcazino.ro
-www.vladcazino.ro
