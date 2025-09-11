@@ -13,7 +13,7 @@ jobs:
       - name: Set up dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y curl unzip git python3 python3-pip parallel
+          sudo apt-get install -y curl unzip git python3 python3-pip jq parallel
 
       - name: Install GarudRecon
         run: |
@@ -23,7 +23,14 @@ jobs:
 
       - name: Install Nuclei
         run: |
-          curl -sSfL https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei_$(uname -s)_$(uname -m).zip -o nuclei.zip
+          # Fetch the latest Nuclei release tag
+          latest_release=$(curl -s https://api.github.com/repos/projectdiscovery/nuclei/releases/latest | jq -r .tag_name)
+          
+          # Construct the download URL for the linux_amd64 binary
+          download_url="https://github.com/projectdiscovery/nuclei/releases/download/${latest_release}/nuclei_${latest_release#v}_linux_amd64.zip"
+          
+          # Download and unzip the binary
+          curl -sSfL "$download_url" -o nuclei.zip
           unzip nuclei.zip
           sudo mv nuclei /usr/local/bin/
           nuclei -version
