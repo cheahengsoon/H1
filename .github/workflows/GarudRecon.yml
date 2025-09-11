@@ -18,6 +18,7 @@ jobs:
       - name: Install GarudRecon
         run: |
           git clone --depth 1 https://github.com/rix4uni/GarudRecon.git
+          chmod +x GarudRecon/garudrecon
 
       - name: Install Nuclei
         run: |
@@ -34,7 +35,7 @@ jobs:
           mkdir -p output/domains output/errors
           while IFS= read -r domain; do
             echo "[*] Running GarudRecon for $domain"
-            if python3 ./GarudRecon/garudrecon.py -d "$domain" -o "output/domains/$domain.txt"; then
+            if bash GarudRecon/garudrecon -d "$domain" -o "output/domains/$domain.txt"; then
               echo "[+] GarudRecon completed for $domain"
             else
               echo "[-] GarudRecon failed for $domain"
