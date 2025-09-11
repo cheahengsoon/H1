@@ -1,4 +1,4 @@
-name: GarudRecon Largescale + Nuclei Parallel Scan with Summary
+name: GarudRecon + Nuclei Workflow
 
 on:
   workflow_dispatch: # Manual trigger
@@ -10,7 +10,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up dependencies
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y curl unzip git python3 python3-pip jq parallel
@@ -20,81 +20,95 @@ jobs:
           git clone --depth 1 https://github.com/rix4uni/GarudRecon.git
           cd GarudRecon
           bash configure
+          chmod +x garudrecon
 
       - name: Install Nuclei
         run: |
-          # Fetch the latest Nuclei release tag
           latest_release=$(curl -s https://api.github.com/repos/projectdiscovery/nuclei/releases/latest | jq -r .tag_name)
-          
-          # Remove the leading 'v' from the version number
           version="${latest_release#v}"
-          
-          # Construct the download URL for the linux_amd64 binary
           download_url="https://github.com/projectdiscovery/nuclei/releases/download/${latest_release}/nuclei_${version}_linux_amd64.zip"
-          
-          # Download the zip
           curl -sSfL "$download_url" -o nuclei.zip
-          
-          # Unzip only the nuclei binary non-interactively
           unzip -o nuclei.zip nuclei
-          
-          # Move binary to /usr/local/bin
           sudo mv nuclei /usr/local/bin/
           nuclei -version
 
-      - name: Run GarudRecon largescope in parallel with error handling
+      - name: Run GarudRecon + Nuclei Workflow
         run: |
-          mkdir -p output/domains output/errors
-          cat Input/domains.txt | parallel -j 4 '
-            domain={}
-            echo "Scanning domain: $domain"
-            if ! ./GarudRecon/garudrecon largescope "$domain" -o "output/domains/$domain.txt"; then
-              echo "$domain" >> output/errors/garudrecon_errors.log
-            fi
-          '
+          set -euo pipefail
+          DOMAIN_LIST="Input/domains.txt"
+          OUTPUT_DIR="output/domains"
+          ERROR_DIR="output/errors"
+          NUCLEI_DIR="output/nuclei"
+          SUMMARY_DIR="output/summary"
 
-      - name: Run Nuclei in parallel with filtered severity and error handling
-        run: |
-          mkdir -p output/nuclei
-          ls output/domains/*.txt | parallel -j 4 '
-            file={}
-            while IFS= read -r host; do
-              if ! nuclei -u "$host" -severity "critical,high,medium,low" -o "output/nuclei/$(basename $file .txt)_nuclei.txt"; then
-                echo "$host" >> output/errors/nuclei_errors.log
+          mkdir -p "$OUTPUT_DIR" "$ERROR_DIR" "$NUCLEI_DIR" "$SUMMARY_DIR"
+          chmod +x ./GarudRecon/garudrecon
+
+          scan_domain() {
+              domain="$1"
+              outfile="$OUTPUT_DIR/$domain.txt"
+              errfile="$ERROR_DIR/$domain.err"
+              echo "[*] Scanning $domain with GarudRecon..."
+              if ./GarudRecon/garudrecon largescope "$domain" -o "$outfile" 2>"$errfile"; then
+                  echo "[+] GarudRecon succeeded for $domain"
+              else
+                  echo "[-] GarudRecon failed for $domain, retrying once..."
+                  if ! ./GarudRecon/garudrecon largescope "$domain" -o "$outfile" 2>>"$errfile"; then
+                      echo "[-] Final failure for $domain"
+                      echo "$domain" >> "$ERROR_DIR/garudrecon_failed.log"
+                  fi
               fi
-            done < "$file"
-          '
+          }
+          export -f scan_domain
+          export OUTPUT_DIR ERROR_DIR
+          cat "$DOMAIN_LIST" | parallel -j 5 scan_domain {}
 
-      - name: Generate summary report
-        run: |
-          mkdir -p output/summary
-          echo "=== GarudRecon Success Domains ===" > output/summary/report.txt
-          for f in output/domains/*.txt; do
-            domain=$(basename "$f" .txt)
-            if ! grep -q "$domain" output/errors/garudrecon_errors.log 2>/dev/null; then
-              echo "$domain" >> output/summary/report.txt
-            fi
+          echo "=== GarudRecon scanning complete ==="
+
+          for f in "$OUTPUT_DIR"/*.txt; do
+              domain=$(basename "$f" .txt)
+              echo "[*] Running Nuclei scan on results from $domain..."
+              if nuclei -l "$f" -severity critical,high,medium,low -o "$NUCLEI_DIR/${domain}_nuclei.txt"; then
+                  echo "[+] Nuclei completed for $domain"
+              else
+                  echo "[-] Nuclei failed for $domain"
+                  echo "$domain" >> "$ERROR_DIR/nuclei_failed.log"
+              fi
           done
 
-          echo -e "\n=== GarudRecon Failed Domains ===" >> output/summary/report.txt
-          if [ -f output/errors/garudrecon_errors.log ]; then
-            cat output/errors/garudrecon_errors.log >> output/summary/report.txt
-          else
-            echo "None" >> output/summary/report.txt
-          fi
+          REPORT="$SUMMARY_DIR/report.txt"
+          echo "=== GarudRecon + Nuclei Summary Report ===" > "$REPORT"
 
-          echo -e "\n=== Nuclei Scan Results (Critical/High/Medium/Low) ===" >> output/summary/report.txt
-          for f in output/nuclei/*.txt; do
-            echo -e "\n--- $(basename $f) ---" >> output/summary/report.txt
-            cat "$f" >> output/summary/report.txt
+          echo -e "\n[GarudRecon Success]" >> "$REPORT"
+          for f in "$OUTPUT_DIR"/*.txt; do
+              domain=$(basename "$f" .txt)
+              if ! grep -q "$domain" "$ERROR_DIR/garudrecon_failed.log" 2>/dev/null; then
+                  echo "$domain" >> "$REPORT"
+              fi
           done
 
-          echo -e "\n=== Nuclei Failed Hosts ===" >> output/summary/report.txt
-          if [ -f output/errors/nuclei_errors.log ]; then
-            cat output/errors/nuclei_errors.log >> output/summary/report.txt
+          echo -e "\n[GarudRecon Failed]" >> "$REPORT"
+          if [ -f "$ERROR_DIR/garudrecon_failed.log" ]; then
+              cat "$ERROR_DIR/garudrecon_failed.log" >> "$REPORT"
           else
-            echo "None" >> output/summary/report.txt
+              echo "None" >> "$REPORT"
           fi
+
+          echo -e "\n[Nuclei Results]" >> "$REPORT"
+          for f in "$NUCLEI_DIR"/*.txt; do
+              echo "--- $(basename "$f") ---" >> "$REPORT"
+              cat "$f" >> "$REPORT"
+          done
+
+          echo -e "\n[Nuclei Failed]" >> "$REPORT"
+          if [ -f "$ERROR_DIR/nuclei_failed.log" ]; then
+              cat "$ERROR_DIR/nuclei_failed.log" >> "$REPORT"
+          else
+              echo "None" >> "$REPORT"
+          fi
+
+          echo "=== Workflow Finished ==="
+          echo "Report saved at: $REPORT"
 
       - name: Commit and push results
         env:
@@ -103,5 +117,5 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
           git add output/
-          git commit -m "Update GarudRecon Largescale + Nuclei results (filtered severity) and summary"
+          git commit -m "Update GarudRecon + Nuclei results with summary"
           git push
