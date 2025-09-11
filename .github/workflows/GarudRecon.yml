@@ -1,7 +1,7 @@
 name: GarudRecon + Nuclei Workflow
 
 on:
-  workflow_dispatch: # Manual trigger
+  workflow_dispatch:
 
 jobs:
   recon:
@@ -32,83 +32,52 @@ jobs:
           sudo mv nuclei /usr/local/bin/
           nuclei -version
 
-      - name: Run GarudRecon + Nuclei Workflow
+      - name: Run GarudRecon on domain list
         run: |
-          set -euo pipefail
-          DOMAIN_LIST="Input/domains.txt"
-          OUTPUT_DIR="output/domains"
-          ERROR_DIR="output/errors"
-          NUCLEI_DIR="output/nuclei"
-          SUMMARY_DIR="output/summary"
-
-          mkdir -p "$OUTPUT_DIR" "$ERROR_DIR" "$NUCLEI_DIR" "$SUMMARY_DIR"
+          mkdir -p output/domains output/errors
           chmod +x ./GarudRecon/garudrecon
+          if ! ./GarudRecon/garudrecon -l Input/domains.txt -o output/domains/ 2>output/errors/garudrecon.log; then
+            echo "GarudRecon run failed. Check output/errors/garudrecon.log"
+          fi
 
-          scan_domain() {
-              domain="$1"
-              outfile="$OUTPUT_DIR/$domain.txt"
-              errfile="$ERROR_DIR/$domain.err"
-              echo "[*] Scanning $domain with GarudRecon..."
-              if ./GarudRecon/garudrecon largescope "$domain" -o "$outfile" 2>"$errfile"; then
-                  echo "[+] GarudRecon succeeded for $domain"
-              else
-                  echo "[-] GarudRecon failed for $domain, retrying once..."
-                  if ! ./GarudRecon/garudrecon largescope "$domain" -o "$outfile" 2>>"$errfile"; then
-                      echo "[-] Final failure for $domain"
-                      echo "$domain" >> "$ERROR_DIR/garudrecon_failed.log"
-                  fi
-              fi
-          }
-          export -f scan_domain
-          export OUTPUT_DIR ERROR_DIR
-          cat "$DOMAIN_LIST" | parallel -j 5 scan_domain {}
-
-          echo "=== GarudRecon scanning complete ==="
-
-          for f in "$OUTPUT_DIR"/*.txt; do
-              domain=$(basename "$f" .txt)
-              echo "[*] Running Nuclei scan on results from $domain..."
-              if nuclei -l "$f" -severity critical,high,medium,low -o "$NUCLEI_DIR/${domain}_nuclei.txt"; then
-                  echo "[+] Nuclei completed for $domain"
-              else
-                  echo "[-] Nuclei failed for $domain"
-                  echo "$domain" >> "$ERROR_DIR/nuclei_failed.log"
-              fi
+      - name: Run Nuclei on GarudRecon results
+        run: |
+          mkdir -p output/nuclei
+          for f in output/domains/*.txt; do
+            domain=$(basename "$f" .txt)
+            echo "[*] Running Nuclei scan on $domain..."
+            if nuclei -l "$f" -severity critical,high,medium,low -o "output/nuclei/${domain}_nuclei.txt"; then
+              echo "[+] Nuclei completed for $domain"
+            else
+              echo "[-] Nuclei failed for $domain" >> output/errors/nuclei_failed.log
+            fi
           done
 
-          REPORT="$SUMMARY_DIR/report.txt"
+      - name: Generate summary report
+        run: |
+          mkdir -p output/summary
+          REPORT="output/summary/report.txt"
           echo "=== GarudRecon + Nuclei Summary Report ===" > "$REPORT"
 
-          echo -e "\n[GarudRecon Success]" >> "$REPORT"
-          for f in "$OUTPUT_DIR"/*.txt; do
-              domain=$(basename "$f" .txt)
-              if ! grep -q "$domain" "$ERROR_DIR/garudrecon_failed.log" 2>/dev/null; then
-                  echo "$domain" >> "$REPORT"
-              fi
-          done
-
-          echo -e "\n[GarudRecon Failed]" >> "$REPORT"
-          if [ -f "$ERROR_DIR/garudrecon_failed.log" ]; then
-              cat "$ERROR_DIR/garudrecon_failed.log" >> "$REPORT"
+          echo -e "\n[GarudRecon Errors]" >> "$REPORT"
+          if [ -s output/errors/garudrecon.log ]; then
+            cat output/errors/garudrecon.log >> "$REPORT"
           else
-              echo "None" >> "$REPORT"
+            echo "None" >> "$REPORT"
           fi
 
           echo -e "\n[Nuclei Results]" >> "$REPORT"
-          for f in "$NUCLEI_DIR"/*.txt; do
-              echo "--- $(basename "$f") ---" >> "$REPORT"
-              cat "$f" >> "$REPORT"
+          for f in output/nuclei/*.txt; do
+            echo "--- $(basename "$f") ---" >> "$REPORT"
+            cat "$f" >> "$REPORT"
           done
 
           echo -e "\n[Nuclei Failed]" >> "$REPORT"
-          if [ -f "$ERROR_DIR/nuclei_failed.log" ]; then
-              cat "$ERROR_DIR/nuclei_failed.log" >> "$REPORT"
+          if [ -f output/errors/nuclei_failed.log ]; then
+            cat output/errors/nuclei_failed.log >> "$REPORT"
           else
-              echo "None" >> "$REPORT"
+            echo "None" >> "$REPORT"
           fi
-
-          echo "=== Workflow Finished ==="
-          echo "Report saved at: $REPORT"
 
       - name: Commit and push results
         env:
