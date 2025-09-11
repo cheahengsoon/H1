@@ -14,15 +14,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Python and Go
+      - name: Set up Python
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y git python3 python3-pip golang curl unzip
+          sudo apt-get install -y python3 python3-pip git
 
-      - name: Install NucleiFuzzer requirements
+      - name: Install Python dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip install -r NucleiFuzzer/requirements.txt
+          python3 -m pip install requests
 
       - name: Ensure output directories exist
         run: mkdir -p output/domains output/errors
