@@ -33,15 +33,17 @@ jobs:
       - name: Run GarudRecon on domain list
         run: |
           mkdir -p output/domains output/errors
+          cd GarudRecon
           while IFS= read -r domain; do
             echo "[*] Running GarudRecon for $domain"
-            if bash GarudRecon/garudrecon -d "$domain" -o "output/domains/$domain.txt"; then
+            if bash garudrecon -d "$domain" -o "../output/domains/$domain.txt"; then
               echo "[+] GarudRecon completed for $domain"
             else
               echo "[-] GarudRecon failed for $domain"
-              echo "$domain" >> output/errors/garudrecon_failed.log
+              echo "$domain" >> ../output/errors/garudrecon_failed.log
             fi
-          done < Input/domains.txt
+          done < ../Input/domains.txt
+          cd ..
 
       - name: Run Nuclei on GarudRecon results
         run: |
