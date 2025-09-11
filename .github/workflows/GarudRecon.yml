@@ -18,9 +18,6 @@ jobs:
       - name: Install GarudRecon
         run: |
           git clone --depth 1 https://github.com/rix4uni/GarudRecon.git
-          cd GarudRecon
-          bash configure
-          chmod +x garudrecon
 
       - name: Install Nuclei
         run: |
@@ -35,10 +32,15 @@ jobs:
       - name: Run GarudRecon on domain list
         run: |
           mkdir -p output/domains output/errors
-          chmod +x ./GarudRecon/garudrecon
-          if ! ./GarudRecon/garudrecon -l Input/domains.txt -o output/domains/ 2>output/errors/garudrecon.log; then
-            echo "GarudRecon run failed. Check output/errors/garudrecon.log"
-          fi
+          while IFS= read -r domain; do
+            echo "[*] Running GarudRecon for $domain"
+            if python3 ./GarudRecon/garudrecon.py -d "$domain" -o "output/domains/$domain.txt"; then
+              echo "[+] GarudRecon completed for $domain"
+            else
+              echo "[-] GarudRecon failed for $domain"
+              echo "$domain" >> output/errors/garudrecon_failed.log
+            fi
+          done < Input/domains.txt
 
       - name: Run Nuclei on GarudRecon results
         run: |
@@ -49,7 +51,8 @@ jobs:
             if nuclei -l "$f" -severity critical,high,medium,low -o "output/nuclei/${domain}_nuclei.txt"; then
               echo "[+] Nuclei completed for $domain"
             else
-              echo "[-] Nuclei failed for $domain" >> output/errors/nuclei_failed.log
+              echo "[-] Nuclei failed for $domain"
+              echo "$domain" >> output/errors/nuclei_failed.log
             fi
           done
 
@@ -59,9 +62,9 @@ jobs:
           REPORT="output/summary/report.txt"
           echo "=== GarudRecon + Nuclei Summary Report ===" > "$REPORT"
 
-          echo -e "\n[GarudRecon Errors]" >> "$REPORT"
-          if [ -s output/errors/garudrecon.log ]; then
-            cat output/errors/garudrecon.log >> "$REPORT"
+          echo -e "\n[GarudRecon Failed]" >> "$REPORT"
+          if [ -f output/errors/garudrecon_failed.log ]; then
+            cat output/errors/garudrecon_failed.log >> "$REPORT"
           else
             echo "None" >> "$REPORT"
           fi
