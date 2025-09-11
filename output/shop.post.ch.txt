@@ -1,0 +1,12 @@
+apis.shop.post.ch
+ent.shop.post.ch
+apis.ent.shop.post.ch
+cct.shop.post.ch
+crypto5.shop.post.ch
+www.shop.post.ch
+admin.ent.shop.post.ch
+apim.ent.shop.post.ch
+nevis.ent.shop.post.ch
+content.shop.post.ch
+queue.shop.post.ch
+crypto6.shop.post.ch

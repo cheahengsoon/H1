@@ -1,0 +1,2 @@
+browserbox-poc-ph.corp.polymoon.it
+browserbox-poc-ec2.corp.polymoon.it

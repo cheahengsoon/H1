@@ -1,0 +1,13 @@
+ion.bookbeat.com
+www.bookbeat.com
+news.bookbeat.com
+clicks.news.bookbeat.com
+brand.bookbeat.com
+jobs.bookbeat.com
+status.bookbeat.com
+support.bookbeat.com
+web.bookbeat.com
+test.bookbeat.com
+clicks.mail.bookbeat.com
+api.bookbeat.com
+search-api.bookbeat.com

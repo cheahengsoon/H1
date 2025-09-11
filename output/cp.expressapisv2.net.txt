@@ -1,0 +1,3 @@
+static.cp.expressapisv2.net
+opr.cp.expressapisv2.net
+dss.cp.expressapisv2.net

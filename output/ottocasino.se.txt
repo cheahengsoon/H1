@@ -1,0 +1,7 @@
+email.ottocasino.se
+service.ottocasino.se
+support.ottocasino.se
+support-qa1.ottocasino.se
+support-si1.ottocasino.se
+valkommen.ottocasino.se
+www.ottocasino.se

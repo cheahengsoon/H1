@@ -1,0 +1,2 @@
+affiliates.api.expressvpn.com
+billing.api.expressvpn.com
