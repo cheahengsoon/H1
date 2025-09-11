@@ -32,9 +32,13 @@ jobs:
           # Construct the download URL for the linux_amd64 binary
           download_url="https://github.com/projectdiscovery/nuclei/releases/download/${latest_release}/nuclei_${version}_linux_amd64.zip"
           
-          # Download and unzip the binary
+          # Download the zip
           curl -sSfL "$download_url" -o nuclei.zip
-          unzip nuclei.zip
+          
+          # Unzip only the nuclei binary non-interactively
+          unzip -o nuclei.zip nuclei
+          
+          # Move binary to /usr/local/bin
           sudo mv nuclei /usr/local/bin/
           nuclei -version
 
