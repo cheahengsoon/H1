@@ -1,0 +1,93 @@
+name: GarudRecon Largescale + Nuclei Parallel Scan with Summary
+
+on:
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  recon:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl unzip git python3 python3-pip parallel
+
+      - name: Install GarudRecon
+        run: |
+          git clone --depth 1 https://github.com/rix4uni/GarudRecon.git
+          cd GarudRecon
+          bash configure
+
+      - name: Install Nuclei
+        run: |
+          curl -sSfL https://github.com/projectdiscovery/nuclei/releases/latest/download/nuclei_$(uname -s)_$(uname -m).zip -o nuclei.zip
+          unzip nuclei.zip
+          sudo mv nuclei /usr/local/bin/
+          nuclei -version
+
+      - name: Run GarudRecon largescope in parallel with error handling
+        run: |
+          mkdir -p output/domains output/errors
+          cat Input/domains.txt | parallel -j 4 '
+            domain={}
+            echo "Scanning domain: $domain"
+            if ! ./GarudRecon/garudrecon largescope "$domain" -o "output/domains/$domain.txt"; then
+              echo "$domain" >> output/errors/garudrecon_errors.log
+            fi
+          '
+
+      - name: Run Nuclei in parallel with filtered severity and error handling
+        run: |
+          mkdir -p output/nuclei
+          ls output/domains/*.txt | parallel -j 4 '
+            file={}
+            while IFS= read -r host; do
+              if ! nuclei -u "$host" -severity "critical,high,medium,low" -o "output/nuclei/$(basename $file .txt)_nuclei.txt"; then
+                echo "$host" >> output/errors/nuclei_errors.log
+              fi
+            done < "$file"
+          '
+
+      - name: Generate summary report
+        run: |
+          mkdir -p output/summary
+          echo "=== GarudRecon Success Domains ===" > output/summary/report.txt
+          for f in output/domains/*.txt; do
+            domain=$(basename "$f" .txt)
+            if ! grep -q "$domain" output/errors/garudrecon_errors.log 2>/dev/null; then
+              echo "$domain" >> output/summary/report.txt
+            fi
+          done
+
+          echo -e "\n=== GarudRecon Failed Domains ===" >> output/summary/report.txt
+          if [ -f output/errors/garudrecon_errors.log ]; then
+            cat output/errors/garudrecon_errors.log >> output/summary/report.txt
+          else
+            echo "None" >> output/summary/report.txt
+          fi
+
+          echo -e "\n=== Nuclei Scan Results (Critical/High/Medium/Low) ===" >> output/summary/report.txt
+          for f in output/nuclei/*.txt; do
+            echo -e "\n--- $(basename $f) ---" >> output/summary/report.txt
+            cat "$f" >> output/summary/report.txt
+          done
+
+          echo -e "\n=== Nuclei Failed Hosts ===" >> output/summary/report.txt
+          if [ -f output/errors/nuclei_errors.log ]; then
+            cat output/errors/nuclei_errors.log >> output/summary/report.txt
+          else
+            echo "None" >> output/summary/report.txt
+          fi
+
+      - name: Commit and push results
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add output/
+          git commit -m "Update GarudRecon Largescale + Nuclei results (filtered severity) and summary"
+          git push
