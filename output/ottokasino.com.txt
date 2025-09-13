@@ -1,8 +1,0 @@
-email.ottokasino.com
-service.ottokasino.com
-support.ottokasino.com
-support-qa1.ottokasino.com
-support-si1.ottokasino.com
-welcome.ottokasino.com
-evolivecasino.ottokasino.com
-www.ottokasino.com

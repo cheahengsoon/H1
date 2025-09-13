@@ -1,7 +1,0 @@
-pp.questionsexualite.fr
-int-admin.questionsexualite.fr
-int.questionsexualite.fr
-www.questionsexualite.fr
-prerecette.questionsexualite.fr
-prerecette-admin.questionsexualite.fr
-www-pp.questionsexualite.fr

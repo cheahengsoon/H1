@@ -1,2 +1,0 @@
-hls.open.ys7.com
-ws.open.ys7.com

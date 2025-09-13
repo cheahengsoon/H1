@@ -1,6 +1,0 @@
-indonesiavoa.vfsevisa.id
-indonesia-uat.vfsevisa.id
-idnportal.vfsevisa.id
-idnonline.vfsevisa.id
-idn-api-app.vfsevisa.id
-idn-api-ops.vfsevisa.id

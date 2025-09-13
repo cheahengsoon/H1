@@ -1,6 +1,0 @@
-www.mig.pinepgconsole.in
-uat.pinepgconsole.in
-www.pinepgconsole.in
-electronics.b2bb2c62oms.demo.pinepgconsole.in
-www.uat.pinepgconsole.in
-mig.pinepgconsole.in

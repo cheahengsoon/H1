@@ -1,4 +1,0 @@
-preprod.dev.infomaniak.events
-www.infomaniak.events
-storage.infomaniak.events
-dev.infomaniak.events

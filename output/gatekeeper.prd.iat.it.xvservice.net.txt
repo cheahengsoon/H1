@@ -1,3 +1,0 @@
-xv-audit-log-collector-carbon-black-platform.gatekeeper.prd.iat.it.xvservice.net
-xv-iat-google-groups-maintenance-okta-admin.gatekeeper.prd.iat.it.xvservice.net
-xv-domain-manager-com-laude.gatekeeper.prd.iat.it.xvservice.net
