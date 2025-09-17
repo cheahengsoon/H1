@@ -1,0 +1,47 @@
+# .github/workflows/nuclei-fuzzer-scan.yml
+name: NucleiFuzzer Scan
+
+on:
+  workflow_dispatch:   # Manual trigger only
+
+jobs:
+  scan:
+    name: Run NucleiFuzzer
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git wget curl
+
+    - name: Install NucleiFuzzer
+      run: |
+        git clone https://github.com/0xKayala/NucleiFuzzer.git
+        cd NucleiFuzzer
+        chmod +x install.sh
+        ./install.sh
+        echo "$GITHUB_WORKSPACE/NucleiFuzzer" >> $GITHUB_PATH
+
+    - name: Verify installation
+      run: nf -h
+
+    - name: Run scan on Input folder
+      env:
+        INPUT_DIR: Input
+        OUTPUT_DIR: nucleifuzzer-output
+      run: |
+        mkdir -p $OUTPUT_DIR
+        for target_file in $INPUT_DIR/*; do
+          echo "🔍 Running scan for file: $target_file"
+          nf -f "$target_file" -o "$OUTPUT_DIR/$(basename $target_file).json"
+        done
+
+    - name: Archive scan results
+      uses: actions/upload-artifact@v3
+      with:
+        name: nucleifuzzer-results
+        path: nucleifuzzer-output
