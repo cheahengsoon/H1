@@ -38,8 +38,14 @@ jobs:
           | grep '"tag_name":' \
           | sed -E 's/.*"([^"]+)".*/\1/')
         echo "Installing Nuclei version: $VERSION"
-        curl -sL "https://github.com/projectdiscovery/nuclei/releases/download/${VERSION}/nuclei_${VERSION}_linux_amd64.tar.gz" \
-          | tar xz
+        ASSET_URL="https://github.com/projectdiscovery/nuclei/releases/download/${VERSION}/nuclei_${VERSION}_linux_amd64.tar.gz"
+        echo "Downloading from: $ASSET_URL"
+        curl -sL "$ASSET_URL" -o nuclei.tar.gz
+        if [[ $(file --mime-type -b nuclei.tar.gz) != application/gzip ]]; then
+          echo "Error: Downloaded file is not a valid gzip archive."
+          exit 1
+        fi
+        tar -xzf nuclei.tar.gz
         chmod +x nuclei
         sudo mv nuclei /usr/local/bin/
 
