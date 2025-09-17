@@ -17,7 +17,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y git wget curl python3 python3-pip
-        pip install requests
+        pip install requests urllib3 beautifulsoup4
 
     - name: Install NucleiFuzzer
       run: |
@@ -30,8 +30,6 @@ jobs:
     - name: Install ParamSpider
       run: |
         git clone https://github.com/devanshbatham/ParamSpider.git
-        cd ParamSpider
-        pip install -r requirements.txt
         echo "$GITHUB_WORKSPACE/ParamSpider" >> $GITHUB_PATH
 
     - name: Install Nuclei
@@ -43,7 +41,6 @@ jobs:
     - name: Install Fuzzing-Templates
       run: |
         git clone https://github.com/projectdiscovery/fuzzing-templates.git
-        echo "$GITHUB_WORKSPACE/fuzzing-templates" >> $GITHUB_PATH
 
     - name: Verify installations
       run: |
