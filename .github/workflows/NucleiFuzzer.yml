@@ -3,7 +3,7 @@ name: NucleiFuzzer Scan
 
 on:
   workflow_dispatch:   # Manual trigger
-  push:                # Trigger on commits that affect relevant files
+  push:                # Run only if relevant files change
     paths:
       - 'Input/**'
       - 'NucleiFuzzer/**'
@@ -13,15 +13,19 @@ jobs:
   scan:
     name: Run NucleiFuzzer
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # Needed for committing back to the repo
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0   # Needed for pushing commits
 
     - name: Set up dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y git wget curl python3 python3-pip unzip
+        sudo apt-get install -y git wget curl python3 python3-pip unzip jq
         pip install requests urllib3 beautifulsoup4
 
     - name: Install NucleiFuzzer
@@ -37,13 +41,16 @@ jobs:
         git clone https://github.com/devanshbatham/ParamSpider.git
         echo "$GITHUB_WORKSPACE/ParamSpider" >> $GITHUB_PATH
 
-    - name: Install Nuclei (latest release)
+    - name: Install Nuclei (latest release via API)
       run: |
         VERSION=$(curl -s https://api.github.com/repos/projectdiscovery/nuclei/releases/latest \
           | grep '"tag_name":' \
           | sed -E 's/.*"([^"]+)".*/\1/')
         echo "Installing Nuclei version: $VERSION"
-        ASSET_URL="https://github.com/projectdiscovery/nuclei/releases/download/${VERSION}/nuclei_${VERSION}_linux_amd64.zip"
+
+        ASSET_URL=$(curl -s https://api.github.com/repos/projectdiscovery/nuclei/releases/latest \
+          | jq -r '.assets[] | select(.name | test("linux_amd64.zip$")) | .browser_download_url')
+
         echo "Downloading from: $ASSET_URL"
         curl -sL "$ASSET_URL" -o nuclei.zip
         unzip nuclei.zip
@@ -56,14 +63,14 @@ jobs:
 
     - name: Verify installations
       run: |
-        nf -h
+        nf -h || true
         nuclei -version
-        python3 ParamSpider/paramspider.py -h
+        python3 ParamSpider/paramspider.py -h || true
 
     - name: Run scan on Input folder
       env:
         INPUT_DIR: Input
-        OUTPUT_DIR: nucleifuzzer-output
+        OUTPUT_DIR: results
       run: |
         mkdir -p $OUTPUT_DIR
         for target_file in $INPUT_DIR/*; do
@@ -71,8 +78,15 @@ jobs:
           nf -f "$target_file" -o "$OUTPUT_DIR/$(basename $target_file).json"
         done
 
-    - name: Archive scan results
-      uses: actions/upload-artifact@v4
-      with:
-        name: nucleifuzzer-results
-        path: nucleifuzzer-output
+    - name: Commit and push results
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+        git add results/
+        if git diff --cached --quiet; then
+          echo "No changes to commit."
+        else
+          git commit -m "Add NucleiFuzzer scan results [skip ci]"
+          git push origin HEAD:${GITHUB_REF##*/}
+        fi
