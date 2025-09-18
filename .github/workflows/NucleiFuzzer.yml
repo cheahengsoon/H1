@@ -3,7 +3,7 @@ name: NucleiFuzzer Scan
 
 on:
   workflow_dispatch:   # Manual trigger
-  push:                # Run only if relevant files change
+  push:                # Optional - only if you want automatic runs on changes
     paths:
       - 'Input/**'
       - 'NucleiFuzzer/**'
@@ -53,7 +53,7 @@ jobs:
 
         echo "Downloading from: $ASSET_URL"
         curl -sL "$ASSET_URL" -o nuclei.zip
-        unzip -o -q nuclei.zip   # ✅ overwrite silently without prompt
+        unzip -o -q nuclei.zip   # overwrite silently
         chmod +x nuclei
         sudo mv nuclei /usr/local/bin/
 
@@ -72,10 +72,23 @@ jobs:
         INPUT_DIR: Input
         OUTPUT_DIR: results
       run: |
-        mkdir -p $OUTPUT_DIR
+        # Ensure results folder exists
+        if [ ! -d "$OUTPUT_DIR" ]; then
+          echo "📂 Creating results folder..."
+          mkdir -p "$OUTPUT_DIR"
+        fi
+
         for target_file in $INPUT_DIR/*; do
-          echo "🔍 Running scan for file: $target_file"
-          nf -f "$target_file" -o "$OUTPUT_DIR/$(basename $target_file).json"
+          domain=$(basename "$target_file")
+          echo "🔍 Running scan for: $domain"
+
+          # Run NucleiFuzzer with timeout and capture output
+          if timeout 15m nf -f "$target_file" -o "$OUTPUT_DIR/${domain}.json" > "$OUTPUT_DIR/${domain}.txt" 2>&1; then
+            echo "✅ Scan finished: $domain"
+          else
+            echo "❌ Scan failed or timed out: $domain"
+            mv "$OUTPUT_DIR/${domain}.txt" "$OUTPUT_DIR/${domain}_failed.txt"
+          fi
         done
 
     - name: Commit and push results
