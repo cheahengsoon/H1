@@ -53,7 +53,7 @@ jobs:
 
         echo "Downloading from: $ASSET_URL"
         curl -sL "$ASSET_URL" -o nuclei.zip
-        unzip nuclei.zip
+        unzip -o -q nuclei.zip   # ✅ overwrite silently without prompt
         chmod +x nuclei
         sudo mv nuclei /usr/local/bin/
 
