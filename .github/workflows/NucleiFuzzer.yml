@@ -2,19 +2,13 @@
 name: NucleiFuzzer Scan
 
 on:
-  workflow_dispatch:   # Manual trigger
-  push:                # Optional - auto run when these files change
-    paths:
-      - 'Input/**'
-      - 'NucleiFuzzer/**'
-      - '.github/workflows/nuclei-fuzzer-scan.yml'
+  workflow_dispatch:
 
 jobs:
   scan:
-    name: Run NucleiFuzzer
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # Needed for committing results
+      contents: write
 
     steps:
     - name: Checkout repository
@@ -49,7 +43,6 @@ jobs:
         ASSET_URL=$(curl -s https://api.github.com/repos/projectdiscovery/nuclei/releases/latest \
           | jq -r '.assets[] | select(.name | test("linux_amd64.zip$")) | .browser_download_url')
 
-        echo "Downloading from: $ASSET_URL"
         curl -sL "$ASSET_URL" -o nuclei.zip
         unzip -o -q nuclei.zip
         chmod +x nuclei
@@ -61,9 +54,9 @@ jobs:
 
     - name: Verify installations
       run: |
-        NucleiFuzzer/nf -h || true
         nuclei -version
         python3 ParamSpider/paramspider.py -h || true
+        python3 NucleiFuzzer/nf.py -h || true
 
     - name: Run scan on Input folder
       env:
@@ -82,26 +75,7 @@ jobs:
           echo "🔍 Running scan for: $domain"
 
           cd NucleiFuzzer
-          if timeout 30m ./nf -f "../$target_file" -o "../$json_file" > "../$log_file" 2>&1; then
+          if timeout 30m python3 nf.py -f "../$target_file" -o "../$json_file" > "../$log_file" 2>&1; then
             echo "✅ Scan finished: $domain"
           else
-            echo "❌ Scan failed or timed out: $domain"
-            mv "../$log_file" "../${log_file%.txt}_failed.txt"
-            echo "📜 Showing last 50 log lines for $domain:"
-            tail -n 50 "../${log_file%.txt}_failed.txt" || true
-          fi
-          cd ..
-        done
-
-    - name: Commit and push results
-      run: |
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-        git add results/
-        if git diff --cached --quiet; then
-          echo "No changes to commit."
-        else
-          git commit -m "Add NucleiFuzzer scan results [skip ci]"
-          git push origin HEAD:${GITHUB_REF##*/}
-        fi
+            echo "❌ Scan faile
