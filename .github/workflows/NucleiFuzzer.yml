@@ -5,8 +5,6 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:       # manual trigger (can pass inputs if you want)
-  schedule:                # optional periodic run (daily at 03:00 UTC)
-    - cron: '0 3 * * *'
 
 permissions:
   contents: read
@@ -84,7 +82,7 @@ jobs:
 
       - name: Run NucleiFuzzer using inputs/domains.txt
         env:
-          INPUT_FILE: inputs/domains.txt
+          INPUT_FILE: Input/domains.txt
           OUTPUT_DIR: artifacts/nucleifuzzer
         run: |
           set -euo pipefail
