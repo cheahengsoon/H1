@@ -103,14 +103,14 @@ jobs:
           ls -lah "$OUTPUT_DIR" || true
 
       - name: Upload NucleiFuzzer results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: nucleifuzzer-results
           path: artifacts/nucleifuzzer
 
       - name: Upload full runner log for debugging (optional)
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: nuclei-fuzzer-run-logs
           path: ${{ github.workspace }}
