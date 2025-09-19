@@ -3,7 +3,7 @@ name: NucleiFuzzer Scan
 
 on:
   workflow_dispatch:   # Manual trigger
-  push:                # Optional - only if you want automatic runs on changes
+  push:                # Optional - auto run when these files change
     paths:
       - 'Input/**'
       - 'NucleiFuzzer/**'
@@ -14,13 +14,13 @@ jobs:
     name: Run NucleiFuzzer
     runs-on: ubuntu-latest
     permissions:
-      contents: write   # Needed for committing back to the repo
+      contents: write   # Needed for committing results
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0   # Needed for pushing commits
+        fetch-depth: 0
 
     - name: Set up dependencies
       run: |
@@ -34,12 +34,10 @@ jobs:
         cd NucleiFuzzer
         chmod +x install.sh
         ./install.sh
-        echo "$GITHUB_WORKSPACE/NucleiFuzzer" >> $GITHUB_PATH
 
     - name: Install ParamSpider
       run: |
         git clone https://github.com/devanshbatham/ParamSpider.git
-        echo "$GITHUB_WORKSPACE/ParamSpider" >> $GITHUB_PATH
 
     - name: Install Nuclei (latest release via API)
       run: |
@@ -53,7 +51,7 @@ jobs:
 
         echo "Downloading from: $ASSET_URL"
         curl -sL "$ASSET_URL" -o nuclei.zip
-        unzip -o -q nuclei.zip   # overwrite silently
+        unzip -o -q nuclei.zip
         chmod +x nuclei
         sudo mv nuclei /usr/local/bin/
 
@@ -63,7 +61,7 @@ jobs:
 
     - name: Verify installations
       run: |
-        nf -h || true
+        NucleiFuzzer/nf -h || true
         nuclei -version
         python3 ParamSpider/paramspider.py -h || true
 
@@ -72,7 +70,6 @@ jobs:
         INPUT_DIR: Input
         OUTPUT_DIR: results
       run: |
-        # Ensure results folder exists
         mkdir -p "$OUTPUT_DIR"
 
         for target_file in $INPUT_DIR/*; do
@@ -80,18 +77,20 @@ jobs:
           json_file="$OUTPUT_DIR/${domain}.json"
           log_file="$OUTPUT_DIR/${domain}.txt"
 
-          # Ensure parent directory exists (handles nested Input files)
           mkdir -p "$(dirname "$json_file")"
 
           echo "🔍 Running scan for: $domain"
 
-          # Run NucleiFuzzer with timeout and capture output
-          if timeout 15m nf -f "$target_file" -o "$json_file" > "$log_file" 2>&1; then
+          cd NucleiFuzzer
+          if timeout 30m ./nf -f "../$target_file" -o "../$json_file" > "../$log_file" 2>&1; then
             echo "✅ Scan finished: $domain"
           else
             echo "❌ Scan failed or timed out: $domain"
-            mv "$log_file" "${log_file%.txt}_failed.txt"
+            mv "../$log_file" "../${log_file%.txt}_failed.txt"
+            echo "📜 Showing last 50 log lines for $domain:"
+            tail -n 50 "../${log_file%.txt}_failed.txt" || true
           fi
+          cd ..
         done
 
     - name: Commit and push results
