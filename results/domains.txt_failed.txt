@@ -44,6 +44,8 @@ go: downloading golang.org/x/exp v0.0.0-20250106191152-7588d65b2ba8
 go: downloading golang.org/x/term v0.33.0
 go: downloading gopkg.in/yaml.v3 v3.0.1
 go: downloading github.com/felixge/fgprof v0.9.5
+go: downloading github.com/Mzack9999/go-http-digest-auth-client v0.6.1-0.20220414142836-eb8883508809
+go: downloading golang.org/x/net v0.42.0
 go: downloading github.com/Masterminds/semver/v3 v3.2.1
 go: downloading github.com/charmbracelet/glamour v0.8.0
 go: downloading github.com/cheggaaa/pb/v3 v3.1.4
@@ -53,11 +55,9 @@ go: downloading github.com/minio/selfupdate v0.6.1-0.20230907112617-f11e74f84ca7
 go: downloading github.com/projectdiscovery/machineid v0.0.0-20240226150047-2e2c51e35983
 go: downloading github.com/zcalusic/sysinfo v1.0.2
 go: downloading golang.org/x/oauth2 v0.18.0
-go: downloading github.com/Mzack9999/go-http-digest-auth-client v0.6.1-0.20220414142836-eb8883508809
-go: downloading golang.org/x/net v0.42.0
 go: downloading github.com/andybalholm/cascadia v1.3.3
-go: downloading github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 go: downloading golang.org/x/text v0.27.0
+go: downloading github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 go: downloading github.com/ysmood/goob v0.4.0
 go: downloading github.com/ysmood/got v0.40.0
 go: downloading github.com/ysmood/gson v0.7.3
@@ -65,10 +65,10 @@ go: downloading github.com/ysmood/fetchup v0.2.3
 go: downloading github.com/ysmood/leakless v0.9.0
 go: downloading github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
 go: downloading github.com/projectdiscovery/retryabledns v1.0.103
-go: downloading github.com/gaissmai/bart v0.20.4
-go: downloading github.com/weppos/publicsuffix-go v0.40.2
 go: downloading github.com/json-iterator/go v1.1.12
 go: downloading github.com/projectdiscovery/freeport v0.0.7
+go: downloading github.com/gaissmai/bart v0.20.4
+go: downloading github.com/weppos/publicsuffix-go v0.40.2
 go: downloading github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible
 go: downloading github.com/hashicorp/go-version v1.6.0
 go: downloading github.com/kataras/jwt v0.1.10
@@ -103,16 +103,16 @@ go: downloading github.com/mholt/archives v0.1.0
 go: downloading gopkg.in/djherbis/times.v1 v1.3.0
 go: downloading golang.org/x/sys v0.34.0
 go: downloading github.com/google/pprof v0.0.0-20240227163752-401108e1b7e7
+go: downloading github.com/muesli/termenv v0.15.3-0.20240618155329-98d742f6907a
+go: downloading github.com/yuin/goldmark v1.7.4
+go: downloading github.com/yuin/goldmark-emoji v1.0.3
 go: downloading github.com/VividCortex/ewma v1.2.0
 go: downloading github.com/fatih/color v1.16.0
 go: downloading github.com/mattn/go-colorable v0.1.13
 go: downloading github.com/mattn/go-runewidth v0.0.16
-go: downloading github.com/muesli/termenv v0.15.3-0.20240618155329-98d742f6907a
-go: downloading github.com/yuin/goldmark v1.7.4
-go: downloading github.com/yuin/goldmark-emoji v1.0.3
+go: downloading aead.dev/minisign v0.2.0
 go: downloading github.com/google/go-querystring v1.1.0
 go: downloading golang.org/x/crypto v0.40.0
-go: downloading aead.dev/minisign v0.2.0
 go: downloading github.com/shirou/gopsutil/v3 v3.24.2
 go: downloading github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
 go: downloading github.com/modern-go/reflect2 v1.0.2
@@ -121,12 +121,12 @@ go: downloading github.com/cloudflare/circl v1.6.1
 go: downloading github.com/zmap/rc2 v0.0.0-20190804163417-abaa70531248
 go: downloading github.com/aymerick/douceur v0.2.0
 go: downloading github.com/kljensen/snowball v0.8.0
+go: downloading github.com/olekukonko/tablewriter v0.0.5
+go: downloading github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf
 go: downloading github.com/akrylysov/pogreb v0.10.2
 go: downloading github.com/syndtr/goleveldb v1.0.0
 go: downloading github.com/tidwall/buntdb v1.3.1
 go: downloading go.etcd.io/bbolt v1.3.10
-go: downloading github.com/olekukonko/tablewriter v0.0.5
-go: downloading github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf
 go: downloading github.com/tidwall/match v1.1.1
 go: downloading github.com/tidwall/pretty v1.2.1
 go: downloading github.com/STARRY-S/zip v0.2.1
@@ -141,9 +141,9 @@ go: downloading github.com/alecthomas/chroma/v2 v2.14.0
 go: downloading github.com/charmbracelet/lipgloss v0.13.0
 go: downloading github.com/charmbracelet/x/ansi v0.3.2
 go: downloading github.com/muesli/reflow v0.3.0
-go: downloading github.com/rivo/uniseg v0.4.7
-go: downloading github.com/lucasb-eyer/go-colorful v1.2.0
 go: downloading github.com/aymanbagabas/go-osc52/v2 v2.0.1
+go: downloading github.com/lucasb-eyer/go-colorful v1.2.0
+go: downloading github.com/rivo/uniseg v0.4.7
 go: downloading github.com/tklauser/go-sysconf v0.3.12
 go: downloading github.com/gorilla/css v1.0.1
 go: downloading github.com/tidwall/btree v1.7.0
@@ -155,43 +155,43 @@ go: downloading github.com/bodgit/windows v1.0.1
 go: downloading github.com/hashicorp/go-multierror v1.1.1
 go: downloading go4.org v0.0.0-20230225012048-214862532bf5
 go: downloading github.com/dlclark/regexp2 v1.11.5
-go: downloading github.com/golang/snappy v0.0.4
 go: downloading github.com/tklauser/numcpus v0.6.1
+go: downloading github.com/golang/snappy v0.0.4
 go: downloading github.com/hashicorp/golang-lru/v2 v2.0.7
 go: downloading github.com/hashicorp/errwrap v1.1.0
 go: downloading github.com/tidwall/tinyqueue v0.1.1
-internal/unsafeheader
-internal/goarch
 internal/byteorder
+internal/goarch
+internal/unsafeheader
 internal/coverage/rtcov
+internal/cpu
+internal/abi
 internal/godebugs
+internal/chacha8rand
 internal/goexperiment
 internal/goos
 internal/profilerecord
-internal/chacha8rand
 internal/runtime/atomic
-internal/cpu
-internal/abi
 internal/asan
 internal/bytealg
 internal/msan
-internal/runtime/exithook
 internal/runtime/math
+internal/runtime/exithook
 internal/runtime/sys
 internal/runtime/syscall
 sync/atomic
-math/bits
 internal/stringslite
+math/bits
 internal/itoa
-unicode
 unicode/utf8
+unicode
 cmp
 encoding
 math
 unicode/utf16
 internal/race
-internal/runtime/maps
 internal/sync
+internal/runtime/maps
 log/internal
 github.com/projectdiscovery/gologger/levels
 container/list
@@ -207,8 +207,8 @@ golang.org/x/text/encoding/internal/identifier
 golang.org/x/text/internal/utf8internal
 github.com/pierrec/lz4/v4/internal/lz4errors
 github.com/ulikunitz/xz/internal/hash
-github.com/klauspost/compress
 github.com/klauspost/compress/internal/cpuinfo
+github.com/klauspost/compress
 github.com/bodgit/windows
 github.com/dsnet/compress/bzip2/internal/sais
 github.com/dsnet/compress/internal
@@ -235,13 +235,13 @@ github.com/refraction-networking/utls/internal/byteorder
 github.com/refraction-networking/utls/internal/fips140tls
 github.com/tidwall/tinyqueue
 log/slog/internal
-github.com/tidwall/rtred/base
 github.com/gaissmai/bart/internal/art
+github.com/tidwall/rtred/base
 github.com/zmap/zcrypto/cryptobyte/asn1
 github.com/projectdiscovery/utils/ptr
-runtime
 github.com/charmbracelet/x/ansi/parser
 github.com/rivo/uniseg
+runtime
 github.com/VividCortex/ewma
 github.com/shirou/gopsutil/v3/common
 github.com/zcalusic/sysinfo/cpuid
@@ -263,37 +263,37 @@ sort
 internal/bisect
 internal/testlog
 internal/oserror
-io
-syscall
 internal/godebug
-bytes
+syscall
+io
 strconv
+bytes
 path
+runtime/cgo
 strings
-math/rand
 reflect
-bufio
 time
 internal/syscall/unix
-runtime/cgo
 internal/syscall/execenv
+math/rand
+bufio
 hash
+context
+internal/fmtsort
+encoding/binary
+io/fs
+internal/poll
+internal/filepathlite
+github.com/modern-go/reflect2
+encoding/base64
+os
 hash/crc32
 crypto
 crypto/internal/fips140deps/godebug
-io/fs
-context
-internal/poll
-internal/filepathlite
 crypto/internal/fips140
 crypto/internal/impl
 crypto/internal/fips140/sha256
-os
 crypto/internal/fips140/sha3
-encoding/binary
-internal/fmtsort
-github.com/modern-go/reflect2
-encoding/base64
 crypto/internal/fips140/sha512
 fmt
 io/ioutil
@@ -301,113 +301,113 @@ path/filepath
 crypto/internal/fips140/hmac
 crypto/internal/fips140/check
 crypto/internal/fips140/aes
-encoding/json
+crypto/internal/sysrand
+crypto/internal/entropy
+math/rand/v2
 github.com/logrusorgru/aurora
+encoding/json
+crypto/internal/fips140/nistec/fiat
 log
 runtime/debug
 math/big
 github.com/modern-go/concurrent
-os/user
 compress/flate
 github.com/andybalholm/brotli/matchfinder
-crypto/internal/sysrand
-crypto/internal/entropy
-math/rand/v2
 github.com/STARRY-S/zip
 compress/gzip
 crypto/internal/randutil
 crypto/internal/fips140/drbg
 crypto/internal/fips140/aes/gcm
-crypto/internal/fips140only
 github.com/json-iterator/go
+crypto/internal/fips140only
 crypto/cipher
 crypto/internal/boring
 crypto/rand
 crypto/aes
 crypto/des
-crypto/internal/fips140/nistec/fiat
 crypto/internal/fips140/edwards25519/field
-archive/tar
+crypto/internal/fips140/nistec
 crypto/internal/boring/bbig
 crypto/internal/fips140/bigmod
 crypto/sha3
 crypto/internal/fips140hash
 crypto/sha512
 encoding/asn1
-crypto/internal/fips140/nistec
-crypto/internal/fips140/edwards25519
 vendor/golang.org/x/crypto/cryptobyte
+os/user
+crypto/internal/fips140/edwards25519
+crypto/internal/fips140/ecdh
+github.com/projectdiscovery/gologger/formatter
+crypto/ecdh
+crypto/elliptic
+crypto/internal/fips140/ecdsa
 crypto/internal/fips140/ed25519
-crypto/ed25519
 crypto/hmac
+crypto/ed25519
 crypto/internal/fips140/hkdf
 crypto/internal/fips140/mlkem
-github.com/projectdiscovery/gologger/formatter
 crypto/internal/fips140/tls12
+crypto/ecdsa
 crypto/internal/fips140/tls13
 vendor/golang.org/x/crypto/chacha20
 vendor/golang.org/x/crypto/internal/poly1305
 vendor/golang.org/x/sys/cpu
 crypto/md5
+vendor/golang.org/x/crypto/chacha20poly1305
 crypto/rc4
 crypto/internal/fips140/rsa
-vendor/golang.org/x/crypto/chacha20poly1305
 crypto/sha1
-crypto/sha256
-crypto/internal/fips140/ecdh
-crypto/elliptic
-crypto/internal/fips140/ecdsa
-crypto/ecdh
-crypto/rsa
 crypto/internal/hpke
+crypto/sha256
 crypto/tls/internal/fips140tls
 crypto/dsa
-crypto/ecdsa
 encoding/hex
+archive/tar
 encoding/pem
 crypto/x509/pkix
-vendor/golang.org/x/net/dns/dnsmessage
+crypto/rsa
 internal/singleflight
+vendor/golang.org/x/net/dns/dnsmessage
 unique
 net/url
 net/netip
 vendor/golang.org/x/text/transform
-vendor/golang.org/x/net/http2/hpack
 vendor/golang.org/x/text/unicode/bidi
 vendor/golang.org/x/text/unicode/norm
+vendor/golang.org/x/net/http2/hpack
 mime
 vendor/golang.org/x/text/secure/bidirule
 mime/quotedprintable
 net/http/internal
 net/http/internal/ascii
 github.com/bodgit/plumbing
+net
 github.com/hashicorp/golang-lru/v2/internal
 github.com/hashicorp/golang-lru/v2/simplelru
-go4.org/syncutil
 github.com/hashicorp/golang-lru/v2
-net
+go4.org/syncutil
 golang.org/x/text/transform
 github.com/bodgit/sevenzip/internal/util
+vendor/golang.org/x/net/idna
 github.com/hashicorp/errwrap
 github.com/hashicorp/go-multierror
 golang.org/x/text/encoding
 golang.org/x/text/runes
-vendor/golang.org/x/net/idna
 golang.org/x/text/encoding/internal
 github.com/bodgit/sevenzip/internal/bcj2
-github.com/bodgit/sevenzip/internal/bra
 golang.org/x/text/encoding/unicode
-compress/bzip2
+github.com/bodgit/sevenzip/internal/bra
 github.com/bodgit/sevenzip/internal/aes7z
-github.com/bodgit/sevenzip/internal/bzip2
+compress/bzip2
 github.com/klauspost/compress/flate
+github.com/bodgit/sevenzip/internal/bzip2
 github.com/bodgit/sevenzip/internal/delta
 github.com/pierrec/lz4/v4/internal/lz4block
 github.com/pierrec/lz4/v4/internal/xxh32
 github.com/ulikunitz/xz/internal/xlog
 github.com/pierrec/lz4/v4/internal/lz4stream
-github.com/ulikunitz/xz/lzma
 github.com/pierrec/lz4/v4
+github.com/ulikunitz/xz/lzma
 github.com/bodgit/sevenzip/internal/lz4
 github.com/bodgit/sevenzip/internal/pool
 github.com/klauspost/compress/fse
@@ -444,8 +444,8 @@ regexp/syntax
 internal/saferio
 encoding/gob
 regexp
-net/textproto
 crypto/x509
+net/textproto
 vendor/golang.org/x/net/http/httpguts
 vendor/golang.org/x/net/http/httpproxy
 mime/multipart
@@ -456,56 +456,56 @@ github.com/go-faker/faker/v4/pkg/interfaces
 github.com/go-faker/faker/v4/pkg/options
 github.com/go-faker/faker/v4/pkg/slice
 golang.org/x/text/internal/tag
-golang.org/x/text/internal/language
 golang.org/x/text/unicode/norm
 github.com/corona10/goimagehash/transforms
 github.com/nfnt/resize
-golang.org/x/text/internal/language/compact
+golang.org/x/text/internal/language
 github.com/corona10/goimagehash
+crypto/tls
+flag
+golang.org/x/text/internal/language/compact
 golang.org/x/text/language
 github.com/ysmood/gson
-flag
+image/internal/imageutil
 github.com/go-rod/rod/lib/proto
 golang.org/x/text/internal
-golang.org/x/text/cases
-crypto/tls
-image/internal/imageutil
 image/jpeg
-github.com/go-faker/faker/v4
+golang.org/x/text/cases
 image/png
+github.com/go-faker/faker/v4
 os/exec
 text/template/parse
 text/template
 github.com/go-rod/rod/lib/launcher/flags
 archive/zip
 github.com/ysmood/leakless/pkg/utils
-github.com/ysmood/goob
 github.com/ysmood/leakless
+net/http/httptrace
+github.com/ysmood/goob
+net/http
 github.com/ysmood/got/lib/lcs
 html
 github.com/go-viper/mapstructure/v2/internal/errors
 github.com/go-viper/mapstructure/v2
 github.com/gocarina/gocsv
-net/http/httptrace
-net/http
 hash/fnv
-github.com/mfonda/simhash
 github.com/pkg/errors
+github.com/mfonda/simhash
 github.com/asaskevich/govalidator
 github.com/aymerick/douceur/css
 github.com/gorilla/css/scanner
 github.com/aymerick/douceur/parser
 github.com/microcosm-cc/bluemonday/css
+github.com/saintfish/chardet
 github.com/go-rod/rod/lib/utils
 github.com/go-rod/rod/lib/devices
-github.com/go-rod/rod/lib/input
 github.com/go-rod/rod/lib/defaults
-github.com/saintfish/chardet
+github.com/go-rod/rod/lib/input
 container/heap
 encoding/base32
-github.com/microcosm-cc/bluemonday
 golang.org/x/net/bpf
 golang.org/x/sys/unix
+github.com/microcosm-cc/bluemonday
 debug/dwarf
 github.com/projectdiscovery/utils/strings
 github.com/projectdiscovery/mapcidr
@@ -514,168 +514,168 @@ github.com/projectdiscovery/utils/errors
 github.com/projectdiscovery/utils/slice
 gopkg.in/yaml.v3
 debug/elf
-golang.org/x/net/internal/socket
-github.com/mattn/go-isatty
 github.com/projectdiscovery/utils/consts
 go.uber.org/multierr
+golang.org/x/net/internal/socket
+github.com/mattn/go-isatty
 github.com/tidwall/pretty
+github.com/tidwall/gjson
 golang.org/x/net/ipv4
 golang.org/x/net/ipv6
-github.com/tidwall/gjson
-github.com/miekg/dns
 golang.org/x/net/internal/socks
-golang.org/x/net/proxy
-github.com/dimchansky/utfbom
-github.com/docker/go-units
-crypto/mlkem
-golang.org/x/crypto/cryptobyte
-golang.org/x/sys/cpu
-github.com/cloudflare/circl/internal/sha3
-github.com/cloudflare/circl/kem
-github.com/cloudflare/circl/simd/keccakf1600
-github.com/cloudflare/circl/internal/conv
-github.com/cloudflare/circl/pke/kyber/internal/common
-github.com/cloudflare/circl/math/fp25519
 github.com/andybalholm/brotli
 expvar
 github.com/PuerkitoBio/goquery
-go4.org/readerutil
 github.com/go-rod/rod/lib/cdp
+go4.org/readerutil
 github.com/ysmood/fetchup
 net/http/httputil
+github.com/miekg/dns
 github.com/projectdiscovery/utils/file
+github.com/go-rod/rod/lib/launcher
 github.com/projectdiscovery/retryabledns/hostsfile
 github.com/projectdiscovery/utils/ip
-github.com/go-rod/rod/lib/launcher
+golang.org/x/net/proxy
 github.com/Mzack9999/go-http-digest-auth-client
-github.com/cloudflare/circl/dh/x25519
+github.com/dimchansky/utfbom
 github.com/go-rod/rod
+github.com/docker/go-units
+crypto/mlkem
+golang.org/x/crypto/cryptobyte
+github.com/cloudflare/circl/internal/conv
+golang.org/x/sys/cpu
+github.com/cloudflare/circl/math/fp25519
+github.com/cloudflare/circl/dh/x25519
 github.com/cloudflare/circl/math/fp448
 github.com/cloudflare/circl/dh/x448
+github.com/cloudflare/circl/internal/sha3
+github.com/cloudflare/circl/kem
+github.com/cloudflare/circl/simd/keccakf1600
+github.com/cloudflare/circl/pke/kyber/internal/common
 github.com/cloudflare/circl/pke/kyber/kyber768/internal
+golang.org/x/crypto/chacha20
 github.com/cloudflare/circl/pke/kyber/kyber768
 github.com/cloudflare/circl/kem/kyber/kyber768
 github.com/cloudflare/circl/kem/mlkem/mlkem768
-github.com/cloudflare/circl/kem/xwing
-golang.org/x/crypto/chacha20
-github.com/projectdiscovery/retryabledns/doh
-github.com/projectdiscovery/utils/maps
 golang.org/x/crypto/internal/poly1305
-github.com/projectdiscovery/retryabledns
-golang.org/x/crypto/chacha20poly1305
+github.com/cloudflare/circl/kem/xwing
 golang.org/x/crypto/hkdf
-github.com/cloudflare/circl/hpke
+golang.org/x/crypto/chacha20poly1305
 github.com/cloudflare/circl/sign
 github.com/cloudflare/circl/sign/internal/dilithium
+github.com/cloudflare/circl/hpke
 github.com/cloudflare/circl/sign/dilithium/mode2/internal
-github.com/cloudflare/circl/sign/dilithium/mode3/internal
 github.com/cloudflare/circl/sign/dilithium/mode2
+github.com/projectdiscovery/retryabledns/doh
+github.com/projectdiscovery/utils/maps
+github.com/cloudflare/circl/sign/dilithium/mode3/internal
+github.com/projectdiscovery/retryabledns
 github.com/cloudflare/circl/sign/dilithium/mode5/internal
 github.com/cloudflare/circl/sign/dilithium/mode3
 github.com/cloudflare/circl/math
-github.com/cloudflare/circl/math/mlsbset
-github.com/cloudflare/circl/sign/ed25519
 github.com/cloudflare/circl/sign/dilithium/mode5
+github.com/cloudflare/circl/sign/ed25519
+github.com/cloudflare/circl/math/mlsbset
 github.com/cloudflare/circl/ecc/goldilocks
-github.com/cloudflare/circl/sign/mldsa/mldsa44/internal
-github.com/cloudflare/circl/sign/mldsa/mldsa44
 github.com/cloudflare/circl/sign/eddilithium2
+github.com/cloudflare/circl/sign/mldsa/mldsa44/internal
 github.com/cloudflare/circl/sign/mldsa/mldsa65/internal
-github.com/cloudflare/circl/sign/mldsa/mldsa87/internal
 github.com/cloudflare/circl/sign/ed448
 github.com/bodgit/sevenzip/internal/brotli
-github.com/cloudflare/circl/sign/eddilithium3
 github.com/bodgit/sevenzip
+github.com/cloudflare/circl/sign/eddilithium3
+github.com/cloudflare/circl/sign/mldsa/mldsa44
+github.com/cloudflare/circl/sign/mldsa/mldsa87/internal
 github.com/cloudflare/circl/sign/mldsa/mldsa65
 github.com/refraction-networking/utls/internal/boring
-github.com/cloudflare/circl/sign/mldsa/mldsa87
 github.com/refraction-networking/utls/internal/helper
 crypto/hkdf
-github.com/refraction-networking/utls/internal/hkdf
-github.com/refraction-networking/utls/internal/hpke
 github.com/refraction-networking/utls/internal/quicvarint/protocol
-github.com/cloudflare/circl/sign/schemes
+github.com/refraction-networking/utls/internal/hkdf
 github.com/refraction-networking/utls/internal/quicvarint
+github.com/cloudflare/circl/sign/mldsa/mldsa87
+github.com/refraction-networking/utls/internal/hpke
 github.com/refraction-networking/utls/internal/tls12
 github.com/refraction-networking/utls/internal/tls13
-github.com/cloudflare/circl/pki
+github.com/cloudflare/circl/sign/schemes
 golang.org/x/crypto/sha3
+github.com/cloudflare/circl/pki
 github.com/projectdiscovery/hmap/store/cache
 github.com/akrylysov/pogreb/fs
 github.com/akrylysov/pogreb/internal/errors
-github.com/refraction-networking/utls
-github.com/akrylysov/pogreb/internal/hash
-github.com/syndtr/goleveldb/leveldb/util
 github.com/mholt/archives
+github.com/akrylysov/pogreb/internal/hash
+github.com/refraction-networking/utls
+github.com/syndtr/goleveldb/leveldb/util
 github.com/syndtr/goleveldb/leveldb/cache
-github.com/akrylysov/pogreb
 github.com/syndtr/goleveldb/leveldb/comparer
 github.com/syndtr/goleveldb/leveldb/storage
+github.com/akrylysov/pogreb
 github.com/syndtr/goleveldb/leveldb/filter
 github.com/syndtr/goleveldb/leveldb/opt
 github.com/golang/snappy
-github.com/tidwall/btree
-github.com/syndtr/goleveldb/leveldb/errors
 github.com/projectdiscovery/gologger/writer
+github.com/syndtr/goleveldb/leveldb/errors
 github.com/syndtr/goleveldb/leveldb/iterator
-github.com/projectdiscovery/gologger
 github.com/syndtr/goleveldb/leveldb/journal
+github.com/projectdiscovery/gologger
+github.com/tidwall/btree
+github.com/tidwall/grect
 github.com/syndtr/goleveldb/leveldb/memdb
 github.com/syndtr/goleveldb/leveldb/table
-github.com/tidwall/grect
 github.com/tidwall/rtred
 go.etcd.io/bbolt
-github.com/tidwall/buntdb
 github.com/syndtr/goleveldb/leveldb
+github.com/tidwall/buntdb
 github.com/projectdiscovery/utils/env
 log/slog/internal/buffer
+log/slog
 github.com/gaissmai/bart/internal/bitset
 github.com/gaissmai/bart/internal/allot
-log/slog
 github.com/gaissmai/bart/internal/lpm
 github.com/gaissmai/bart/internal/sparse
 github.com/gaissmai/bart
-github.com/projectdiscovery/utils/errkit
 github.com/projectdiscovery/hmap/store/disk
-github.com/projectdiscovery/utils/url
+github.com/projectdiscovery/utils/errkit
 github.com/projectdiscovery/fastdialer/fastdialer/utils
+github.com/projectdiscovery/utils/url
 github.com/projectdiscovery/utils/context
 github.com/zmap/rc2
 github.com/zmap/zcrypto/internal/randutil
-github.com/projectdiscovery/networkpolicy
 github.com/zmap/zcrypto/dsa
 github.com/projectdiscovery/hmap/store/hybrid
 github.com/zmap/zcrypto/json
+github.com/projectdiscovery/networkpolicy
 golang.org/x/text/unicode/bidi
 github.com/projectdiscovery/fastdialer/fastdialer/metafiles
-net/http/cookiejar
-github.com/zmap/zcrypto/encoding/asn1
 golang.org/x/text/secure/bidirule
 golang.org/x/net/idna
-github.com/zmap/zcrypto/cryptobyte
+net/http/cookiejar
+github.com/zmap/zcrypto/encoding/asn1
+github.com/weppos/publicsuffix-go/publicsuffix
 github.com/zmap/zcrypto/util
+github.com/zmap/zcrypto/cryptobyte
 github.com/zmap/zcrypto/x509/ct
 github.com/zmap/zcrypto/x509/pkix
+github.com/projectdiscovery/fastdialer/fastdialer/ja3/impersonate
 golang.org/x/crypto/ed25519
 golang.org/x/sync/singleflight
-github.com/weppos/publicsuffix-go/publicsuffix
 github.com/projectdiscovery/utils/reader/rawmode
-github.com/projectdiscovery/utils/reader
-github.com/projectdiscovery/fastdialer/fastdialer/ja3/impersonate
 golang.org/x/net/http/httpguts
+github.com/projectdiscovery/utils/reader
 golang.org/x/net/http2/hpack
 github.com/projectdiscovery/utils/folder
-golang.org/x/net/internal/httpcommon
 golang.org/x/term
-database/sql/driver
-golang.org/x/net/http2
+golang.org/x/net/internal/httpcommon
 github.com/zmap/zcrypto/x509
+database/sql/driver
 encoding/xml
+golang.org/x/net/http2
 github.com/Masterminds/semver/v3
 github.com/dlclark/regexp2/syntax
 github.com/charmbracelet/x/ansi
-github.com/dlclark/regexp2
 github.com/zmap/zcrypto/tls
+github.com/dlclark/regexp2
 github.com/aymanbagabas/go-osc52/v2
 github.com/lucasb-eyer/go-colorful
 github.com/muesli/termenv
@@ -687,14 +687,14 @@ github.com/muesli/reflow/indent
 github.com/muesli/reflow/padding
 github.com/muesli/reflow/wordwrap
 github.com/yuin/goldmark-emoji/definition
+github.com/charmbracelet/lipgloss/table
 github.com/alecthomas/chroma/v2/formatters/html
 github.com/alecthomas/chroma/v2/formatters/svg
-github.com/alecthomas/chroma/v2/formatters
-github.com/alecthomas/chroma/v2/lexers
 github.com/projectdiscovery/utils/crypto
+github.com/alecthomas/chroma/v2/lexers
+github.com/alecthomas/chroma/v2/formatters
 github.com/projectdiscovery/fastdialer/fastdialer
 github.com/alecthomas/chroma/v2/styles
-github.com/charmbracelet/lipgloss/table
 github.com/yuin/goldmark/util
 github.com/alecthomas/chroma/v2/quick
 os/signal
@@ -704,12 +704,12 @@ github.com/fatih/color
 github.com/cheggaaa/pb/v3
 github.com/google/go-querystring/query
 golang.org/x/crypto/openpgp/errors
-github.com/projectdiscovery/retryablehttp-go
 golang.org/x/crypto/openpgp/armor
 golang.org/x/crypto/cast5
 golang.org/x/crypto/openpgp/elgamal
 golang.org/x/crypto/openpgp/s2k
 golang.org/x/crypto/openpgp/packet
+github.com/projectdiscovery/retryablehttp-go
 golang.org/x/crypto/openpgp
 github.com/google/go-github/v30/github
 github.com/projectdiscovery/utils/auth/pdcp
@@ -722,103 +722,103 @@ github.com/minio/selfupdate/internal/binarydist
 github.com/minio/selfupdate/internal/osext
 github.com/minio/selfupdate
 github.com/projectdiscovery/machineid
+github.com/yuin/goldmark/text
 github.com/shirou/gopsutil/v3/internal/common
+github.com/yuin/goldmark/ast
 github.com/tklauser/numcpus
+github.com/shirou/gopsutil/v3/mem
 github.com/tklauser/go-sysconf
 github.com/shirou/gopsutil/v3/cpu
-github.com/yuin/goldmark/text
-github.com/shirou/gopsutil/v3/mem
 github.com/shirou/gopsutil/v3/net
-github.com/yuin/goldmark/ast
 github.com/zcalusic/sysinfo
-github.com/shirou/gopsutil/v3/process
-golang.org/x/oauth2/internal
-golang.org/x/oauth2
 github.com/yuin/goldmark-emoji/ast
 github.com/yuin/goldmark/extension/ast
 github.com/yuin/goldmark/renderer
 github.com/yuin/goldmark/parser
 github.com/yuin/goldmark/renderer/html
-github.com/projectdiscovery/utils/process
+github.com/shirou/gopsutil/v3/process
 github.com/charmbracelet/glamour/ansi
+github.com/projectdiscovery/utils/process
+golang.org/x/oauth2/internal
+golang.org/x/oauth2
 github.com/projectdiscovery/cdncheck
-github.com/yuin/goldmark
-github.com/yuin/goldmark-emoji
 github.com/charmbracelet/glamour/styles
-github.com/yuin/goldmark/extension
 github.com/projectdiscovery/freeport
+github.com/yuin/goldmark
 github.com/projectdiscovery/clistats
+github.com/yuin/goldmark-emoji
+github.com/yuin/goldmark/extension
 github.com/Knetic/govaluate
 github.com/hashicorp/go-version
 github.com/kataras/jwt
 github.com/projectdiscovery/dsl/deserialization
 github.com/charmbracelet/glamour
 github.com/sashabaranov/go-openai/internal
-github.com/projectdiscovery/utils/rand
-github.com/projectdiscovery/dsl/randomip
-github.com/sashabaranov/go-openai
 github.com/projectdiscovery/utils/update
+github.com/projectdiscovery/utils/rand
+github.com/sashabaranov/go-openai
+github.com/projectdiscovery/dsl/randomip
 github.com/projectdiscovery/gostruct
 github.com/hdm/jarm-go
 github.com/projectdiscovery/utils/conn/connpool
 github.com/spaolacci/murmur3
-github.com/projectdiscovery/fdmax
 github.com/projectdiscovery/utils/crypto/jarm
+github.com/projectdiscovery/fdmax
 github.com/projectdiscovery/fdmax/autofdmax
-github.com/projectdiscovery/asnmap/libs
 github.com/projectdiscovery/utils/reflect
+github.com/projectdiscovery/asnmap/libs
 gopkg.in/ini.v1
 github.com/cnf/structhash
 github.com/google/shlex
 github.com/projectdiscovery/utils/permission
 github.com/projectdiscovery/utils/time
 text/tabwriter
-github.com/projectdiscovery/dsl/llm
 github.com/projectdiscovery/httpx/common/customextract
 github.com/projectdiscovery/httpx/common/customheader
 github.com/projectdiscovery/goflags
 github.com/projectdiscovery/httpx/common/stringz
-github.com/projectdiscovery/dsl
-github.com/projectdiscovery/httpx/common/fileutil
-github.com/projectdiscovery/httpx/common/customlist
-github.com/hbakhtiyor/strsim
-github.com/projectdiscovery/httpx/common/httputilz
+github.com/projectdiscovery/dsl/llm
 github.com/projectdiscovery/goconfig
+github.com/projectdiscovery/httpx/common/fileutil
+github.com/hbakhtiyor/strsim
+github.com/projectdiscovery/httpx/common/customlist
+github.com/projectdiscovery/dsl
+github.com/projectdiscovery/httpx/common/httputilz
 github.com/projectdiscovery/rawhttp/client
 github.com/cloudflare/cfssl/log
 github.com/cloudflare/cfssl/errors
-github.com/cloudflare/cfssl/crypto/pkcs7
 github.com/projectdiscovery/rawhttp/clientpipeline
 github.com/projectdiscovery/rawhttp/proxy
+github.com/cloudflare/cfssl/crypto/pkcs7
 github.com/cloudflare/cfssl/helpers/derhelpers
 github.com/google/certificate-transparency-go/asn1
 golang.org/x/crypto/ocsp
-github.com/google/certificate-transparency-go/tls
-github.com/google/certificate-transparency-go/x509/pkix
 golang.org/x/crypto/pkcs12/internal/rc2
 golang.org/x/crypto/pkcs12
+github.com/google/certificate-transparency-go/tls
+github.com/google/certificate-transparency-go/x509/pkix
 github.com/projectdiscovery/tlsx/assets
 github.com/projectdiscovery/tlsx/pkg/tlsx/ztls/ja3
-github.com/rs/xid
 github.com/google/certificate-transparency-go/x509
+github.com/rs/xid
 github.com/projectdiscovery/useragent
+github.com/projectdiscovery/rawhttp
 github.com/projectdiscovery/utils/generic
 github.com/dsnet/compress/brotli
 golang.org/x/sync/semaphore
 github.com/projectdiscovery/utils/sync/semaphore
 github.com/projectdiscovery/utils/sync/sizedpool
 golang.org/x/text/encoding/simplifiedchinese
-github.com/projectdiscovery/rawhttp
 golang.org/x/net/context
-github.com/google/certificate-transparency-go
 golang.org/x/text/encoding/korean
+github.com/google/certificate-transparency-go
 github.com/projectdiscovery/utils/http
 github.com/cloudflare/cfssl/helpers
 golang.org/x/text/encoding/traditionalchinese
-github.com/cloudflare/cfssl/revoke
-github.com/projectdiscovery/tlsx/pkg/tlsx/clients
 github.com/projectdiscovery/httpx/common/hashes
 github.com/projectdiscovery/httpx/common/hashes/jarm
+github.com/cloudflare/cfssl/revoke
+github.com/projectdiscovery/tlsx/pkg/tlsx/clients
 github.com/olekukonko/tablewriter
 github.com/ssor/bom
 github.com/jaytaylor/html2text
@@ -831,8 +831,8 @@ github.com/projectdiscovery/utils/ml/metrics
 github.com/projectdiscovery/httpx/static
 github.com/projectdiscovery/mapcidr/asn
 golang.org/x/time/rate
-github.com/projectdiscovery/ratelimit
 github.com/projectdiscovery/utils/sync
+github.com/projectdiscovery/ratelimit
 github.com/projectdiscovery/tlsx/pkg/tlsx/ztls
 github.com/projectdiscovery/wappalyzergo
 html/template
@@ -843,6 +843,7 @@ github.com/kljensen/snowball/french
 github.com/kljensen/snowball/norwegian
 github.com/kljensen/snowball/russian
 github.com/kljensen/snowball/spanish
+github.com/projectdiscovery/httpx/common/httpx
 github.com/kljensen/snowball/swedish
 github.com/felixge/fgprof
 internal/profile
@@ -850,7 +851,6 @@ runtime/pprof
 github.com/kljensen/snowball
 github.com/projectdiscovery/utils/ml/naive_bayes
 github.com/projectdiscovery/httpx/common/pagetypeclassifier
-github.com/projectdiscovery/httpx/common/httpx
 net/http/pprof
 github.com/projectdiscovery/utils/pprof
 github.com/projectdiscovery/httpx/common/customports
@@ -866,7 +866,7 @@ Collecting uro
 Building wheels for collected packages: uro
   Building wheel for uro (setup.py): started
   Building wheel for uro (setup.py): finished with status 'done'
-  Created wheel for uro: filename=uro-1.0.2-py3-none-any.whl size=10929 sha256=5e7e27f45611125e2f72970573e03eea723e94ed76b260629c7e8e0daf710b31
+  Created wheel for uro: filename=uro-1.0.2-py3-none-any.whl size=10929 sha256=5a8d25e16c8eae27852f6467fb132b9352fd12a82fe801653ae1c527fec758c7
   Stored in directory: /home/runner/.cache/pip/wheels/38/09/4b/fa1c0a311add61db343b644e67dc284a18e179e5e28e19c8ad
 Successfully built uro
 Installing collected packages: uro
@@ -894,14 +894,14 @@ go: downloading github.com/lukasbob/srcset v0.0.0-20190730101422-86b742e617f3
 go: downloading github.com/google/uuid v1.3.1
 go: downloading golang.org/x/oauth2 v0.27.0
 go: downloading github.com/gaissmai/bart v0.23.1
-go: downloading github.com/valyala/bytebufferpool v1.0.0
-go: downloading github.com/projectdiscovery/hmap v0.0.92
 go: downloading github.com/Knetic/govaluate v3.0.0+incompatible
 go: downloading github.com/kataras/jwt v0.1.8
-go: downloading github.com/andybalholm/cascadia v1.3.2
+go: downloading github.com/projectdiscovery/hmap v0.0.92
+go: downloading github.com/valyala/bytebufferpool v1.0.0
 go: downloading github.com/projectdiscovery/retryabledns v1.0.105
 go: downloading github.com/refraction-networking/utls v1.7.1
 go: downloading github.com/zmap/zcrypto v0.0.0-20230422215203-9a665e1e9968
+go: downloading github.com/andybalholm/cascadia v1.3.2
 go: downloading github.com/ysmood/got v0.34.1
 go: downloading github.com/ysmood/leakless v0.8.0
 go: downloading github.com/fatih/color v1.15.0
@@ -916,21 +916,21 @@ go: downloading github.com/tidwall/btree v1.6.0
 github.com/projectdiscovery/utils/conversion
 github.com/projectdiscovery/utils/race
 github.com/projectdiscovery/katana/pkg/engine
-github.com/go-rod/rod/lib/assets
 github.com/projectdiscovery/utils/os
+github.com/projectdiscovery/utils/errors
 github.com/projectdiscovery/utils/slice
 github.com/projectdiscovery/utils/strings
-github.com/projectdiscovery/utils/errors
 github.com/projectdiscovery/utils/permission
 github.com/projectdiscovery/utils/time
 github.com/projectdiscovery/utils/maps
-github.com/projectdiscovery/utils/file
 github.com/andybalholm/cascadia
 github.com/projectdiscovery/gologger/writer
-github.com/go-rod/rod/lib/utils
+github.com/projectdiscovery/utils/file
+github.com/go-rod/rod/lib/assets
 github.com/projectdiscovery/gologger
-github.com/projectdiscovery/utils/folder
+github.com/go-rod/rod/lib/utils
 github.com/go-rod/rod/lib/proto
+github.com/projectdiscovery/utils/folder
 github.com/go-rod/rod/lib/defaults
 github.com/go-rod/rod/lib/cdp
 github.com/PuerkitoBio/goquery
@@ -960,8 +960,8 @@ github.com/akrylysov/pogreb/internal/errors
 github.com/akrylysov/pogreb/internal/hash
 github.com/tidwall/btree
 github.com/akrylysov/pogreb
-github.com/tidwall/buntdb
 go.etcd.io/bbolt
+github.com/tidwall/buntdb
 github.com/projectdiscovery/retryabledns/doh
 github.com/projectdiscovery/retryabledns/hostsfile
 github.com/projectdiscovery/utils/consts
@@ -970,19 +970,19 @@ github.com/projectdiscovery/retryabledns
 github.com/projectdiscovery/hmap/store/disk
 github.com/projectdiscovery/utils/env
 github.com/projectdiscovery/utils/errkit
-github.com/go-rod/rod/lib/devices
-github.com/go-rod/rod/lib/input
 github.com/projectdiscovery/hmap/store/hybrid
 github.com/projectdiscovery/fastdialer/fastdialer/utils
-github.com/go-rod/rod
 github.com/gaissmai/bart/internal/bitset
+github.com/go-rod/rod/lib/devices
+github.com/go-rod/rod/lib/input
 github.com/gaissmai/bart/internal/allot
+github.com/go-rod/rod
+github.com/projectdiscovery/fastdialer/fastdialer/metafiles
 github.com/gaissmai/bart/internal/art
 github.com/gaissmai/bart/internal/lpm
 github.com/gaissmai/bart/internal/sparse
-github.com/gaissmai/bart
-github.com/projectdiscovery/fastdialer/fastdialer/metafiles
 github.com/projectdiscovery/utils/url
+github.com/gaissmai/bart
 github.com/projectdiscovery/utils/context
 github.com/zmap/zcrypto/internal/randutil
 github.com/zmap/zcrypto/dsa
@@ -999,17 +999,17 @@ github.com/projectdiscovery/utils/ptr
 github.com/projectdiscovery/katana/pkg/navigation
 github.com/ditashi/jsbeautifier-go/optargs
 github.com/ditashi/jsbeautifier-go/utils
-github.com/ditashi/jsbeautifier-go/tokenizer
-github.com/projectdiscovery/fastdialer/fastdialer/ja3/impersonate
 github.com/ditashi/jsbeautifier-go/unpackers
+github.com/projectdiscovery/fastdialer/fastdialer/ja3/impersonate
+github.com/ditashi/jsbeautifier-go/tokenizer
 github.com/smacker/go-tree-sitter
 golang.org/x/exp/slices
 github.com/lukasbob/srcset
 github.com/projectdiscovery/utils/generic
 github.com/rs/xid
 github.com/ditashi/jsbeautifier-go/jsbeautifier
-github.com/projectdiscovery/utils/reader/rawmode
 github.com/zmap/zcrypto/x509
+github.com/projectdiscovery/utils/reader/rawmode
 github.com/projectdiscovery/utils/reader
 github.com/mitchellh/mapstructure
 github.com/Knetic/govaluate
@@ -1021,23 +1021,23 @@ github.com/projectdiscovery/dsl/randomip
 github.com/projectdiscovery/mapcidr
 github.com/projectdiscovery/utils/conn/connpool
 github.com/projectdiscovery/utils/crypto/jarm
+github.com/zmap/zcrypto/tls
 github.com/projectdiscovery/katana/pkg/utils/extensions
 github.com/projectdiscovery/dsl
-github.com/zmap/zcrypto/tls
 github.com/stoewer/go-strcase
 github.com/valyala/bytebufferpool
 github.com/valyala/fasttemplate
 golang.org/x/net/publicsuffix
 gopkg.in/yaml.v2
 github.com/projectdiscovery/katana/pkg/utils/filters
+github.com/projectdiscovery/utils/crypto
 github.com/projectdiscovery/katana/pkg/utils/queue
 github.com/projectdiscovery/katana/pkg/utils/scope
+github.com/projectdiscovery/fastdialer/fastdialer
 github.com/projectdiscovery/ratelimit
 github.com/projectdiscovery/katana/pkg/output
 github.com/projectdiscovery/utils/log
-github.com/projectdiscovery/utils/crypto
 github.com/projectdiscovery/wappalyzergo
-github.com/projectdiscovery/fastdialer/fastdialer
 github.com/projectdiscovery/utils/sync/semaphore
 github.com/projectdiscovery/utils/sync/sizedpool
 github.com/projectdiscovery/utils/http
@@ -1053,8 +1053,8 @@ github.com/shirou/gopsutil/v3/cpu
 github.com/shirou/gopsutil/v3/mem
 github.com/shirou/gopsutil/v3/net
 golang.org/x/oauth2/internal
-github.com/shirou/gopsutil/v3/process
 golang.org/x/oauth2
+github.com/shirou/gopsutil/v3/process
 github.com/projectdiscovery/utils/pprof
 github.com/projectdiscovery/utils/process
 github.com/projectdiscovery/utils/update
@@ -1077,11 +1077,11 @@ github.com/projectdiscovery/katana/cmd/katana
 go: downloading github.com/tomnomnom/waybackurls v0.1.0
 /usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
 go: downloading github.com/bp0lr/gauplus v0.0.0-20220716155141-15a2900b8809
-go: downloading github.com/json-iterator/go v1.1.10
 go: downloading github.com/bobesa/go-domain-util v0.0.0-20190911083921-4033b5f7dd89
+go: downloading github.com/json-iterator/go v1.1.10
+go: downloading golang.org/x/net v0.0.0-20180811021610-c39426892332
 go: downloading github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742
 go: downloading github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421
-go: downloading golang.org/x/net v0.0.0-20180811021610-c39426892332
 go: downloading golang.org/x/text v0.3.0
 /usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
 go: downloading github.com/hakluke/hakrawler v0.0.0-20241221204001-76152559a809
@@ -1098,18 +1098,19 @@ go: downloading golang.org/x/net v0.0.0-20220225172249-27dd8689420f
 go: downloading google.golang.org/appengine v1.6.7
 go: downloading github.com/antchfx/xpath v1.2.0
 go: downloading github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da
-go: downloading github.com/andybalholm/cascadia v1.3.1
 go: downloading github.com/willf/bitset v1.1.10
 go: downloading golang.org/x/text v0.3.7
+go: downloading github.com/andybalholm/cascadia v1.3.1
 go: downloading github.com/golang/protobuf v1.5.2
 go: downloading google.golang.org/protobuf v1.27.1
 /usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
 Cloning into '/home/runner/ParamSpider'...
 /usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
 Cloning into '/home/runner/nuclei-templates'...
-[93m[Progress][0m Processing 1/35189: data-api.coindesk.com
+[93m[Progress][0m Processing 1/2952: *.arlo.com
 /usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
-[92mCollecting URLs for http://data-api.coindesk.com...[0m using ParamSpider
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.arlo.com...[0m using ParamSpider
 /home/runner/ParamSpider/core/extractor.py:7: SyntaxWarning: invalid escape sequence '\/'
   '''
 \u001b[36m
@@ -1128,18 +1129,269 @@ Cloning into '/home/runner/nuclei-templates'...
 
 
 [32m[+] Total number of retries:  0[31m
-[32m[+] Total unique urls found : 2[31m
+[32m[+] Total unique urls found : 0[31m
 [32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
 
-[31m[!] Total execution time      : 2.4354s[0m
-[92mCollecting URLs for http://data-api.coindesk.com...[0m using Waybackurls
-[92mCollecting URLs for http://data-api.coindesk.com...[0m using Gauplus
-[92mCollecting URLs for http://data-api.coindesk.com...[0m using Hakrawler
+[31m[!] Total execution time      : 30.757s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.arlo.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.arlo.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.arlo.com...[0m using Hakrawler
+2025/09/19 00:39:54 Error parsing URL: Input must be a valid absolute URL
 No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
-[92mCollecting URLs for http://data-api.coindesk.com...[0m using Katana
-[93m[Progress][0m Processing 2/35189: tools-api.cryptocompare.com
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.arlo.com...[0m using Katana
+[93m[Progress][0m Processing 2/2952: *.arloxcld.com
 /usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
-[92mCollecting URLs for http://tools-api.cryptocompare.com...[0m using ParamSpider
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.arloxcld.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 8.181s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.arloxcld.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.arloxcld.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.arloxcld.com...[0m using Hakrawler
+2025/09/19 00:40:03 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.arloxcld.com...[0m using Katana
+[93m[Progress][0m Processing 3/2952: *-prod.arlo.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *-prod.arlo.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.4794s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *-prod.arlo.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *-prod.arlo.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *-prod.arlo.com...[0m using Hakrawler
+2025/09/19 00:40:06 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *-prod.arlo.com...[0m using Katana
+[93m[Progress][0m Processing 4/2952: *.central.arubanetworks.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.central.arubanetworks.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.4968s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.central.arubanetworks.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.central.arubanetworks.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.central.arubanetworks.com...[0m using Hakrawler
+2025/09/19 00:40:42 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.central.arubanetworks.com...[0m using Katana
+[93m[Progress][0m Processing 5/2952: *.app.asana.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.app.asana.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.5081s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.app.asana.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.app.asana.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.app.asana.com...[0m using Hakrawler
+2025/09/19 00:40:49 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.app.asana.com...[0m using Katana
+[93m[Progress][0m Processing 6/2952: *.asana.biz
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.asana.biz...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 3.295s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.asana.biz...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.asana.biz...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.asana.biz...[0m using Hakrawler
+2025/09/19 00:41:08 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.asana.biz...[0m using Katana
+[93m[Progress][0m Processing 7/2952: *.atlastunnel.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.atlastunnel.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 12.751s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.atlastunnel.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.atlastunnel.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.atlastunnel.com...[0m using Hakrawler
+2025/09/19 00:41:37 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.atlastunnel.com...[0m using Katana
+[93m[Progress][0m Processing 8/2952: *.cic-bug-bounty.auth0app.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.cic-bug-bounty.auth0app.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.637s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.cic-bug-bounty.auth0app.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.cic-bug-bounty.auth0app.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.cic-bug-bounty.auth0app.com...[0m using Hakrawler
+2025/09/19 00:41:40 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.cic-bug-bounty.auth0app.com...[0m using Katana
+[93m[Progress][0m Processing 9/2952: *.twistys.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.twistys.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 8.999s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.twistys.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.twistys.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.twistys.com...[0m using Hakrawler
+2025/09/19 00:42:04 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.twistys.com...[0m using Katana
+[93m[Progress][0m Processing 10/2952: *.brazzers.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.brazzers.com...[0m using ParamSpider
 \u001b[36m
 
    
@@ -1154,13 +1406,72 @@ No URLs were found. This usually happens when a domain is specified (https://exa
     
 [31;1mCan not connect to server. Check your internet connection.[0m
 cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
-[92mCollecting URLs for http://tools-api.cryptocompare.com...[0m using Waybackurls
-[92mCollecting URLs for http://tools-api.cryptocompare.com...[0m using Gauplus
-[92mCollecting URLs for http://tools-api.cryptocompare.com...[0m using Hakrawler
-[92mCollecting URLs for http://tools-api.cryptocompare.com...[0m using Katana
-[93m[Progress][0m Processing 3/35189: acorns.com
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.brazzers.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.brazzers.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.brazzers.com...[0m using Hakrawler
+2025/09/19 00:43:15 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.brazzers.com...[0m using Katana
+[93m[Progress][0m Processing 11/2952: *.mofos.com
 /usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
-[92mCollecting URLs for http://acorns.com...[0m using ParamSpider
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.mofos.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31;1mCan not connect to server. Check your internet connection.[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.mofos.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.mofos.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.mofos.com...[0m using Hakrawler
+2025/09/19 00:44:05 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.mofos.com...[0m using Katana
+[93m[Progress][0m Processing 12/2952: *.realitykings.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.realitykings.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31;1mOOPS!! Timeout Error. Retrying in 2 seconds.[0m
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  1[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 32.76s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.realitykings.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.realitykings.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.realitykings.com...[0m using Hakrawler
+2025/09/19 00:44:40 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.realitykings.com...[0m using Katana
+[93m[Progress][0m Processing 13/2952: *.seancody.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.seancody.com...[0m using ParamSpider
 \u001b[36m
 
    
@@ -1177,17 +1488,21 @@ cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
 
 
 [32m[+] Total number of retries:  0[31m
-[32m[+] Total unique urls found : 32818[31m
+[32m[+] Total unique urls found : 0[31m
 [32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
 
-[31m[!] Total execution time      : 21.713s[0m
-[92mCollecting URLs for http://acorns.com...[0m using Waybackurls
-[92mCollecting URLs for http://acorns.com...[0m using Gauplus
-[92mCollecting URLs for http://acorns.com...[0m using Hakrawler
-[92mCollecting URLs for http://acorns.com...[0m using Katana
-[93m[Progress][0m Processing 4/35189: apps.apple.com
+[31m[!] Total execution time      : 2.471s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.seancody.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.seancody.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.seancody.com...[0m using Hakrawler
+2025/09/19 00:44:54 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.seancody.com...[0m using Katana
+[93m[Progress][0m Processing 14/2952: *.tube8.com
 /usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
-[92mCollecting URLs for http://apps.apple.com...[0m using ParamSpider
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.tube8.com...[0m using ParamSpider
 \u001b[36m
 
    
@@ -1204,8 +1519,696 @@ cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
 
 
 [32m[+] Total number of retries:  0[31m
-[32m[+] Total unique urls found : 65300[31m
+[32m[+] Total unique urls found : 0[31m
 [32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
 
-[31m[!] Total execution time      : 335.4s[0m
-[92mCollecting URLs for http://apps.apple.com...[0m using Waybackurls
+[31m[!] Total execution time      : 2.4436s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.tube8.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.tube8.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.tube8.com...[0m using Hakrawler
+2025/09/19 00:45:13 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.tube8.com...[0m using Katana
+[93m[Progress][0m Processing 15/2952: *.nutakupublishing.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.nutakupublishing.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.4441s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.nutakupublishing.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.nutakupublishing.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.nutakupublishing.com...[0m using Hakrawler
+2025/09/19 00:45:18 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.nutakupublishing.com...[0m using Katana
+[93m[Progress][0m Processing 16/2952: *.trafficjunky.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.trafficjunky.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.496s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.trafficjunky.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.trafficjunky.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.trafficjunky.com...[0m using Hakrawler
+2025/09/19 00:45:21 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.trafficjunky.com...[0m using Katana
+[93m[Progress][0m Processing 17/2952: *.adultforce.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.adultforce.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 13.239s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.adultforce.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.adultforce.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.adultforce.com...[0m using Hakrawler
+2025/09/19 00:45:35 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.adultforce.com...[0m using Katana
+[93m[Progress][0m Processing 18/2952: *.backblazeb2.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.backblazeb2.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 23.65s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.backblazeb2.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.backblazeb2.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.backblazeb2.com...[0m using Hakrawler
+2025/09/19 00:46:01 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.backblazeb2.com...[0m using Katana
+[93m[Progress][0m Processing 19/2952: *.bitdefender.net
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bitdefender.net...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 15.745s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bitdefender.net...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bitdefender.net...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bitdefender.net...[0m using Hakrawler
+2025/09/19 00:46:47 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bitdefender.net...[0m using Katana
+[93m[Progress][0m Processing 20/2952: *.bitdefender.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bitdefender.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31;1mCan not connect to server. Check your internet connection.[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bitdefender.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bitdefender.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bitdefender.com...[0m using Hakrawler
+2025/09/19 00:47:20 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bitdefender.com...[0m using Katana
+[93m[Progress][0m Processing 21/2952: *.bugcrowd.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bugcrowd.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31;1mCan not connect to server. Check your internet connection.[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bugcrowd.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bugcrowd.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bugcrowd.com...[0m using Hakrawler
+2025/09/19 00:48:07 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.bugcrowd.com...[0m using Katana
+[93m[Progress][0m Processing 22/2952: *.canva.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31;1mCan not connect to server. Check your internet connection.[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.com...[0m using Hakrawler
+2025/09/19 00:48:40 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.com...[0m using Katana
+[93m[Progress][0m Processing 23/2952: *.canva-apps.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva-apps.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31;1mOOPS!! Timeout Error. Retrying in 2 seconds.[0m
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  1[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 52.62s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva-apps.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva-apps.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva-apps.com...[0m using Hakrawler
+2025/09/19 00:49:33 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva-apps.com...[0m using Katana
+[93m[Progress][0m Processing 24/2952: *.canva.tech
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.tech...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 3.0337s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.tech...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.tech...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.tech...[0m using Hakrawler
+2025/09/19 00:49:47 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.tech...[0m using Katana
+[93m[Progress][0m Processing 25/2952: *.canva.cn
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.cn...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.449s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.cn...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.cn...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.cn...[0m using Hakrawler
+2025/09/19 00:50:15 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva.cn...[0m using Katana
+[93m[Progress][0m Processing 26/2952: *.canva-apps.cn
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva-apps.cn...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.3395s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva-apps.cn...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva-apps.cn...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva-apps.cn...[0m using Hakrawler
+2025/09/19 00:50:33 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.canva-apps.cn...[0m using Katana
+[93m[Progress][0m Processing 27/2952: *.cashstaging.app
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.cashstaging.app...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.471s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.cashstaging.app...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.cashstaging.app...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.cashstaging.app...[0m using Hakrawler
+2025/09/19 00:50:36 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.cashstaging.app...[0m using Katana
+[93m[Progress][0m Processing 28/2952: *.chimepayments.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chimepayments.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.359s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chimepayments.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chimepayments.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chimepayments.com...[0m using Hakrawler
+2025/09/19 00:50:48 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chimepayments.com...[0m using Katana
+[93m[Progress][0m Processing 29/2952: *.chime.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chime.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 4.380s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chime.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chime.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chime.com...[0m using Hakrawler
+2025/09/19 00:50:52 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chime.com...[0m using Katana
+[93m[Progress][0m Processing 30/2952: *.1debit.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.1debit.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.7042s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.1debit.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.1debit.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.1debit.com...[0m using Hakrawler
+2025/09/19 00:50:57 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.1debit.com...[0m using Katana
+[93m[Progress][0m Processing 31/2952: *.chimecard.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chimecard.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 3.0710s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chimecard.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chimecard.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chimecard.com...[0m using Hakrawler
+2025/09/19 00:51:03 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chimecard.com...[0m using Katana
+[93m[Progress][0m Processing 32/2952: *.chmfin.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chmfin.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 3.3358s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chmfin.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chmfin.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chmfin.com...[0m using Hakrawler
+2025/09/19 00:51:07 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.chmfin.com...[0m using Katana
+[93m[Progress][0m Processing 33/2952: *.saltlabs.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.saltlabs.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.638s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.saltlabs.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.saltlabs.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.saltlabs.com...[0m using Hakrawler
+2025/09/19 00:51:10 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.saltlabs.com...[0m using Katana
+[93m[Progress][0m Processing 34/2952: *.meraki.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.meraki.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 2.3997s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.meraki.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.meraki.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.meraki.com...[0m using Hakrawler
+2025/09/19 00:51:15 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.meraki.com...[0m using Katana
+[93m[Progress][0m Processing 35/2952: *.ikarem.io
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.ikarem.io...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 4.852s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.ikarem.io...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.ikarem.io...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.ikarem.io...[0m using Hakrawler
+2025/09/19 00:51:22 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.ikarem.io...[0m using Katana
+[93m[Progress][0m Processing 36/2952: *.network-auth.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.network-auth.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31m[!] URLS containing these extensions will be excluded from the results   : ['.png', '.jpg', '.gif', '.jpeg', '.swf', '.woff', '.svg', '.pdf', '.json', '.css', '.js', '.webp', '.woff', '.woff2', '.eot', '.ttf', '.otf', '.mp4', '.txt'][0m
+
+
+[32m[+] Total number of retries:  0[31m
+[32m[+] Total unique urls found : 0[31m
+[32m[+] Output is saved here :[31m [36mresults/domains.txt.json/all_raw.txt.tmp[31m
+
+[31m[!] Total execution time      : 8.351s[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.network-auth.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.network-auth.com...[0m using Gauplus
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.network-auth.com...[0m using Hakrawler
+2025/09/19 00:51:51 Error parsing URL: Input must be a valid absolute URL
+No URLs were found. This usually happens when a domain is specified (https://example.com), but it redirects to a subdomain (https://www.example.com). The subdomain is not included in the scope, so the no URLs are printed. In order to overcome this, either specify the final URL in the redirect chain or use the -subs option to include subdomains.
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.network-auth.com...[0m using Katana
+[93m[Progress][0m Processing 37/2952: *.classdojo.com
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+/usr/bin/nf: line 52: ./output/nucleifuzzer.log: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.classdojo.com...[0m using ParamSpider
+\u001b[36m
+
+   
+            ___                               _    __       
+           / _ \___ ________ ___ _  ___ ___  (_)__/ /__ ____
+          / ___/ _ `/ __/ _ `/  ' \(_-</ _ \/ / _  / -_) __/
+         /_/   \_,_/_/  \_,_/_/_/_/___/ .__/_/\_,_/\__/_/   
+                                     /_/                    
+                               
+                               - coded with <3 by Devansh Batham 
+       \u001b[0m
+    
+[31;1mCan not connect to server. Check your internet connection.[0m
+cat: results/domains.txt.json/all_raw.txt.tmp: No such file or directory
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.classdojo.com...[0m using Waybackurls
+[92mCollecting URLs for [93m[ERROR][0m Invalid input: *.classdojo.com...[0m using Gauplus
