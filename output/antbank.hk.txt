@@ -1,0 +1,10 @@
+www.antbank.hk
+antcloud.antbank.hk
+ext.antbank.hk
+pre.antbank.hk
+bt-connection.antbank.hk
+bkfrontendbff-uat.antbank.hk
+business.antbank.hk
+mcometgw.antcloud.antbank.hk
+mgw.antcloud.antbank.hk
+executive.antbank.hk
