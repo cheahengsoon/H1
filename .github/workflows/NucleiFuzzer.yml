@@ -1,103 +1,118 @@
-# .github/workflows/nuclei-fuzzer.yml
-name: NucleiFuzzer (domains.txt)
+name: NucleiFuzzer (Parallel Scan)
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:       # allow manual trigger
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  build-and-scan:
+  prepare:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    outputs:
+      chunks: ${{ steps.split.outputs.chunks }}
     steps:
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Ensure Input/domains.txt exists
         run: |
           if [ ! -f "Input/domains.txt" ]; then
-            echo "ERROR: Inputs/domains.txt not found."
+            echo "ERROR: Input/domains.txt not found."
             exit 1
           fi
-          echo "Found Input/domains.txt with $(wc -l < Input/domains.txt) domains."
+          echo "Found $(wc -l < Input/domains.txt) domains."
+
+      - name: Split domains into chunks of 50
+        id: split
+        run: |
+          mkdir -p chunks
+          split -l 50 Input/domains.txt chunks/domains_
+          files=$(ls chunks | xargs -n1 basename | jq -R . | jq -s .)
+          echo "chunks=$files" >> $GITHUB_OUTPUT
+
+      - name: Upload chunks
+        uses: actions/upload-artifact@v4
+        with:
+          name: domain-chunks
+          path: chunks/
+
+  scan:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chunk: ${{ fromJson(needs.prepare.outputs.chunks) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download chunk
+        uses: actions/download-artifact@v4
+        with:
+          name: domain-chunks
+          path: chunks
 
       - name: Install system packages & Go
         run: |
-          set -euo pipefail
           sudo apt-get update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y git build-essential curl wget ca-certificates dnsutils iputils-ping
-          if ! command -v go >/dev/null 2>&1; then
-            GO_VER="1.21.8"
-            wget -q https://go.dev/dl/go${GO_VER}.linux-amd64.tar.gz -O /tmp/go.tar.gz
-            sudo rm -rf /usr/local/go
-            sudo tar -C /usr/local -xzf /tmp/go.tar.gz
-            echo "export PATH=\$PATH:/usr/local/go/bin:\$HOME/go/bin" >> $GITHUB_ENV
-          fi
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+            git build-essential curl wget ca-certificates
+          GO_VER="1.21.8"
+          wget -q https://go.dev/dl/go${GO_VER}.linux-amd64.tar.gz -O /tmp/go.tar.gz
+          sudo rm -rf /usr/local/go
+          sudo tar -C /usr/local -xzf /tmp/go.tar.gz
+          echo "export PATH=\$PATH:/usr/local/go/bin:\$HOME/go/bin" >> $GITHUB_ENV
 
-      - name: Install common tools (httpx, nuclei, etc.)
+      - name: Install tools
         run: |
-          set -euo pipefail
           export GOPATH="$HOME/go"
           export PATH="$PATH:$GOPATH/bin"
-          mkdir -p "$GOPATH"
           go install github.com/projectdiscovery/httpx/cmd/httpx@latest
-          go install github.com/tomnomnom/waybackurls@latest
-          go install github.com/bp0lr/gauplus@latest
-          go install github.com/hakluke/hakrawler@latest
           go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
-          git clone --depth 1 https://github.com/s0md3v/uro.git /tmp/uro && cd /tmp/uro && go build && sudo mv uro /usr/local/bin || true
-          git clone --depth 1 https://github.com/projectdiscovery/katana.git /tmp/katana && cd /tmp/katana/cmd/katana && go build && sudo mv katana /usr/local/bin || true
-
-      - name: Clone & install NucleiFuzzer
-        run: |
           git clone --depth 1 https://github.com/0xKayala/NucleiFuzzer.git /tmp/NucleiFuzzer
           cd /tmp/NucleiFuzzer
           chmod +x install.sh || true
           ./install.sh || true
-          if [ -f ./nf ]; then
-            sudo mv nf /usr/local/bin/nf
-            sudo chmod +x /usr/local/bin/nf
-          fi
+          [ -f ./nf ] && sudo mv nf /usr/local/bin/nf && sudo chmod +x /usr/local/bin/nf
           nf -h || true
 
-      - name: Debug connectivity
+      - name: Pre-update nuclei templates
         run: |
-          echo "=== Checking Internet Connectivity ==="
-          curl -I https://github.com || true
-          curl -I https://scanme.sh || true
-          ping -c 2 8.8.8.8 || true
-          nslookup github.com || true
-          echo "====================================="
+          nuclei -update-templates || true
+          nuclei -ut || true
 
-      - name: Run NucleiFuzzer scan
-        env:
-          INPUT_FILE: Input/domains.txt
-          OUTPUT_DIR: artifacts/nucleifuzzer
+      - name: Run NucleiFuzzer on chunk
         run: |
-          mkdir -p "$OUTPUT_DIR"
-          if command -v nf >/dev/null 2>&1; then
-            nf -f "$INPUT_FILE" -o "$OUTPUT_DIR"
-          else
-            echo "ERROR: nf binary not found."
-            exit 1
-          fi
-          echo "Results saved into $OUTPUT_DIR"
-          ls -lah "$OUTPUT_DIR" || true
+          chunkfile="chunks/${{ matrix.chunk }}"
+          mkdir -p artifacts/nucleifuzzer
+          nf -f "$chunkfile" -o "artifacts/nucleifuzzer/${{ matrix.chunk }}.out" || echo "⚠️ failed"
+          ls -lah artifacts/nucleifuzzer
 
-      - name: Upload NucleiFuzzer results
+      - name: Upload chunk results
         uses: actions/upload-artifact@v4
         with:
-          name: nucleifuzzer-results
-          path: artifacts/nucleifuzzer
+          name: results-${{ matrix.chunk }}
+          path: artifacts/nucleifuzzer/
 
-      - name: Upload logs if failed
-        if: failure()
+  merge:
+    needs: scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all results
+        uses: actions/download-artifact@v4
+        with:
+          path: all-results
+
+      - name: Merge results
+        run: |
+          mkdir -p merged
+          cat all-results/**/**/*.out > merged/all-results.txt || true
+          echo "Final merged results:"
+          wc -l merged/all-results.txt
+
+      - name: Upload merged results
         uses: actions/upload-artifact@v4
         with:
-          name: nuclei-fuzzer-run-logs
-          path: ${{ github.workspace }}
+          name: nucleifuzzer-merged-results
+          path: merged/
