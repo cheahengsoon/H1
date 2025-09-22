@@ -4,7 +4,9 @@ name: NucleiFuzzer (domains.txt)
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:       # manual trigger (can pass inputs if you want)
+  workflow_dispatch:       # allow manual trigger
+  schedule:                # optional daily run
+    - cron: '0 3 * * *'
 
 permissions:
   contents: read
@@ -18,21 +20,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Ensure inputs folder exists (fail early)
+      - name: Ensure inputs/domains.txt exists
         run: |
-          INPUT_FILE="Input/domains.txt"
-          if [ ! -f "$INPUT_FILE" ]; then
-            echo "ERROR: $INPUT_FILE not found. Place your domains file at $INPUT_FILE"
+          if [ ! -f "inputs/domains.txt" ]; then
+            echo "ERROR: inputs/domains.txt not found."
             exit 1
           fi
-          echo "Found $INPUT_FILE with $(wc -l < $INPUT_FILE) lines."
+          echo "Found inputs/domains.txt with $(wc -l < inputs/domains.txt) domains."
 
       - name: Install system packages & Go
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y git build-essential curl wget ca-certificates
-          # Use GitHub runner's Go if available or install minimal Go
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y git build-essential curl wget ca-certificates dnsutils iputils-ping
           if ! command -v go >/dev/null 2>&1; then
             GO_VER="1.21.8"
             wget -q https://go.dev/dl/go${GO_VER}.linux-amd64.tar.gz -O /tmp/go.tar.gz
@@ -41,63 +41,52 @@ jobs:
             echo "export PATH=\$PATH:/usr/local/go/bin:\$HOME/go/bin" >> $GITHUB_ENV
           fi
 
-      - name: Install common tools used by NucleiFuzzer (httpx, waybackurls, gauplus, hakrawler, uro, katana, nuclei)
+      - name: Install common tools (httpx, nuclei, etc.)
         run: |
           set -euo pipefail
           export GOPATH="$HOME/go"
           export PATH="$PATH:$GOPATH/bin"
           mkdir -p "$GOPATH"
-          # install go-based tools (use specific versions if required)
           go install github.com/projectdiscovery/httpx/cmd/httpx@latest
           go install github.com/tomnomnom/waybackurls@latest
           go install github.com/bp0lr/gauplus@latest
           go install github.com/hakluke/hakrawler@latest
           go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
-          # uro and katana need build from repo
           git clone --depth 1 https://github.com/s0md3v/uro.git /tmp/uro && cd /tmp/uro && go build && sudo mv uro /usr/local/bin || true
           git clone --depth 1 https://github.com/projectdiscovery/katana.git /tmp/katana && cd /tmp/katana/cmd/katana && go build && sudo mv katana /usr/local/bin || true
 
-      - name: Clone & install NucleiFuzzer (produce `nf` binary)
+      - name: Clone & install NucleiFuzzer
         run: |
-          set -euo pipefail
           git clone --depth 1 https://github.com/0xKayala/NucleiFuzzer.git /tmp/NucleiFuzzer
           cd /tmp/NucleiFuzzer
-          sudo chmod +x install.sh || true
-          # Run install.sh (it installs dependencies and should create 'nf')
+          chmod +x install.sh || true
           ./install.sh || true
-          # After install.sh, try to find the nf binary in common locations
-          if command -v nf >/dev/null 2>&1; then
-            echo "nf is on PATH"
-          elif [ -f /usr/local/bin/nf ]; then
+          if [ -f ./nf ]; then
+            sudo mv nf /usr/local/bin/nf
             sudo chmod +x /usr/local/bin/nf
-            echo "nf found at /usr/local/bin/nf"
-          elif [ -f /tmp/NucleiFuzzer/nf ]; then
-            sudo mv /tmp/NucleiFuzzer/nf /usr/local/bin/nf
-            sudo chmod +x /usr/local/bin/nf
-            echo "nf moved to /usr/local/bin/nf"
-          else
-            echo "WARNING: nf binary not found after install. Attempting to run script directly."
           fi
           nf -h || true
 
-      - name: Run NucleiFuzzer using inputs/domains.txt
+      - name: Debug connectivity
+        run: |
+          echo "=== Checking Internet Connectivity ==="
+          curl -I https://github.com || true
+          curl -I https://scanme.sh || true
+          ping -c 2 8.8.8.8 || true
+          nslookup github.com || true
+          echo "====================================="
+
+      - name: Run NucleiFuzzer scan
         env:
-          INPUT_FILE: Input/domains.txt
+          INPUT_FILE: inputs/domains.txt
           OUTPUT_DIR: artifacts/nucleifuzzer
         run: |
-          set -euo pipefail
           mkdir -p "$OUTPUT_DIR"
-          # run nf against file: README shows nf supports -f <file>
           if command -v nf >/dev/null 2>&1; then
-            nf -f "$INPUT_FILE" -o "$OUTPUT_DIR" || true
+            nf -f "$INPUT_FILE" -o "$OUTPUT_DIR"
           else
-            # fallback: try to execute script from cloned repo (if present)
-            if [ -x /tmp/NucleiFuzzer/NucleiFuzzer.sh ]; then
-              /tmp/NucleiFuzzer/NucleiFuzzer.sh -f "$INPUT_FILE" -o "$OUTPUT_DIR" || true
-            else
-              echo "ERROR: nf not available to run the scan."
-              exit 1
-            fi
+            echo "ERROR: nf binary not found."
+            exit 1
           fi
           echo "Results saved into $OUTPUT_DIR"
           ls -lah "$OUTPUT_DIR" || true
@@ -108,10 +97,9 @@ jobs:
           name: nucleifuzzer-results
           path: artifacts/nucleifuzzer
 
-      - name: Upload full runner log for debugging (optional)
+      - name: Upload logs if failed
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: nuclei-fuzzer-run-logs
           path: ${{ github.workspace }}
-
