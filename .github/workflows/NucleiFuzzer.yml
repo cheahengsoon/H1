@@ -5,8 +5,6 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:       # allow manual trigger
-  schedule:                # optional daily run
-    - cron: '0 3 * * *'
 
 permissions:
   contents: read
@@ -20,13 +18,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Ensure inputs/domains.txt exists
+      - name: Ensure Input/domains.txt exists
         run: |
-          if [ ! -f "inputs/domains.txt" ]; then
-            echo "ERROR: inputs/domains.txt not found."
+          if [ ! -f "Input/domains.txt" ]; then
+            echo "ERROR: Inputs/domains.txt not found."
             exit 1
           fi
-          echo "Found inputs/domains.txt with $(wc -l < inputs/domains.txt) domains."
+          echo "Found Input/domains.txt with $(wc -l < Input/domains.txt) domains."
 
       - name: Install system packages & Go
         run: |
@@ -78,7 +76,7 @@ jobs:
 
       - name: Run NucleiFuzzer scan
         env:
-          INPUT_FILE: inputs/domains.txt
+          INPUT_FILE: Input/domains.txt
           OUTPUT_DIR: artifacts/nucleifuzzer
         run: |
           mkdir -p "$OUTPUT_DIR"
