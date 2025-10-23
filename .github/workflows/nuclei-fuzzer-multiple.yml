@@ -1,0 +1,203 @@
+name: Nuclei Fuzzer Multiple Targets Scan
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      targets_file:
+        description: 'Path to targets file (one per line)'
+        required: false
+        type: string
+        default: 'targets.txt'
+      custom_targets:
+        description: 'Custom targets (comma-separated)'
+        required: false
+        type: string
+      rate_limit:
+        description: 'Rate limit (requests per second)'
+        required: false
+        type: string
+        default: '50'
+      concurrency:
+        description: 'Number of concurrent scans'
+        required: false
+        type: string
+        default: '10'
+
+jobs:
+  nuclei-multi-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git python3 python3-pip
+        
+    - name: Install NucleiFuzzer
+      run: |
+        git clone https://github.com/0xKayala/NucleiFuzzer.git
+        cd NucleiFuzzer
+        pip3 install -r requirements.txt
+        chmod +x nuclei-fuzzer.py
+        
+    - name: Install Go security tools
+      run: |
+        # Install Go
+        curl -L https://golang.org/dl/go1.19.linux-amd64.tar.gz | sudo tar -C /usr/local -xzf -
+        echo "export PATH=$PATH:/usr/local/go/bin" >> $GITHUB_ENV
+        echo "export PATH=$PATH:$(go env GOPATH)/bin" >> $GITHUB_ENV
+        
+        # Install ProjectDiscovery tools
+        go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
+        go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+        go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
+        go install -v github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
+        
+    - name: Update Nuclei templates
+      run: |
+        export PATH=$PATH:$(go env GOPATH)/bin
+        nuclei -update-templates
+        
+    - name: Prepare targets list
+      id: prepare-targets
+      run: |
+        # Create targets directory
+        mkdir -p targets
+        
+        # Use custom targets if provided, otherwise use targets file
+        if [ -n "${{ github.event.inputs.custom_targets }}" ]; then
+          echo "Using custom targets from input"
+          echo "${{ github.event.inputs.custom_targets }}" | tr ',' '\n' > targets/scan_targets.txt
+        elif [ -f "${{ github.event.inputs.targets_file }}" ]; then
+          echo "Using targets from file: ${{ github.event.inputs.targets_file }}"
+          cp "${{ github.event.inputs.targets_file }}" targets/scan_targets.txt
+        else
+          echo "No targets provided, using default targets"
+          echo "example.com" > targets/scan_targets.txt
+          echo "test.com" >> targets/scan_targets.txt
+        fi
+        
+        # Count targets
+        TARGET_COUNT=$(wc -l < targets/scan_targets.txt)
+        echo "Total targets to scan: $TARGET_COUNT"
+        echo "target_count=$TARGET_COUNT" >> $GITHUB_OUTPUT
+        
+        # Display targets
+        echo "Targets:"
+        cat targets/scan_targets.txt
+        
+    - name: Run NucleiFuzzer on multiple targets
+      env:
+        RATE_LIMIT: ${{ github.event.inputs.rate_limit }}
+        CONCURRENCY: ${{ github.event.inputs.concurrency }}
+      run: |
+        cd NucleiFuzzer
+        export PATH=$PATH:$(go env GOPATH)/bin
+        
+        echo "Starting scan for ${{ steps.prepare-targets.outputs.target_count }} targets..."
+        
+        # Run NucleiFuzzer with list of targets and all templates
+        python3 nuclei-fuzzer.py -l ../targets/scan_targets.txt -t all -c $CONCURRENCY -r 3 -o multi-target-results.txt
+        
+    - name: Process and organize results
+      run: |
+        cd NucleiFuzzer
+        
+        if [ -f "multi-target-results.txt" ]; then
+          # Create individual target result files
+          mkdir -p target-results
+          
+          # Split results by target
+          while read target; do
+            if [ -n "$target" ]; then
+              # Escape target for grep
+              safe_target=$(echo "$target" | sed 's/[]\/$*.^[]/\\&/g')
+              grep -i "$safe_target" multi-target-results.txt > "target-results/${target//\//_}-results.txt" || true
+            fi
+          done < ../targets/scan_targets.txt
+          
+          # Generate summary report
+          echo "# Multiple Targets Security Scan Report" > summary-report.md
+          echo "**Scan Date:** $(date)" >> summary-report.md
+          echo "**Total Targets:** ${{ steps.prepare-targets.outputs.target_count }}" >> summary-report.md
+          echo "" >> summary-report.md
+          
+          # Count total findings
+          TOTAL_FINDINGS=$(grep -c ".*" multi-target-results.txt 2>/dev/null || echo "0")
+          echo "**Total Findings:** $TOTAL_FINDINGS" >> summary-report.md
+          echo "" >> summary-report.md
+          
+          # Count by severity across all targets
+          CRITICAL=$(grep -c -i "critical" multi-target-results.txt 2>/dev/null || echo "0")
+          HIGH=$(grep -c -i "high" multi-target-results.txt 2>/dev/null || echo "0")
+          MEDIUM=$(grep -c -i "medium" multi-target-results.txt 2>/dev/null || echo "0")
+          LOW=$(grep -c -i "low" multi-target-results.txt 2>/dev/null || echo "0")
+          
+          echo "## Severity Summary" >> summary-report.md
+          echo "- **Critical:** $CRITICAL" >> summary-report.md
+          echo "- **High:** $HIGH" >> summary-report.md
+          echo "- **Medium:** $MEDIUM" >> summary-report.md
+          echo "- **Low:** $LOW" >> summary-report.md
+          echo "" >> summary-report.md
+          
+          # Generate per-target summary
+          echo "## Per-Target Results" >> summary-report.md
+          while read target; do
+            if [ -n "$target" ]; then
+              result_file="target-results/${target//\//_}-results.txt"
+              if [ -f "$result_file" ] && [ -s "$result_file" ]; then
+                target_findings=$(wc -l < "$result_file")
+                echo "- **$target:** $target_findings findings" >> summary-report.md
+              else
+                echo "- **$target:** No findings" >> summary-report.md
+              fi
+            fi
+          done < ../targets/scan_targets.txt
+          
+        else
+          echo "No results file found" > summary-report.md
+        fi
+        
+    - name: Upload comprehensive results
+      uses: actions/upload-artifact@v4
+      with:
+        name: multi-target-scan-results
+        path: |
+          NucleiFuzzer/multi-target-results.txt
+          NucleiFuzzer/summary-report.md
+          NucleiFuzzer/target-results/
+        retention-days: 30
+        
+    - name: Check for critical findings
+      id: critical-check
+      run: |
+        cd NucleiFuzzer
+        
+        if [ -f "multi-target-results.txt" ]; then
+          CRITICAL=$(grep -c -i "critical" multi-target-results.txt 2>/dev/null || echo "0")
+          HIGH=$(grep -c -i "high" multi-target-results.txt 2>/dev/null || echo "0")
+          
+          echo "Critical findings: $CRITICAL"
+          echo "High findings: $HIGH"
+          
+          if [ $CRITICAL -gt 0 ] || [ $HIGH -gt 0 ]; then
+            echo "::error::Critical or High severity vulnerabilities found!"
+            echo "has_critical_findings=true" >> $GITHUB_OUTPUT
+            exit 1
+          else
+            echo "has_critical_findings=false" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "has_critical_findings=false" >> $GITHUB_OUTPUT
+        fi
