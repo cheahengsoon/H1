@@ -1,0 +1,35 @@
+name: Nuclei Vulnerability Scan (Auto)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight UTC
+
+jobs:
+  nuclei-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download YesWeHack in-scope URLs
+        run: |
+          curl -o yeswehack_inscope.txt https://raw.githubusercontent.com/rix4uni/scope/main/data/Yeswehack/yeswehack_inscope.txt
+
+      - name: Run Nuclei vulnerability scan
+        uses: projectdiscovery/nuclei-action@main
+        with:
+          urls: yeswehack_inscope.txt
+          flags: "-severity low,medium,high,critical -stats -o nuclei.log"
+
+      - name: Upload Nuclei scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuclei-scan-results
+          path: nuclei.log
