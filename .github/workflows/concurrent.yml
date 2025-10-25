@@ -1,4 +1,4 @@
-name: Nuclei Vulnerability Scan (Concurrent)
+name: Nuclei Vulnerability Scan (YWH)
 
 on:
   push:
