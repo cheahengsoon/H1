@@ -6,24 +6,10 @@ on:
 jobs:
   trivy-scan:
     runs-on: ubuntu-latest
-
-    steps:
-      # Step 1: Install Trivy
-      - name: Install Trivy
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
-          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
-          sudo apt-get update
-          sudo apt-get install -y trivy
-
-      # Step 2: Clone public repositories
-      - name: Clone public repositories
-        run: |
-          mkdir -p repos
-          REPOS=(
-            "https://github.com/bigbluebutton/bigbluebutton.git"
+    strategy:
+      matrix:
+        repo: [
+          "https://github.com/bigbluebutton/bigbluebutton.git"
 "https://github.com/blindsidenetworks/scalelite.git"
 "https://github.com/bigbluebutton/bbb-webrtc-sfu.git"
 "https://github.com/bigbluebutton/bbb-webrtc-recorder.git"
@@ -90,27 +76,31 @@ jobs:
 "https://github.com/owncloud/android.git"
 "https://github.com/owncloud/ios-app.git"
 
-          )
-          for REPO in "${REPOS[@]}"; do
-            REPO_NAME=$(basename "$REPO" .git)
-            echo "Cloning $REPO..."
-            git clone --depth 1 "$REPO" "repos/$REPO_NAME" || echo "Failed to clone $REPO"
-          done
-
-      # Step 3: Run Trivy scan
-      - name: Scan repositories with Trivy
+        ]
+    steps:
+      - name: Install Trivy
         run: |
-          for DIR in repos/*; do
-            REPO_NAME=$(basename "$DIR")
-            echo "Scanning $REPO_NAME..."
-            trivy fs "$DIR" --severity CRITICAL,HIGH,MEDIUM,LOW \
-              --format json -o "$REPO_NAME-trivy-report.json" \
-              || echo "Trivy scan failed for $REPO_NAME"
-          done
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install -y trivy
 
-      # Step 4: Upload reports
-      - name: Upload Trivy reports
+      - name: Clone repository
+        run: |
+          REPO_NAME=$(basename "${{ matrix.repo }}" .git)
+          echo "Cloning ${{ matrix.repo }}..."
+          git clone --depth 1 "${{ matrix.repo }}" "$REPO_NAME"
+
+      - name: Run Trivy scan
+        run: |
+          REPO_NAME=$(basename "${{ matrix.repo }}" .git)
+          trivy fs "$REPO_NAME" --severity CRITICAL,HIGH,MEDIUM,LOW \
+            --format json -o "$REPO_NAME-trivy-report.json"
+
+      - name: Upload report
         uses: actions/upload-artifact@v4
         with:
-          name: trivy-reports
-          path: "*.json"
+          name: trivy-report-${{ matrix.repo }}
+          path: "$REPO_NAME-trivy-report.json"
