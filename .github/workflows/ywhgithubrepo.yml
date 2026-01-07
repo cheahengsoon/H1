@@ -1,7 +1,7 @@
 name: Public Repo Trivy Scan
 
 on:
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch:
 
 jobs:
   trivy-scan:
@@ -24,7 +24,72 @@ jobs:
           mkdir -p repos
           REPOS=(
             "https://github.com/bigbluebutton/bigbluebutton.git"
-            "https://github.com/blindsidenetworks/scalelite.git"
+"https://github.com/blindsidenetworks/scalelite.git"
+"https://github.com/bigbluebutton/bbb-webrtc-sfu.git"
+"https://github.com/bigbluebutton/bbb-webrtc-recorder.git"
+"https://github.com/bigbluebutton/greenlight.git"
+"https://github.com/bigbluebutton/bbb-presentation-video.git"
+"https://github.com/bigbluebutton/bbb-playback.git"
+"https://github.com/tchapgouv.git"
+"https://github.com/expressvpn/lightway.git"
+"https://github.com/ImageMagick/ImageMagick.git"
+"https://github.com/Infomaniak/desktop-kDrive.git"
+"https://github.com/jenkinsci/jenkins.git"
+"https://github.com/jenkinsci/stapler.git"
+"https://github.com/jenkinsci/jelly.git"
+"https://github.com/jenkinsci/winstone.git"
+"https://github.com/jenkinsci/script-security-plugin.git"
+"https://github.com/jenkinsci/credentials-plugin.git"
+"https://github.com/jenkinsci/credentials-binding-plugin.git"
+"https://github.com/jenkinsci/workflow-cps-plugin.git"
+"https://github.com/nextcloud/server.git"
+"https://github.com/nextcloud/activity.git"
+"https://github.com/nextcloud/bruteforcesettings.git"
+"https://github.com/nextcloud/circles.git"
+"https://github.com/nextcloud/files_pdfviewer.git"
+"https://github.com/nextcloud/firstrunwizard.git"
+"https://github.com/nextcloud/logreader.git"
+"https://github.com/nextcloud/nextcloud_announcements.git"
+"https://github.com/nextcloud/notifications.git"
+"https://github.com/nextcloud/password_policy.git"
+"https://github.com/nextcloud/photos.git"
+"https://github.com/nextcloud/privacy.git"
+"https://github.com/nextcloud/recommendations.git"
+"https://github.com/nextcloud/related_resources.git"
+"https://github.com/nextcloud/serverinfo.git"
+"https://github.com/nextcloud/survey_client.git"
+"https://github.com/nextcloud/suspicious_login.git"
+"https://github.com/nextcloud/text.git"
+"https://github.com/nextcloud/twofactor_totp.git"
+"https://github.com/nextcloud/updater.git"
+"https://github.com/nextcloud/user_saml.git"
+"https://github.com/nextcloud/viewer.git"
+"https://github.com/nextcloud/android.git"
+"https://github.com/nextcloud/ios.git"
+"https://github.com/nextcloud/desktop.git"
+"https://github.com/opf/openproject.git"
+"https://github.com/pendulum-project/ntpd-rs.git"
+"https://github.com/pendulum-project/timestamped-socket.git"
+"https://github.com/pendulum-project/clock-steering.git"
+"https://github.com/owncloud/customgroups.git"
+"https://github.com/owncloud/guests.git"
+"https://github.com/owncloud/richdocuments.git"
+"https://github.com/owncloud/notifications.git"
+"https://github.com/owncloud/client.git"
+"https://github.com/owncloud/core.git"
+"https://github.com/owncloud/gallery.git"
+"https://github.com/owncloud/ocis.git"
+"https://github.com/owncloud/web.git"
+"https://github.com/owncloud/web-extensions.git"
+"https://github.com/owncloud/user_ldap.git"
+"https://github.com/owncloud/oauth2.git"
+"https://github.com/owncloud/openidconnect.git"
+"https://github.com/owncloud/activity.git"
+"https://github.com/owncloud/impersonate.git"
+"https://github.com/owncloud/updater.git"
+"https://github.com/owncloud/android.git"
+"https://github.com/owncloud/ios-app.git"
+
           )
           for REPO in "${REPOS[@]}"; do
             REPO_NAME=$(basename "$REPO" .git)
@@ -38,7 +103,9 @@ jobs:
           for DIR in repos/*; do
             REPO_NAME=$(basename "$DIR")
             echo "Scanning $REPO_NAME..."
-            trivy fs "$DIR" --severity HIGH,CRITICAL --format json -o "$REPO_NAME-trivy-report.json" || echo "Trivy scan failed for $REPO_NAME"
+            trivy fs "$DIR" --severity CRITICAL,HIGH,MEDIUM,LOW \
+              --format json -o "$REPO_NAME-trivy-report.json" \
+              || echo "Trivy scan failed for $REPO_NAME"
           done
 
       # Step 4: Upload reports
