@@ -2,7 +2,8 @@ name: Shannon Continuous Web Scan
 
 on:
   workflow_dispatch:
-
+  schedule:
+    - cron: "0 0 * * *"   # Runs daily at 02:00 UTC (optional)
 
 jobs:
   prepare-targets:
