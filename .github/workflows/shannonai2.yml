@@ -52,22 +52,22 @@ jobs:
         working-directory: shannon
         run: npm install
 
-      # 5️⃣ Run Shannon scan per target using new CLI
-      - name: Run Shannon scan
+      # 5️⃣ Run Shannon scan per target using Anthropic API
+      - name: Run Shannon scan per target
         env:
-          LLM_PROVIDER: anthropic
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           SHANNON_MAX_CONCURRENCY: 1
           SHANNON_DELAY_MS: 1500
         run: |
           mkdir -p results
           chmod +x shannon/shannon
-          # Generate a safe folder name from the URL
+          # Create .env file with Anthropic API key
+          echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" > shannon/.env
+          # Generate a safe folder name from URL
           REPO_NAME=$(echo ${{ matrix.target }} | sed 's/https\?:\/\///g' | sed 's/[\/.]/_/g')
           echo "==== Scanning ${{ matrix.target }} ===="
           ./shannon/shannon start URL=${{ matrix.target }} REPO=$REPO_NAME OUTPUT=results || echo "Scan failed for ${{ matrix.target }}"
 
-      # 6️⃣ Create GitHub issues from findings (reading JSON files from results)
+      # 6️⃣ Optional: Create GitHub issues from findings
       - name: Create GitHub issues
         uses: actions/github-script@v7
         env:
