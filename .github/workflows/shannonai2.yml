@@ -27,14 +27,14 @@ jobs:
           - https://www.snackbyincome.sg/
           - https://claims.digitalincome.com.sg/snack/
           - https://olen.income.com.sg
-      fail-fast: false   # one failure won't cancel other jobs
+      fail-fast: false
 
     steps:
       # 1️⃣ Checkout repository
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node.js (no cache, avoids errors)
+      # 2️⃣ Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -45,9 +45,9 @@ jobs:
         run: |
           git clone https://github.com/KeygraphHQ/shannon.git
           cd shannon
-          git checkout <known-good-commit>
+          git checkout main  # replace with a specific commit SHA if needed
 
-      # 4️⃣ Install Shannon dependencies in its folder
+      # 4️⃣ Install Shannon dependencies
       - name: Install Shannon dependencies
         working-directory: shannon
         run: npm install
@@ -109,7 +109,7 @@ jobs:
               console.log(`Created issue: ${title}`);
             }
 
-      # 7️⃣ Upload scan artifacts per target
+      # 7️⃣ Upload scan artifacts
       - name: Upload scan results
         uses: actions/upload-artifact@v4
         with:
