@@ -1,55 +1,66 @@
-name: Shannon Continuous Web Scan
+name: Shannon DAST Scan (Anthropic Web Only)
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"   # Runs daily at 02:00 UTC (optional)
+    - cron: "0 0 * * *"  # daily scan at 03:00 UTC
 
 jobs:
-  prepare-targets:
+  shannon:
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.build.outputs.matrix }}
+    timeout-minutes: 180  # increase if scanning many targets
 
     steps:
-      - name: Install Required Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y dnsutils jq curl
+      # -----------------------------
+      # Checkout repository
+      # -----------------------------
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - name: Fetch YesWeHack Scope
+      # -----------------------------
+      # Download dynamic scope list
+      # -----------------------------
+      - name: Download YesWeHack scope
         run: |
           curl -s https://raw.githubusercontent.com/rix4uni/scope/main/data/Yeswehack/yeswehack_inscope.txt \
           | tr ' ' '\n' \
           | sed '/^\s*$/d' \
           | grep -v '^\*\.' \
-          | sort -u > raw.txt
+          | sort -u \
+          > targets.txt
 
-          echo "Total raw targets:"
-          wc -l raw.txt
+          echo "Targets loaded:"
+          wc -l targets.txt
+          head -n 5 targets.txt
 
-      - name: Validate DNS (Remove Dead Domains)
+      # -----------------------------
+      # Validate DNS (remove dead domains)
+      # -----------------------------
+      - name: Validate DNS
         run: |
+          sudo apt-get update && sudo apt-get install -y dnsutils curl
+          > resolved.txt
           while read domain; do
             if dig +short "$domain" | grep -q .; then
               echo "$domain" >> resolved.txt
             fi
-          done < raw.txt
+          done < targets.txt
 
-          echo "Resolvable domains:"
+          echo "Resolvable targets:"
           wc -l resolved.txt
 
-      - name: Confirm Web Services Only (HTTP/HTTPS Reachable)
+      # -----------------------------
+      # Check web reachability (HTTP/HTTPS)
+      # -----------------------------
+      - name: Confirm web services only
         run: |
+          > live.txt
           while read domain; do
-            CODE=$(curl -k -s -L --max-time 6 -o /dev/null -w "%{http_code}" https://$domain || true)
-            if echo "$CODE" | grep -E "200|301|302|403" > /dev/null; then
+            if curl -k -s -L --max-time 6 -o /dev/null -w "%{http_code}" "https://$domain" | grep -E "200|301|302|403" > /dev/null; then
               echo "$domain" >> live.txt
               continue
             fi
-
-            CODE=$(curl -k -s -L --max-time 6 -o /dev/null -w "%{http_code}" http://$domain || true)
-            if echo "$CODE" | grep -E "200|301|302|403" > /dev/null; then
+            if curl -k -s -L --max-time 6 -o /dev/null -w "%{http_code}" "http://$domain" | grep -E "200|301|302|403" > /dev/null; then
               echo "$domain" >> live.txt
             fi
           done < resolved.txt
@@ -57,49 +68,40 @@ jobs:
           echo "Live web targets:"
           wc -l live.txt
 
-      - name: Split Targets into Safe Batches
+      # -----------------------------
+      # Clone and install Shannon
+      # -----------------------------
+      - name: Clone Shannon
         run: |
-          mkdir batches
-          split -l 25 live.txt batches/batch_
+          git clone https://github.com/KeygraphHQ/shannon.git
+          cd shannon
+          npm install
 
-          echo "Created batches:"
-          ls batches | wc -l
-
-      - name: Build Matrix
-        id: build
+      # -----------------------------
+      # Run Shannon scan (web only, Anthropic)
+      # -----------------------------
+      - name: Run Shannon scan
+        env:
+          LLM_PROVIDER: anthropic
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          JSON=$(ls batches/* | jq -R -s -c 'split("\n")[:-1]')
-          echo "matrix={\"batch\":$JSON}" >> $GITHUB_OUTPUT
+          cd shannon
+          while read target; do
+            echo "Scanning $target"
+            node shannon \
+              --target "$target" \
+              --scope web \
+              --max-runtime 900 \
+              --headless \
+              || true
+          done < ../live.txt
 
-  shannon-scan:
-    needs: prepare-targets
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.prepare-targets.outputs.matrix) }}
-
-    steps:
-      - name: Load Batch Targets
-        run: |
-          TARGETS=$(paste -sd, ${{ matrix.batch }})
-          echo "TARGETS=$TARGETS" >> $GITHUB_ENV
-          echo "Scanning targets:"
-          echo "$TARGETS"
-
-      - name: Run Shannon Scan (Web Only)
-        uses: keygraph/shannon-action@v1
-        with:
-          target: ${{ env.TARGETS }}
-          scope: web
-          fail-on-critical: true
-
-      - name: Cooldown (Rate Limiting)
-        run: sleep 20
-
-      - name: Upload Shannon Results
+      # -----------------------------
+      # Upload Shannon reports
+      # -----------------------------
+      - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: shannon-results-${{ strategy.job-index }}
-          path: shannon-output/
+          name: shannon-reports
+          path: shannon/reports
