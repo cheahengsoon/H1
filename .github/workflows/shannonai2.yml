@@ -52,20 +52,22 @@ jobs:
         working-directory: shannon
         run: npm install
 
-      # 5️⃣ Run Shannon scan per target using Anthropic API
+      # 5️⃣ Run Shannon scan per target using Anthropic API key
       - name: Run Shannon scan per target
-        env:
-          SHANNON_MAX_CONCURRENCY: 1
-          SHANNON_DELAY_MS: 1500
         run: |
-          mkdir -p results
+          mkdir -p shannon/results
           chmod +x shannon/shannon
-          # Create .env file with Anthropic API key
+
+          # Write the Anthropic API key into shannon/.env
           echo "ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}" > shannon/.env
-          # Generate a safe folder name from URL
+
+          # Generate a safe folder name for the target URL
           REPO_NAME=$(echo ${{ matrix.target }} | sed 's/https\?:\/\///g' | sed 's/[\/.]/_/g')
+
+          # Run Shannon CLI from inside the shannon folder
+          cd shannon
           echo "==== Scanning ${{ matrix.target }} ===="
-          ./shannon/shannon start URL=${{ matrix.target }} REPO=$REPO_NAME OUTPUT=results || echo "Scan failed for ${{ matrix.target }}"
+          ./shannon start URL=${{ matrix.target }} REPO=$REPO_NAME OUTPUT=results || echo "Scan failed for ${{ matrix.target }}"
 
       # 6️⃣ Optional: Create GitHub issues from findings
       - name: Create GitHub issues
@@ -75,7 +77,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const path = `results/${process.env.GITHUB_MATRIX_TARGET.replace(/https?:\/\//,'').replace(/[\/.]/g,'_')}/audit-log.json`;
+            const path = `shannon/results/${process.env.GITHUB_MATRIX_TARGET.replace(/https?:\/\//,'').replace(/[\/.]/g,'_')}/audit-log.json`;
             
             if (!fs.existsSync(path)) {
               console.log(`No results found for ${process.env.GITHUB_MATRIX_TARGET}`);
@@ -88,28 +90,4 @@ jobs:
             for (const finding of findings) {
               const title = `[${process.env.GITHUB_MATRIX_TARGET}] ${finding.title}`;
 
-              // Skip if issue already exists
-              const issues = await github.rest.issues.listForRepo({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                state: 'open',
-              });
-
-              if (issues.data.some(issue => issue.title === title)) continue;
-
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: title,
-                body: `**Target:** ${process.env.GITHUB_MATRIX_TARGET}\n\n**Description:** ${finding.description}\n\n**Severity:** ${finding.severity || 'N/A'}`,
-                labels: ['bug-bounty', 'shannon'],
-              });
-              console.log(`Created issue: ${title}`);
-            }
-
-      # 7️⃣ Upload scan artifacts
-      - name: Upload scan results
-        uses: actions/upload-artifact@v4
-        with:
-          name: shannon-results-${{ matrix.target }}
-          path: results/
+              // Skip if
