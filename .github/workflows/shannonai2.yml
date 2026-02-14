@@ -45,14 +45,14 @@ jobs:
         run: |
           git clone https://github.com/KeygraphHQ/shannon.git
           cd shannon
-          git checkout main  # replace with a specific commit SHA if needed
+          git checkout main  # replace with a stable commit if desired
 
       # 4️⃣ Install Shannon dependencies
       - name: Install Shannon dependencies
         working-directory: shannon
         run: npm install
 
-      # 5️⃣ Run Shannon scan per target using npx
+      # 5️⃣ Run Shannon scan per target (direct executable)
       - name: Run Shannon scan
         env:
           LLM_PROVIDER: anthropic
@@ -61,9 +61,10 @@ jobs:
           SHANNON_DELAY_MS: 1500
         run: |
           mkdir -p results
+          chmod +x shannon/shannon
           SCAN_OUTPUT="results/$(echo ${{ matrix.target }} | sed 's/https\?:\/\///g').json"
           echo "==== Scanning ${{ matrix.target }} ===="
-          npx shannon --target "${{ matrix.target }}" --scope web --headless --output "$SCAN_OUTPUT" || echo "Scan failed for ${{ matrix.target }}"
+          ./shannon/shannon --target "${{ matrix.target }}" --scope web --headless --output "$SCAN_OUTPUT" || echo "Scan failed for ${{ matrix.target }}"
 
       # 6️⃣ Create GitHub issues from findings
       - name: Create GitHub issues
