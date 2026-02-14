@@ -30,8 +30,8 @@ jobs:
       fail-fast: false   # one failure won't cancel other jobs
 
     steps:
-      # 1️⃣ Checkout repo
-      - name: Checkout repository
+      # 1️⃣ Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       # 2️⃣ Setup Node.js
@@ -48,7 +48,7 @@ jobs:
           cd shannon
           git checkout <known-good-commit>
 
-      # 4️⃣ Install dependencies (npm install avoids lockfile error)
+      # 4️⃣ Install Shannon dependencies (npm install avoids lockfile error)
       - name: Install Shannon dependencies
         working-directory: shannon
         run: npm install
