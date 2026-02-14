@@ -2,8 +2,7 @@ name: Shannon Continuous Bug Bounty Scan
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 2 * * *'  # daily at 2 AM UTC
+ 
   push:
     branches:
       - main
@@ -15,18 +14,7 @@ jobs:
     strategy:
       matrix:
         target:
-          - https://www.income.com.sg
-          - https://www.income.com.sg/docshare
-          - https://me.income.com.sg
-          - https://hive.income.com.sg/
-          - https://tribe.income.com.sg/
-          - https://business.income.com.sg
-          - https://business.online.income.com.sg
-          - https://reset.income.com.sg/
-          - https://incsso.income.com.sg/
-          - https://www.snackbyincome.sg/
-          - https://claims.digitalincome.com.sg/snack/
-          - https://olen.income.com.sg
+          - https://example.com
       fail-fast: false
 
     steps:
