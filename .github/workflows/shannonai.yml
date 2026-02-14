@@ -1,26 +1,85 @@
-name: Shannon DAST Scan
+name: Shannon DAST Scan (Anthropic Web Only)
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"  # daily scan at 03:00 UTC
 
 jobs:
   shannon:
     runs-on: ubuntu-latest
+    timeout-minutes: 180
 
     steps:
+      # -----------------------------
+      # Checkout repository
+      # -----------------------------
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Download targets
+      # -----------------------------
+      # Download dynamic scope list
+      # -----------------------------
+      - name: Download YesWeHack scope
         run: |
-          echo "https://www.income.com.sg" > targets.txt
+          curl -s https://raw.githubusercontent.com/rix4uni/scope/main/data/Yeswehack/yeswehack_inscope.txt \
+          | tr ' ' '\n' \
+          | sed '/^\s*$/d' \
+          | grep -v '^\*\.' \
+          | sort -u \
+          > targets.txt
 
+          echo "Targets loaded:"
+          wc -l targets.txt
+          head -n 5 targets.txt
+
+      # -----------------------------
+      # Validate DNS (remove dead domains)
+      # -----------------------------
+      - name: Validate DNS
+        run: |
+          sudo apt-get update && sudo apt-get install -y dnsutils curl
+          > resolved.txt
+          while read domain; do
+            if dig +short "$domain" | grep -q .; then
+              echo "$domain" >> resolved.txt
+            fi
+          done < targets.txt
+
+          echo "Resolvable targets:"
+          wc -l resolved.txt
+
+      # -----------------------------
+      # Check web reachability (HTTP/HTTPS)
+      # -----------------------------
+      - name: Confirm web services only
+        run: |
+          > live.txt
+          while read domain; do
+            if curl -k -s -L --max-time 6 -o /dev/null -w "%{http_code}" "https://$domain" | grep -E "200|301|302|403" > /dev/null; then
+              echo "$domain" >> live.txt
+              continue
+            fi
+            if curl -k -s -L --max-time 6 -o /dev/null -w "%{http_code}" "http://$domain" | grep -E "200|301|302|403" > /dev/null; then
+              echo "$domain" >> live.txt
+            fi
+          done < resolved.txt
+
+          echo "Live web targets:"
+          wc -l live.txt
+
+      # -----------------------------
+      # Clone Shannon & install dependencies
+      # -----------------------------
       - name: Clone Shannon
         run: |
           git clone https://github.com/KeygraphHQ/shannon.git
           cd shannon
           npm install
 
+      # -----------------------------
+      # Run Shannon scan (web-only, Anthropic)
+      # -----------------------------
       - name: Run Shannon scan
         env:
           LLM_PROVIDER: anthropic
@@ -29,5 +88,15 @@ jobs:
           cd shannon
           while read target; do
             echo "Scanning $target"
-            node shannon --target "$target" --scope web --headless
-          done < ../targets.txt
+            npx --yes ./shannon --target "$target" --scope web --headless || true
+          done < ../live.txt
+
+      # -----------------------------
+      # Upload Shannon reports
+      # -----------------------------
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: shannon-reports
+          path: shannon/reports
