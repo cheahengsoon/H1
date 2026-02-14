@@ -1,0 +1,70 @@
+name: Shannon Continuous Bug Bounty Scan
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
+  push:
+    branches:
+      - main
+
+jobs:
+  shannon:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        target:
+          - https://www.income.com.sg
+          - www.income.com.sg/docshare
+          - me.income.com.sg
+          - https://hive.income.com.sg/
+          - https://tribe.income.com.sg/
+          - business.income.com.sg
+          - business.online.income.com.sg
+          - https://reset.income.com.sg/
+          - https://incsso.income.com.sg/
+          - https://www.snackbyincome.sg/
+          - https://claims.digitalincome.com.sg/snack/
+          - https://olen.income.com.sg
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Clone Shannon
+        run: |
+          git clone https://github.com/KeygraphHQ/shannon.git
+          cd shannon
+          git checkout <known-good-commit>
+
+      - name: Install Shannon dependencies
+        working-directory: shannon
+        run: npm ci
+
+      - name: Run Shannon scan
+        env:
+          LLM_PROVIDER: anthropic
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          SHANNON_MAX_CONCURRENCY: 1
+          SHANNON_DELAY_MS: 1500
+        run: |
+          mkdir -p results
+          echo "Scanning ${{ matrix.target }}"
+          node shannon/shannon \
+            --target "${{ matrix.target }}" \
+            --scope web \
+            --headless \
+            --output "results/$(echo ${{ matrix.target }} | sed 's/https\?:\/\///g').json"
+
+      - name: Upload scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: shannon-results
+          path: results/
