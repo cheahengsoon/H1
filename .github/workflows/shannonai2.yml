@@ -52,7 +52,7 @@ jobs:
         working-directory: shannon
         run: npm install
 
-      # 5️⃣ Run Shannon scan per target
+      # 5️⃣ Run Shannon scan per target using npx
       - name: Run Shannon scan
         env:
           LLM_PROVIDER: anthropic
@@ -63,11 +63,7 @@ jobs:
           mkdir -p results
           SCAN_OUTPUT="results/$(echo ${{ matrix.target }} | sed 's/https\?:\/\///g').json"
           echo "==== Scanning ${{ matrix.target }} ===="
-          node shannon/shannon \
-            --target "${{ matrix.target }}" \
-            --scope web \
-            --headless \
-            --output "$SCAN_OUTPUT" || echo "Scan failed for ${{ matrix.target }}"
+          npx shannon --target "${{ matrix.target }}" --scope web --headless --output "$SCAN_OUTPUT" || echo "Scan failed for ${{ matrix.target }}"
 
       # 6️⃣ Create GitHub issues from findings
       - name: Create GitHub issues
