@@ -2,42 +2,32 @@ name: Shannon Scan (Dynamic Scope)
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"   # optional daily scan
 
 jobs:
-  prepare-targets:
+  shannon-scan:
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    timeout-minutes: 360   # allow long scans
 
     steps:
-      - name: Fetch YesWeHack Scope
-        id: fetch
+      - name: Fetch Scope List
         run: |
           curl -s https://raw.githubusercontent.com/rix4uni/scope/main/data/Yeswehack/yeswehack_inscope.txt \
           | tr ' ' '\n' \
           | sed '/^\s*$/d' \
+          | grep -v '^\*\.' \
           > targets.txt
 
-      - name: Build Matrix JSON
-        id: set-matrix
+          echo "Total targets:"
+          wc -l targets.txt
+
+      - name: Run Shannon Scan Per Target
         run: |
-          TARGETS=$(jq -R -s -c 'split("\n")[:-1]' targets.txt)
-          echo "matrix={\"target\":$TARGETS}" >> $GITHUB_OUTPUT
+          while read target; do
+            echo "===== Scanning $target ====="
 
-  shannon-scan:
-    needs: prepare-targets
-    runs-on: ubuntu-latest
+            npx --yes @keygraph/shannon scan \
+              --target https://$target \
+              --scope web,api \
+              || true
 
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJson(needs.prepare-targets.outputs.matrix) }}
-
-    steps:
-      - name: Run Shannon Security Scan
-        uses: keygraph/shannon-action@v1
-        with:
-          target: https://${{ matrix.target }}
-          scope: web,api
-          fail-on-critical: true
+          done < targets.txt
