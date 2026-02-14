@@ -1,19 +1,33 @@
-name: Run Shannon Security Scan
+name: Shannon DAST Scan
 
 on:
   workflow_dispatch:
 
 jobs:
-  shannon-scan:
+  shannon:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Run Shannon Security Scan
-        uses: keygraph/shannon-action@v1
-        with:
-          target: "https://www.income.com.sg"
-          scope: web
-          fail-on-critical: true
+      - name: Download targets
+        run: |
+          echo "https://www.income.com.sg" > targets.txt
+
+      - name: Clone Shannon
+        run: |
+          git clone https://github.com/KeygraphHQ/shannon.git
+          cd shannon
+          npm install
+
+      - name: Run Shannon scan
+        env:
+          LLM_PROVIDER: anthropic
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          cd shannon
+          while read target; do
+            echo "Scanning $target"
+            node shannon --target "$target" --scope web --headless
+          done < ../targets.txt
