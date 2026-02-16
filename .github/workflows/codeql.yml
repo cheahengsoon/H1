@@ -1,0 +1,54 @@
+name: Multi-Repository CodeQL Scan
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1 * * 0"
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        repo:
+          - bigbluebutton/bigbluebutton
+          - blindsidenetworks/scalelite
+          - bigbluebutton/bbb-webrtc-sfu
+          - bigbluebutton/bbb-webrtc-recorder
+          - bigbluebutton/greenlight
+          - expressvpn/lightway
+          - jenkinsci/jenkins
+          - jenkinsci/stapler
+          - nextcloud/server
+          - owncloud/core
+          - opf/openproject
+          - pendulum-project/ntpd-rs
+
+    steps:
+      - name: Checkout Target Repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ matrix.repo }}
+          path: target
+          fetch-depth: 0
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript,java,python,cpp,go,ruby
+          source-root: target
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+        with:
+          working-directory: target
+
+      - name: Analyze
+        uses: github/codeql-action/analyze@v3
