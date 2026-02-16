@@ -1,1047 +1,420 @@
-name: "CodeQL Multi-Repository Scanner - Bug Bounty Edition"
-
-# =============================================================================
-# MULTI-REPOSITORY SECURITY SCANNER
-# =============================================================================
-# This workflow can scan multiple bug bounty target repositories
-# Run from a central scanning repository or fork each target
-# =============================================================================
+name: Multi-Repository CodeQL Scan
 
 on:
-  push:
-    branches: [main, master, develop, development, staging]
-    paths-ignore: ['**.md', '**.txt', 'docs/**']
-
-  pull_request:
-    branches: [main, master, develop, development, staging]
-    paths-ignore: ['**.md', '**.txt', 'docs/**']
-
-  schedule:
-    - cron: '0 2 * * *'  # Daily at 2 AM UTC
-
   workflow_dispatch:
-    inputs:
-      target_repos:
-        description: 'Target repositories to scan (comma-separated) or "all"'
-        required: false
-        default: 'current'
-        type: string
-      project_filter:
-        description: 'Filter by project type'
-        required: false
-        default: 'all'
-        type: choice
-        options:
-          - all
-          - bigbluebutton
-          - jenkins
-          - nextcloud
-          - owncloud
-          - pendulum
-          - other
-      languages:
-        description: 'Languages to analyze'
-        required: false
-        default: 'all'
-        type: string
-      query_suite:
-        description: 'Query suite'
-        required: false
-        default: 'security-extended'
-        type: choice
-        options:
-          - default
-          - security-extended
-          - security-and-quality
+  schedule:
+    - cron: "0 1 * * 0"  # Weekly scan
 
 permissions:
-  actions: read
   contents: read
   security-events: write
-  pull-requests: write
-  issues: write
-
-env:
-  CODEQL_ENABLE_EXPERIMENTAL_FEATURES: true
-  SCAN_ID: ${{ github.run_id }}-${{ github.run_number }}
-
-# =============================================================================
-# TARGET REPOSITORIES DATABASE
-# =============================================================================
-# All 70+ bug bounty target repositories organized by project
-# =============================================================================
 
 jobs:
-  # ===========================================================================
-  # JOB 0: DEFINE TARGET REPOSITORIES
-  # ===========================================================================
-  define-targets:
-    name: Define Target Repository Matrix
+  scan:
     runs-on: ubuntu-latest
-    outputs:
-      repositories: ${{ steps.create-matrix.outputs.repositories }}
-      
-    steps:
-      - name: Create Repository Matrix
-        id: create-matrix
-        run: |
-          cat > repos.json << 'EOF'
-          {
-            "repositories": [
-              {
-                "name": "bigbluebutton/bigbluebutton",
-                "url": "https://github.com/bigbluebutton/bigbluebutton",
-                "project": "bigbluebutton",
-                "languages": ["javascript", "java"],
-                "priority": "high",
-                "focus": ["webrtc", "redis", "session", "authentication"]
-              },
-              {
-                "name": "bigbluebutton/bbb-webrtc-sfu",
-                "url": "https://github.com/bigbluebutton/bbb-webrtc-sfu",
-                "project": "bigbluebutton",
-                "languages": ["javascript"],
-                "priority": "high",
-                "focus": ["webrtc", "websocket", "media-streaming"]
-              },
-              {
-                "name": "bigbluebutton/bbb-webrtc-recorder",
-                "url": "https://github.com/bigbluebutton/bbb-webrtc-recorder",
-                "project": "bigbluebutton",
-                "languages": ["javascript"],
-                "priority": "medium",
-                "focus": ["webrtc", "recording", "file-operations"]
-              },
-              {
-                "name": "bigbluebutton/greenlight",
-                "url": "https://github.com/bigbluebutton/greenlight",
-                "project": "bigbluebutton",
-                "languages": ["ruby"],
-                "priority": "high",
-                "focus": ["authentication", "authorization", "sql-injection"]
-              },
-              {
-                "name": "bigbluebutton/bbb-presentation-video",
-                "url": "https://github.com/bigbluebutton/bbb-presentation-video",
-                "project": "bigbluebutton",
-                "languages": ["javascript"],
-                "priority": "medium",
-                "focus": ["file-upload", "video-processing"]
-              },
-              {
-                "name": "bigbluebutton/bbb-playback",
-                "url": "https://github.com/bigbluebutton/bbb-playback",
-                "project": "bigbluebutton",
-                "languages": ["javascript"],
-                "priority": "medium",
-                "focus": ["xss", "playback-security"]
-              },
-              {
-                "name": "blindsidenetworks/scalelite",
-                "url": "https://github.com/blindsidenetworks/scalelite",
-                "project": "bigbluebutton",
-                "languages": ["ruby"],
-                "priority": "high",
-                "focus": ["load-balancing", "authentication", "api-security"]
-              },
-              {
-                "name": "jenkinsci/jenkins",
-                "url": "https://github.com/jenkinsci/jenkins",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "critical",
-                "focus": ["deserialization", "script-security", "authentication"]
-              },
-              {
-                "name": "jenkinsci/stapler",
-                "url": "https://github.com/jenkinsci/stapler",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "high",
-                "focus": ["web-framework", "routing", "deserialization"]
-              },
-              {
-                "name": "jenkinsci/jelly",
-                "url": "https://github.com/jenkinsci/jelly",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "medium",
-                "focus": ["xss", "template-injection"]
-              },
-              {
-                "name": "jenkinsci/winstone",
-                "url": "https://github.com/jenkinsci/winstone",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "medium",
-                "focus": ["servlet", "http-security"]
-              },
-              {
-                "name": "jenkinsci/script-security-plugin",
-                "url": "https://github.com/jenkinsci/script-security-plugin",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "critical",
-                "focus": ["sandbox-bypass", "code-injection", "script-security"]
-              },
-              {
-                "name": "jenkinsci/credentials-plugin",
-                "url": "https://github.com/jenkinsci/credentials-plugin",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "critical",
-                "focus": ["credential-exposure", "encryption", "access-control"]
-              },
-              {
-                "name": "jenkinsci/credentials-binding-plugin",
-                "url": "https://github.com/jenkinsci/credentials-binding-plugin",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "high",
-                "focus": ["credential-leak", "environment-variables"]
-              },
-              {
-                "name": "jenkinsci/workflow-cps-plugin",
-                "url": "https://github.com/jenkinsci/workflow-cps-plugin",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "critical",
-                "focus": ["pipeline-security", "groovy-sandbox", "code-execution"]
-              },
-              {
-                "name": "jenkinsci/ldap-plugin",
-                "url": "https://github.com/jenkinsci/ldap-plugin",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "high",
-                "focus": ["ldap-injection", "authentication", "authorization"]
-              },
-              {
-                "name": "jenkinsci/ssh-credentials-plugin",
-                "url": "https://github.com/jenkinsci/ssh-credentials-plugin",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "high",
-                "focus": ["credential-storage", "ssh-security"]
-              },
-              {
-                "name": "jenkinsci/plain-credentials-plugin",
-                "url": "https://github.com/jenkinsci/plain-credentials-plugin",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "high",
-                "focus": ["credential-storage", "encryption"]
-              },
-              {
-                "name": "jenkinsci/matrix-auth-plugin",
-                "url": "https://github.com/jenkinsci/matrix-auth-plugin",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "high",
-                "focus": ["authorization", "privilege-escalation"]
-              },
-              {
-                "name": "jenkinsci/ssh-agents-plugin",
-                "url": "https://github.com/jenkinsci/ssh-agents-plugin",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "medium",
-                "focus": ["ssh-security", "credential-handling"]
-              },
-              {
-                "name": "jenkinsci/git-plugin",
-                "url": "https://github.com/jenkinsci/git-plugin",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "high",
-                "focus": ["command-injection", "path-traversal"]
-              },
-              {
-                "name": "jenkinsci/git-client-plugin",
-                "url": "https://github.com/jenkinsci/git-client-plugin",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "high",
-                "focus": ["command-injection", "git-security"]
-              },
-              {
-                "name": "jenkinsci/workflow-scm-step-plugin",
-                "url": "https://github.com/jenkinsci/workflow-scm-step-plugin",
-                "project": "jenkins",
-                "languages": ["java"],
-                "priority": "medium",
-                "focus": ["scm-security", "pipeline-integration"]
-              },
-              {
-                "name": "nextcloud/server",
-                "url": "https://github.com/nextcloud/server",
-                "project": "nextcloud",
-                "languages": ["php", "javascript"],
-                "priority": "critical",
-                "focus": ["file-upload", "sql-injection", "xss", "ssrf", "authentication"]
-              },
-              {
-                "name": "nextcloud/activity",
-                "url": "https://github.com/nextcloud/activity",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "low",
-                "focus": ["xss", "information-disclosure"]
-              },
-              {
-                "name": "nextcloud/bruteforcesettings",
-                "url": "https://github.com/nextcloud/bruteforcesettings",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "medium",
-                "focus": ["authentication", "rate-limiting"]
-              },
-              {
-                "name": "nextcloud/circles",
-                "url": "https://github.com/nextcloud/circles",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "medium",
-                "focus": ["authorization", "access-control"]
-              },
-              {
-                "name": "nextcloud/files_pdfviewer",
-                "url": "https://github.com/nextcloud/files_pdfviewer",
-                "project": "nextcloud",
-                "languages": ["javascript"],
-                "priority": "medium",
-                "focus": ["xss", "file-handling"]
-              },
-              {
-                "name": "nextcloud/firstrunwizard",
-                "url": "https://github.com/nextcloud/firstrunwizard",
-                "project": "nextcloud",
-                "languages": ["javascript"],
-                "priority": "low",
-                "focus": ["xss"]
-              },
-              {
-                "name": "nextcloud/logreader",
-                "url": "https://github.com/nextcloud/logreader",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "medium",
-                "focus": ["information-disclosure", "log-injection"]
-              },
-              {
-                "name": "nextcloud/nextcloud_announcements",
-                "url": "https://github.com/nextcloud/nextcloud_announcements",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "low",
-                "focus": ["xss"]
-              },
-              {
-                "name": "nextcloud/notifications",
-                "url": "https://github.com/nextcloud/notifications",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "medium",
-                "focus": ["xss", "notification-security"]
-              },
-              {
-                "name": "nextcloud/password_policy",
-                "url": "https://github.com/nextcloud/password_policy",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "medium",
-                "focus": ["authentication", "password-security"]
-              },
-              {
-                "name": "nextcloud/photos",
-                "url": "https://github.com/nextcloud/photos",
-                "project": "nextcloud",
-                "languages": ["javascript"],
-                "priority": "medium",
-                "focus": ["xss", "file-operations", "access-control"]
-              },
-              {
-                "name": "nextcloud/privacy",
-                "url": "https://github.com/nextcloud/privacy",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "medium",
-                "focus": ["privacy", "information-disclosure"]
-              },
-              {
-                "name": "nextcloud/recommendations",
-                "url": "https://github.com/nextcloud/recommendations",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "low",
-                "focus": ["xss"]
-              },
-              {
-                "name": "nextcloud/related_resources",
-                "url": "https://github.com/nextcloud/related_resources",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "low",
-                "focus": ["xss"]
-              },
-              {
-                "name": "nextcloud/serverinfo",
-                "url": "https://github.com/nextcloud/serverinfo",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "medium",
-                "focus": ["information-disclosure"]
-              },
-              {
-                "name": "nextcloud/survey_client",
-                "url": "https://github.com/nextcloud/survey_client",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "low",
-                "focus": ["information-disclosure"]
-              },
-              {
-                "name": "nextcloud/suspicious_login",
-                "url": "https://github.com/nextcloud/suspicious_login",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "high",
-                "focus": ["authentication", "ml-security"]
-              },
-              {
-                "name": "nextcloud/text",
-                "url": "https://github.com/nextcloud/text",
-                "project": "nextcloud",
-                "languages": ["javascript"],
-                "priority": "high",
-                "focus": ["xss", "editor-security"]
-              },
-              {
-                "name": "nextcloud/twofactor_totp",
-                "url": "https://github.com/nextcloud/twofactor_totp",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "high",
-                "focus": ["2fa", "authentication"]
-              },
-              {
-                "name": "nextcloud/updater",
-                "url": "https://github.com/nextcloud/updater",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "critical",
-                "focus": ["code-execution", "path-traversal", "file-operations"]
-              },
-              {
-                "name": "nextcloud/user_saml",
-                "url": "https://github.com/nextcloud/user_saml",
-                "project": "nextcloud",
-                "languages": ["php"],
-                "priority": "critical",
-                "focus": ["saml", "authentication", "xxe"]
-              },
-              {
-                "name": "nextcloud/viewer",
-                "url": "https://github.com/nextcloud/viewer",
-                "project": "nextcloud",
-                "languages": ["javascript"],
-                "priority": "medium",
-                "focus": ["xss", "file-viewer-security"]
-              },
-              {
-                "name": "nextcloud/android",
-                "url": "https://github.com/nextcloud/android",
-                "project": "nextcloud",
-                "languages": ["java"],
-                "priority": "high",
-                "focus": ["data-storage", "authentication", "network-security"]
-              },
-              {
-                "name": "nextcloud/ios",
-                "url": "https://github.com/nextcloud/ios",
-                "project": "nextcloud",
-                "languages": ["swift"],
-                "priority": "high",
-                "focus": ["data-storage", "authentication", "network-security"]
-              },
-              {
-                "name": "nextcloud/desktop",
-                "url": "https://github.com/nextcloud/desktop",
-                "project": "nextcloud",
-                "languages": ["cpp"],
-                "priority": "high",
-                "focus": ["file-sync", "authentication", "memory-safety"]
-              },
-              {
-                "name": "owncloud/core",
-                "url": "https://github.com/owncloud/core",
-                "project": "owncloud",
-                "languages": ["php"],
-                "priority": "critical",
-                "focus": ["file-upload", "sql-injection", "xss", "ssrf", "authentication"]
-              },
-              {
-                "name": "owncloud/customgroups",
-                "url": "https://github.com/owncloud/customgroups",
-                "project": "owncloud",
-                "languages": ["php"],
-                "priority": "medium",
-                "focus": ["authorization", "access-control"]
-              },
-              {
-                "name": "owncloud/guests",
-                "url": "https://github.com/owncloud/guests",
-                "project": "owncloud",
-                "languages": ["php"],
-                "priority": "high",
-                "focus": ["authentication", "authorization", "guest-access"]
-              },
-              {
-                "name": "owncloud/richdocuments",
-                "url": "https://github.com/owncloud/richdocuments",
-                "project": "owncloud",
-                "languages": ["php"],
-                "priority": "high",
-                "focus": ["document-editor", "xss", "ssrf"]
-              },
-              {
-                "name": "owncloud/notifications",
-                "url": "https://github.com/owncloud/notifications",
-                "project": "owncloud",
-                "languages": ["php"],
-                "priority": "medium",
-                "focus": ["xss", "notification-security"]
-              },
-              {
-                "name": "owncloud/client",
-                "url": "https://github.com/owncloud/client",
-                "project": "owncloud",
-                "languages": ["cpp"],
-                "priority": "high",
-                "focus": ["file-sync", "authentication", "memory-safety"]
-              },
-              {
-                "name": "owncloud/gallery",
-                "url": "https://github.com/owncloud/gallery",
-                "project": "owncloud",
-                "languages": ["php"],
-                "priority": "medium",
-                "focus": ["xss", "file-operations", "access-control"]
-              },
-              {
-                "name": "owncloud/ocis",
-                "url": "https://github.com/owncloud/ocis",
-                "project": "owncloud",
-                "languages": ["go"],
-                "priority": "critical",
-                "focus": ["authentication", "authorization", "api-security"]
-              },
-              {
-                "name": "owncloud/web",
-                "url": "https://github.com/owncloud/web",
-                "project": "owncloud",
-                "languages": ["javascript"],
-                "priority": "high",
-                "focus": ["xss", "spa-security", "authentication"]
-              },
-              {
-                "name": "owncloud/web-extensions",
-                "url": "https://github.com/owncloud/web-extensions",
-                "project": "owncloud",
-                "languages": ["javascript"],
-                "priority": "medium",
-                "focus": ["xss", "extension-security"]
-              },
-              {
-                "name": "owncloud/user_ldap",
-                "url": "https://github.com/owncloud/user_ldap",
-                "project": "owncloud",
-                "languages": ["php"],
-                "priority": "high",
-                "focus": ["ldap-injection", "authentication"]
-              },
-              {
-                "name": "owncloud/oauth2",
-                "url": "https://github.com/owncloud/oauth2",
-                "project": "owncloud",
-                "languages": ["php"],
-                "priority": "critical",
-                "focus": ["oauth", "authentication", "authorization"]
-              },
-              {
-                "name": "owncloud/openidconnect",
-                "url": "https://github.com/owncloud/openidconnect",
-                "project": "owncloud",
-                "languages": ["php"],
-                "priority": "critical",
-                "focus": ["oidc", "authentication", "token-security"]
-              },
-              {
-                "name": "owncloud/activity",
-                "url": "https://github.com/owncloud/activity",
-                "project": "owncloud",
-                "languages": ["php"],
-                "priority": "low",
-                "focus": ["xss", "information-disclosure"]
-              },
-              {
-                "name": "owncloud/impersonate",
-                "url": "https://github.com/owncloud/impersonate",
-                "project": "owncloud",
-                "languages": ["php"],
-                "priority": "critical",
-                "focus": ["authorization", "privilege-escalation", "impersonation"]
-              },
-              {
-                "name": "owncloud/updater",
-                "url": "https://github.com/owncloud/updater",
-                "project": "owncloud",
-                "languages": ["php"],
-                "priority": "critical",
-                "focus": ["code-execution", "path-traversal", "file-operations"]
-              },
-              {
-                "name": "owncloud/android",
-                "url": "https://github.com/owncloud/android",
-                "project": "owncloud",
-                "languages": ["java"],
-                "priority": "high",
-                "focus": ["data-storage", "authentication", "network-security"]
-              },
-              {
-                "name": "owncloud/ios-app",
-                "url": "https://github.com/owncloud/ios-app",
-                "project": "owncloud",
-                "languages": ["swift"],
-                "priority": "high",
-                "focus": ["data-storage", "authentication", "network-security"]
-              },
-              {
-                "name": "opf/openproject",
-                "url": "https://github.com/opf/openproject",
-                "project": "other",
-                "languages": ["ruby"],
-                "priority": "high",
-                "focus": ["sql-injection", "xss", "authentication", "authorization"]
-              },
-              {
-                "name": "pendulum-project/ntpd-rs",
-                "url": "https://github.com/pendulum-project/ntpd-rs",
-                "project": "pendulum",
-                "languages": ["rust"],
-                "priority": "critical",
-                "focus": ["memory-safety", "buffer-overflow", "ntp-security", "time-manipulation"]
-              },
-              {
-                "name": "pendulum-project/timestamped-socket",
-                "url": "https://github.com/pendulum-project/timestamped-socket",
-                "project": "pendulum",
-                "languages": ["rust"],
-                "priority": "high",
-                "focus": ["memory-safety", "socket-security", "timestamp-validation"]
-              },
-              {
-                "name": "pendulum-project/clock-steering",
-                "url": "https://github.com/pendulum-project/clock-steering",
-                "project": "pendulum",
-                "languages": ["rust"],
-                "priority": "high",
-                "focus": ["memory-safety", "clock-manipulation", "time-security"]
-              },
-              {
-                "name": "expressvpn/lightway",
-                "url": "https://github.com/expressvpn/lightway",
-                "project": "other",
-                "languages": ["c"],
-                "priority": "critical",
-                "focus": ["cryptography", "network-security", "memory-safety", "vpn-protocol"]
-              },
-              {
-                "name": "Infomaniak/desktop-kDrive",
-                "url": "https://github.com/Infomaniak/desktop-kDrive",
-                "project": "other",
-                "languages": ["cpp"],
-                "priority": "high",
-                "focus": ["file-operations", "authentication", "memory-safety", "sync-security"]
-              }
-            ]
-          }
-          EOF
-          
-          # Filter based on inputs
-          PROJECT_FILTER="${{ github.event.inputs.project_filter || 'all' }}"
-          
-          if [ "$PROJECT_FILTER" != "all" ]; then
-            FILTERED=$(jq --arg proj "$PROJECT_FILTER" '.repositories |= map(select(.project == $proj))' repos.json)
-            echo "$FILTERED" > repos.json
-          fi
-          
-          # Output the matrix
-          REPOS=$(cat repos.json | jq -c '.repositories')
-          echo "repositories=$REPOS" >> $GITHUB_OUTPUT
-          
-          echo "📊 Total repositories in matrix: $(echo $REPOS | jq '. | length')"
-
-  # ===========================================================================
-  # JOB 1: DISPLAY TARGETS
-  # ===========================================================================
-  display-targets:
-    name: Display Scan Targets
-    runs-on: ubuntu-latest
-    needs: define-targets
-    
-    steps:
-      - name: Show Target Repositories
-        run: |
-          echo "# 🎯 CodeQL Security Scan Targets" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Repository | Project | Priority | Languages | Focus Areas |" >> $GITHUB_STEP_SUMMARY
-          echo "|------------|---------|----------|-----------|-------------|" >> $GITHUB_STEP_SUMMARY
-          
-          echo '${{ needs.define-targets.outputs.repositories }}' | jq -r '.[] | 
-            "| [\(.name)](\(.url)) | \(.project) | \(.priority) | \(.languages | join(", ")) | \(.focus | join(", ")) |"' >> $GITHUB_STEP_SUMMARY
-          
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Total Repositories**: $(echo '${{ needs.define-targets.outputs.repositories }}' | jq '. | length')" >> $GITHUB_STEP_SUMMARY
-          echo "**Scan ID**: ${{ env.SCAN_ID }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Triggered By**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
-
-  # ===========================================================================
-  # JOB 2: DETECT LANGUAGES (Current Repo)
-  # ===========================================================================
-  detect-languages:
-    name: Detect Languages
-    runs-on: ubuntu-latest
-    outputs:
-      languages: ${{ steps.detect.outputs.languages }}
-      matrix: ${{ steps.detect.outputs.matrix }}
-      repo_info: ${{ steps.detect.outputs.repo_info }}
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Detect repository in target list
-        id: repo-lookup
-        run: |
-          CURRENT_REPO="${{ github.repository }}"
-          echo "Current repository: $CURRENT_REPO"
-          
-          # Find this repo in the target list
-          REPO_INFO=$(echo '${{ needs.define-targets.outputs.repositories }}' | \
-            jq --arg repo "$CURRENT_REPO" '.[] | select(.name == $repo)')
-          
-          if [ -n "$REPO_INFO" ]; then
-            echo "✅ Repository found in target list!"
-            echo "$REPO_INFO" | jq .
-            echo "repo_info=$REPO_INFO" >> $GITHUB_OUTPUT
-          else
-            echo "⚠️ Repository not in predefined target list, will auto-detect"
-            echo "repo_info={}" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Detect languages
-        id: detect
-        run: |
-          languages=()
-          
-          # Check if repo is in target list with predefined languages
-          PREDEFINED_LANGS=$(echo '${{ steps.repo-lookup.outputs.repo_info }}' | jq -r '.languages[]?' 2>/dev/null || echo "")
-          
-          if [ -n "$PREDEFINED_LANGS" ]; then
-            echo "Using predefined languages from target database"
-            while IFS= read -r lang; do
-              [ -n "$lang" ] && languages+=("$lang")
-            done <<< "$PREDEFINED_LANGS"
-          else
-            echo "Auto-detecting languages..."
-            
-            # JavaScript/TypeScript
-            if [ -f "package.json" ] || find . -type f \( -name "*.js" -o -name "*.jsx" -o -name "*.ts" -o -name "*.tsx" \) 2>/dev/null | head -1 | grep -q .; then
-              languages+=("javascript")
-            fi
-            
-            # Python
-            if [ -f "requirements.txt" ] || [ -f "setup.py" ] || [ -f "pyproject.toml" ] || find . -type f -name "*.py" 2>/dev/null | head -1 | grep -q .; then
-              languages+=("python")
-            fi
-            
-            # Java
-            if [ -f "pom.xml" ] || [ -f "build.gradle" ] || find . -type f -name "*.java" 2>/dev/null | head -1 | grep -q .; then
-              languages+=("java")
-            fi
-            
-            # Ruby
-            if [ -f "Gemfile" ] || find . -type f -name "*.rb" 2>/dev/null | head -1 | grep -q .; then
-              languages+=("ruby")
-            fi
-            
-            # Go
-            if [ -f "go.mod" ] || find . -type f -name "*.go" 2>/dev/null | head -1 | grep -q .; then
-              languages+=("go")
-            fi
-            
-            # C/C++/Rust/PHP
-            if find . -type f \( -name "*.c" -o -name "*.cpp" -o -name "*.rs" -o -name "*.php" \) 2>/dev/null | head -1 | grep -q .; then
-              languages+=("cpp")
-            fi
-            
-            # C#
-            if find . -type f \( -name "*.cs" -o -name "*.csproj" \) 2>/dev/null | head -1 | grep -q .; then
-              languages+=("csharp")
-            fi
-          fi
-          
-          # Fallback
-          if [ ${#languages[@]} -eq 0 ]; then
-            languages+=("javascript")
-          fi
-          
-          # Output
-          json_array=$(printf '%s\n' "${languages[@]}" | jq -R . | jq -s .)
-          echo "languages=${json_array}" >> $GITHUB_OUTPUT
-          echo "matrix={\"language\":${json_array}}" >> $GITHUB_OUTPUT
-          echo "repo_info=${{ steps.repo-lookup.outputs.repo_info }}" >> $GITHUB_OUTPUT
-          
-          echo "✅ Languages to scan: ${languages[@]}"
-
-  # ===========================================================================
-  # JOB 3: CODEQL ANALYSIS
-  # ===========================================================================
-  analyze:
-    name: CodeQL Analysis (${{ matrix.language }})
-    runs-on: ubuntu-latest
-    needs: [define-targets, detect-languages]
-    if: needs.detect-languages.outputs.languages != '[]'
-    timeout-minutes: 360
-    
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
+    timeout-minutes: 180
 
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.detect-languages.outputs.matrix) }}
+      matrix:
+        include:
+          # ---------- BigBlueButton ----------
+          - repo: bigbluebutton/bigbluebutton
+            language: javascript
+            build: |
+              npm install || true
+              npm run build --if-present || true
+
+          - repo: blindsidenetworks/scalelite
+            language: ruby
+            build: |
+              bundle install || true
+
+          - repo: bigbluebutton/bbb-webrtc-sfu
+            language: javascript
+            build: |
+              npm ci || true
+
+          - repo: bigbluebutton/bbb-webrtc-recorder
+            language: javascript
+            build: |
+              npm ci || true
+
+          - repo: bigbluebutton/greenlight
+            language: ruby
+            build: |
+              bundle install || true
+
+          - repo: bigbluebutton/bbb-presentation-video
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: bigbluebutton/bbb-playback
+            language: javascript
+            build: |
+              npm install || true
+
+          # ---------- ExpressVPN ----------
+          - repo: expressvpn/lightway
+            language: cpp
+            build: |
+              mkdir build
+              cd build
+              cmake ..
+              make -j$(nproc)
+
+          # ---------- Jenkins ----------
+          - repo: jenkinsci/jenkins
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/stapler
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/jelly
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/winstone
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/script-security-plugin
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/credentials-plugin
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/credentials-binding-plugin
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/workflow-cps-plugin
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/ldap-plugin
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/ssh-credentials-plugin
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/plain-credentials-plugin
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/matrix-auth-plugin
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/ssh-agents-plugin
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/git-plugin
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/git-client-plugin
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          - repo: jenkinsci/workflow-scm-step-plugin
+            language: java
+            build: |
+              mvn -B -DskipTests package
+
+          # ---------- Nextcloud ----------
+          - repo: nextcloud/server
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/activity
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/bruteforcesettings
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/circles
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/files_pdfviewer
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/firstrunwizard
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/logreader
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/nextcloud_announcements
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/notifications
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/password_policy
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/photos
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/privacy
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/recommendations
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/related_resources
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/serverinfo
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/survey_client
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/suspicious_login
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/text
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/twofactor_totp
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/updater
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/user_saml
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/viewer
+            language: javascript
+            build: |
+              npm install || true
+
+          - repo: nextcloud/android
+            language: java
+            build: |
+              ./gradlew assemble || true
+
+          - repo: nextcloud/ios
+            language: swift
+            build: |
+              xcodebuild -scheme Nextcloud -sdk iphonesimulator || true
+
+          - repo: nextcloud/desktop
+            language: cpp
+            build: |
+              mkdir build
+              cd build
+              cmake ..
+              make -j$(nproc)
+
+          # ---------- OpenProject ----------
+          - repo: opf/openproject
+            language: ruby
+            build: |
+              bundle install || true
+
+          # ---------- Pendulum ----------
+          - repo: pendulum-project/ntpd-rs
+            language: cpp
+            build: |
+              cargo build --release
+
+          - repo: pendulum-project/timestamped-socket
+            language: cpp
+            build: |
+              cargo build --release
+
+          - repo: pendulum-project/clock-steering
+            language: cpp
+            build: |
+              cargo build --release
+
+          # ---------- ownCloud ----------
+          - repo: owncloud/customgroups
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/guests
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/richdocuments
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/notifications
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/client
+            language: cpp
+            build: |
+              mkdir build
+              cd build
+              cmake ..
+              make -j$(nproc)
+
+          - repo: owncloud/core
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/gallery
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/ocis
+            language: go
+            build: |
+              go build ./...
+
+          - repo: owncloud/web
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/web-extensions
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/user_ldap
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/oauth2
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/openidconnect
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/activity
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/impersonate
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/updater
+            language: php
+            build: |
+              composer install || true
+
+          - repo: owncloud/android
+            language: java
+            build: |
+              ./gradlew assemble || true
+
+          - repo: owncloud/ios-app
+            language: swift
+            build: |
+              xcodebuild -scheme ownCloud -sdk iphonesimulator || true
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Target Repository
         uses: actions/checkout@v4
         with:
+          repository: ${{ matrix.repo }}
+          path: target
           fetch-depth: 0
 
-      - name: Display scan configuration
-        run: |
-          echo "🔍 Repository: ${{ github.repository }}"
-          echo "💬 Language: ${{ matrix.language }}"
-          echo "🎯 Target Database Match: ${{ needs.detect-languages.outputs.repo_info != '{}' && 'Yes' || 'No' }}"
-          
-          if [ "${{ needs.detect-languages.outputs.repo_info }}" != "{}" ]; then
-            echo "📋 Project: $(echo '${{ needs.detect-languages.outputs.repo_info }}' | jq -r .project)"
-            echo "⚡ Priority: $(echo '${{ needs.detect-languages.outputs.repo_info }}' | jq -r .priority)"
-            echo "🎯 Focus Areas: $(echo '${{ needs.detect-languages.outputs.repo_info }}' | jq -r '.focus | join(", ")')"
-          fi
-
-      # Language-specific setup (same as before)
-      - name: Setup Node.js
-        if: matrix.language == 'javascript'
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install JavaScript dependencies
-        if: matrix.language == 'javascript'
-        run: |
-          if [ -f "package-lock.json" ]; then
-            npm ci --ignore-scripts || npm install --ignore-scripts
-          elif [ -f "yarn.lock" ]; then
-            yarn install --frozen-lockfile --ignore-scripts || yarn install --ignore-scripts
-          elif [ -f "pnpm-lock.yaml" ]; then
-            npm install -g pnpm && pnpm install --frozen-lockfile
-          elif [ -f "package.json" ]; then
-            npm install --ignore-scripts
-          fi
-        continue-on-error: true
-
-      - name: Setup Python
-        if: matrix.language == 'python'
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Setup Java
-        if: matrix.language == 'java'
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'maven'
-
-      - name: Setup Ruby
-        if: matrix.language == 'ruby'
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-          bundler-cache: true
-
-      - name: Setup Go
-        if: matrix.language == 'go'
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.21'
-          cache: true
-
-      - name: Setup C/C++/Rust
-        if: matrix.language == 'cpp'
+      - name: Setup Toolchains
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cmake clang llvm
-          
-          if [ -f "Cargo.toml" ]; then
-            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-            source $HOME/.cargo/env
-          fi
-        continue-on-error: true
+          sudo apt-get install -y build-essential cmake pkg-config \
+            maven golang rustc cargo ruby-full php-cli composer \
+            npm nodejs
 
-      - name: Setup .NET
-        if: matrix.language == 'csharp'
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-
-      # Initialize CodeQL with comprehensive queries
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
-          queries: security-extended,security-and-quality
-          
-          config: |
-            name: Bug Bounty Scan - ${{ github.repository }}
-            
-            paths:
-              - src
-              - app
-              - lib
-              - libs
-              - server
-              - client
-              - core
-              - api
-              - controllers
-              - models
-              - views
-              - routes
-              - internal
-              - pkg
-              - cmd
-              - plugins
-              - modules
-            
-            paths-ignore:
-              - '**/node_modules/**'
-              - '**/dist/**'
-              - '**/build/**'
-              - '**/target/**'
-              - '**/vendor/**'
-              - '**/test/**'
-              - '**/tests/**'
-              - '**/*.min.js'
-            
-            query-filters:
-              - include:
-                  precision: [high, very-high]
-                  tags:
-                    - security
-                    - external/cwe/cwe-079
-                    - external/cwe/cwe-089
-                    - external/cwe/cwe-022
-                    - external/cwe/cwe-078
-                    - external/cwe/cwe-094
-                    - external/cwe/cwe-502
-                    - external/cwe/cwe-611
-                    - external/cwe/cwe-918
-                    - external/cwe/cwe-352
-                    - external/cwe/cwe-287
-                    - external/cwe/cwe-285
-                    - external/cwe/cwe-798
-                    - external/cwe/cwe-200
-                    - external/cwe/cwe-319
-                    - external/cwe/cwe-326
-                    - external/cwe/cwe-601
-                    - external/cwe/cwe-1321
+          source-root: target
+          queries: security-and-quality
 
-      # Build steps
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
-        continue-on-error: true
+      - name: Build Project
+        working-directory: target
+        run: ${{ matrix.build }}
 
-      # Perform analysis
-      - name: Perform CodeQL Analysis
+      - name: Analyze
         uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:${{ matrix.language }}/repo:${{ github.repository }}"
-          output: sarif-results
-          upload: true
-
-      - name: Upload SARIF
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: codeql-sarif-${{ matrix.language }}-${{ github.run_id }}
-          path: sarif-results
-          retention-days: 90
-
-  # ===========================================================================
-  # JOB 4: GENERATE REPORT
-  # ===========================================================================
-  security-report:
-    name: Generate Security Report
-    runs-on: ubuntu-latest
-    needs: [define-targets, detect-languages, analyze]
-    if: always()
-    
-    steps:
-      - name: Generate Comprehensive Report
-        run: |
-          echo "# 🔒 CodeQL Security Scan Report" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          echo "## 📊 Scan Information" >> $GITHUB_STEP_SUMMARY
-          echo "- **Repository**: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Scan ID**: ${{ env.SCAN_ID }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Date**: $(date -u +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
-          echo "- **Triggered**: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          # Repository classification
-          if [ "${{ needs.detect-languages.outputs.repo_info }}" != "{}" ]; then
-            echo "## 🎯 Repository Classification" >> $GITHUB_STEP_SUMMARY
-            echo "- **Project**: $(echo '${{ needs.detect-languages.outputs.repo_info }}' | jq -r .project)" >> $GITHUB_STEP_SUMMARY
-            echo "- **Priority**: $(echo '${{ needs.detect-languages.outputs.repo_info }}' | jq -r .priority)" >> $GITHUB_STEP_SUMMARY
-            echo "- **Focus Areas**: $(echo '${{ needs.detect-languages.outputs.repo_info }}' | jq -r '.focus | join(", ")')" >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          echo "## 💬 Languages Analyzed" >> $GITHUB_STEP_SUMMARY
-          echo '${{ needs.detect-languages.outputs.languages }}' | jq -r '.[]' | while read lang; do
-            echo "- ✅ ${lang}" >> $GITHUB_STEP_SUMMARY
-          done
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          echo "## 📈 Analysis Status" >> $GITHUB_STEP_SUMMARY
-          echo "- **CodeQL**: ${{ needs.analyze.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          echo "## 🔍 View Results" >> $GITHUB_STEP_SUMMARY
-          echo "- [Security Alerts](https://github.com/${{ github.repository }}/security/code-scanning)" >> $GITHUB_STEP_SUMMARY
-          echo "- [Security Advisories](https://github.com/${{ github.repository }}/security/advisories)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          echo "## 📚 Target Repository Database" >> $GITHUB_STEP_SUMMARY
-          echo "Total target repositories tracked: $(echo '${{ needs.define-targets.outputs.repositories }}' | jq '. | length')" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "*Automated Bug Bounty Security Scanner*" >> $GITHUB_STEP_SUMMARY
